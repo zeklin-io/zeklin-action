@@ -53,11 +53,11 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
 }
 
 const logInfo = (message: string) => Effect.sync(() => core.info(message))
-const logDebug = (message: string) => Effect.sync(() => core.debug(message))
+const logDebug = (message: string) => Effect.sync(() => core.debug(`-- ${message}`))
 
 const listeners: ExecListeners = {
-  errline: (line) => core.info("-- stderr: " + line),
-  debug: (data) => core.debug("-- debug: " + data),
+  errline: (line) => core.info("-- listener stderr: " + line),
+  debug: (data) => core.debug("-- listener debug: " + data),
 }
 
 const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (inputs: Inputs) =>
