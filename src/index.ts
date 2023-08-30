@@ -8,7 +8,7 @@ class Inputs extends Data.TaggedClass("Inputs")<{
   workdir: Option.Option<string>
 }> {}
 
-const inputs: () => Either.Either<Error, Inputs> = () => {
+const parseInputs: () => Either.Either<Error, Inputs> = () => {
   const unsafeRequiredInput = (name: string) => {
     const v = core.getInput(name, { required: true, trimWhitespace: true })
 
@@ -43,7 +43,7 @@ const setFailed = (message: string) => Effect.sync(() => core.setFailed(message)
  * The main function for the action.
  */
 export const main: Effect.Effect<never, Error, void> = pipe(
-  Effect.suspend(inputs),
+  Effect.suspend(parseInputs),
   Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)),
   Effect.tap((inputs) => debug(`Inputs: ${inputs}`)),
 )
