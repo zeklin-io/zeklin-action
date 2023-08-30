@@ -21,7 +21,7 @@ jobs:
         uses: ./
         with:
           apikey: "this is an api key"
-          cmd: "echo 'hello world'"
+          cmd: echo 'hello world'
           workdir: "." # optional
 
       - name: Test Failing Action
@@ -30,7 +30,7 @@ jobs:
         uses: ./
         with:
           apikey: "this is an api key"
-          cmd: "exit 1"
+          cmd: exit 1
 
       - name: Print Output
         id: output
