@@ -2,6 +2,19 @@ import * as core from "@actions/core"
 import { Data, Either, Option, pipe } from "effect"
 import * as Effect from "effect/Effect"
 
+const banner = String.raw`
+ ___________
+< Zeklin.io >
+ -----------
+     \\
+      \\
+          oO)-.                       .-(Oo
+         /__  _\\                     /_  __\\
+         \\  \\(  |     ()~()         |  )/  /
+          \\__|\\ |    (-___-)        | /|__/
+          '  '--'    ==\`-'==        '--'  '
+`
+
 class Inputs extends Data.TaggedClass("Inputs")<{
   apikey: string
   cmd: string
@@ -43,7 +56,8 @@ const setFailed = (message: string) => Effect.sync(() => core.setFailed(message)
  * The main function for the action.
  */
 export const main: Effect.Effect<never, Error, void> = pipe(
-  Effect.suspend(unsafeParseInputs),
+  Effect.sync(() => core.info(banner)),
+  Effect.flatMap(() => Effect.suspend(unsafeParseInputs)),
   Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)),
   Effect.tap((inputs) => debug(`Inputs: ${inputs}`)),
 )

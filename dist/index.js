@@ -73403,6 +73403,18 @@ exports.main = void 0;
 const core = __importStar(__nccwpck_require__(7733));
 const effect_1 = __nccwpck_require__(2090);
 const Effect = __importStar(__nccwpck_require__(5307));
+const banner = String.raw `
+ ___________
+< Zeklin.io >
+ -----------
+     \\
+      \\
+          oO)-.                       .-(Oo
+         /__  _\\                     /_  __\\
+         \\  \\(  |     ()~()         |  )/  /
+          \\__|\\ |    (-___-)        | /|__/
+          '  '--'    ==\`-'==        '--'  '
+`;
 class Inputs extends effect_1.Data.TaggedClass("Inputs") {
 }
 const unsafeParseInputs = () => {
@@ -73436,7 +73448,7 @@ const setFailed = (message) => Effect.sync(() => core.setFailed(message));
 /**
  * The main function for the action.
  */
-exports.main = (0, effect_1.pipe)(Effect.suspend(unsafeParseInputs), Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)), Effect.tap((inputs) => debug(`Inputs: ${inputs}`)));
+exports.main = (0, effect_1.pipe)(Effect.sync(() => core.info(banner)), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)), Effect.tap((inputs) => debug(`Inputs: ${inputs}`)));
 Effect.runPromise(exports.main).catch((error) => {
     if (error instanceof Error)
         core.setFailed(error.message);
