@@ -73443,15 +73443,15 @@ const unsafeParseInputs = () => {
         return effect_1.Either.left(error);
     }
 };
-const info = (message) => Effect.sync(() => core.info(message));
-const debug = (message) => Effect.sync(() => core.debug(message));
+const logInfo = (message) => Effect.sync(() => core.info(message));
+const logDebug = (message) => Effect.sync(() => core.debug(message));
 const setFailed = (message) => Effect.sync(() => core.setFailed(message));
 /**
  * The main function for the action.
  */
-exports.main = (0, effect_1.pipe)(info(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tapBoth({
+exports.main = (0, effect_1.pipe)(logInfo(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tapBoth({
     onFailure: (error) => setFailed(`Failed to parse inputs: ${error}`),
-    onSuccess: (inputs) => info(`Inputs: ${inputs}`),
+    onSuccess: (inputs) => logDebug(`Inputs: ${inputs}`),
 }));
 Effect.runPromise(exports.main).catch((error) => {
     if (error instanceof Error)
