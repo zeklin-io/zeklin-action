@@ -74653,6 +74653,7 @@ class Inputs extends effect_1.Data.TaggedClass("Inputs") {
 const unsafeParseInputs = () => {
     const unsafeRequiredInput = (name) => {
         const v = core.getInput(name, { required: true, trimWhitespace: true });
+        core.debug(`-- input ${name}: ${v}`);
         if (v.length === 0)
             throw new Error(`Input ${name} is required`);
         else
@@ -74660,6 +74661,7 @@ const unsafeParseInputs = () => {
     };
     const optionalInput = (name) => {
         const v = core.getInput(name, { required: false, trimWhitespace: true });
+        core.debug(`-- input ${name}: ${v}`);
         if (v.length === 0)
             return effect_1.Option.none();
         else

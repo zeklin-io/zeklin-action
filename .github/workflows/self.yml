@@ -42,13 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: env
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v3
-
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           repository: openjdk/jmh.git
           ref: 1.37
@@ -69,4 +64,4 @@ jobs:
           workdir: jmh-dir
           cmd: |
             mvn clean package -DskipTests
-            java -jar jmh-samples/target/benchmarks.jar -wi 10 -i 10 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
+            java -jar jmh-samples/target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json

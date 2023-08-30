@@ -28,12 +28,16 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
   const unsafeRequiredInput = (name: string) => {
     const v = core.getInput(name, { required: true, trimWhitespace: true })
 
+    core.debug(`-- input ${name}: ${v}`)
+
     if (v.length === 0) throw new Error(`Input ${name} is required`)
     else return v
   }
 
   const optionalInput = (name: string) => {
     const v = core.getInput(name, { required: false, trimWhitespace: true })
+
+    core.debug(`-- input ${name}: ${v}`)
 
     if (v.length === 0) return Option.none()
     else return Option.some(v)
