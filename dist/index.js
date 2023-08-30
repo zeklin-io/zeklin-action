@@ -74689,7 +74689,7 @@ const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: '${inputs.
             cwd: effect_1.Option.getOrUndefined(inputs.workdir),
             listeners: listeners,
         };
-        return (0, exec_1.exec)(`sh -c "${inputs.cmd}"`, args, options);
+        return (0, exec_1.exec)(inputs.cmd, args, options);
     },
     catch: (_) => _,
 })), Effect.tapBoth({
