@@ -74679,7 +74679,6 @@ const unsafeParseInputs = () => {
 const logInfo = (message) => Effect.sync(() => core.info(message));
 const logDebug = (message) => Effect.sync(() => core.debug(message));
 const listeners = {
-    stdline: (line) => core.info("-- stdout: " + line),
     errline: (line) => core.info("-- stderr: " + line),
     debug: (data) => core.debug("-- debug: " + data),
 };
