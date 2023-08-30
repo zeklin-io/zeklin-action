@@ -74,7 +74,7 @@ const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (
             listeners: listeners,
           }
 
-          return exec(inputs.cmd, args, options)
+          return exec(`sh -c "${inputs.cmd}"`, args, options)
         },
         catch: (_) => _ as Error,
       }),
