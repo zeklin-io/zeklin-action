@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Zeklin.io action'
+description: 'Upload your benchmark results to Zeklin'
+author: 'Zeklin.io'
 
 # Define your inputs here.
 inputs:
