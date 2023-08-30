@@ -4,10 +4,15 @@ author: 'Zeklin.io'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  apikey:
+    description: 'Your Zeklin API key'
     required: true
-    default: '1000'
+  cmd:
+    description: 'The command to run to run your benchmarks'
+    required: true
+  workdir:
+    description: 'The directory to run your cmd in'
+    required: false
 
 # Define your outputs here.
 outputs:
