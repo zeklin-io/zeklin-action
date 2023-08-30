@@ -55,6 +55,8 @@ jobs:
 
       - name: Test Local Action
         id: test-action
+        env:
+          ACTIONS_RUNNER_DEBUG: true
         uses: ./
         with:
           apikey: "this is an api key"
