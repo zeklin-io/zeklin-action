@@ -1,6 +1,9 @@
 import * as core from "@actions/core"
+import { ExitCode } from "@actions/core"
 import { Data, Either, Option, pipe } from "effect"
 import * as Effect from "effect/Effect"
+import { exec, ExecOptions } from "@actions/exec"
+import { ExecListeners } from "@actions/exec/lib/interfaces"
 
 const banner = String.raw`
  ___________
@@ -53,18 +56,45 @@ const logInfo = (message: string) => Effect.sync(() => core.info(message))
 const logDebug = (message: string) => Effect.sync(() => core.debug(message))
 const setFailed = (message: string | Error) => Effect.sync(() => core.setFailed(message))
 
+const listeners: ExecListeners = {
+  stdline: core.info,
+  errline: core.error,
+  debug: core.debug,
+}
+
+const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (inputs: Inputs) =>
+  Effect.tryPromise({
+    try: (signal) => {
+      const args: string[] = []
+
+      const options: ExecOptions = {
+        cwd: Option.getOrUndefined(inputs.workdir),
+        listeners: listeners,
+      }
+
+      return exec(inputs.cmd, args, options)
+    },
+    catch: (_) => _ as Error,
+  })
+
 /**
  * The main function for the action.
  */
 export const main: Effect.Effect<never, Error, void> = pipe(
   logInfo(banner),
   Effect.flatMap(() => Effect.suspend(unsafeParseInputs)),
-  Effect.tapBoth({
-    onFailure: (error) => setFailed(error),
-    onSuccess: (inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`),
-  }),
+  Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)),
+  Effect.flatMap((inputs) => execCommand(inputs).pipe(Effect.map((_) => [_, inputs] as const))),
+  Effect.flatMap(([exitCode, inputs]) =>
+    exitCode === ExitCode.Success
+      ? logInfo(`🎉 '${inputs.cmd}' ran successfully!`)
+      : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`)),
+  ),
 )
 
 Effect.runPromise(main).catch((error) => {
-  if (error instanceof Error) core.setFailed(error.message)
+  if (error instanceof Error) {
+    core.error(error)
+    core.setFailed(error.message)
+  }
 })
