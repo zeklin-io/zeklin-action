@@ -12,6 +12,7 @@ jobs:
     name: zeklin-action test
     runs-on: ubuntu-latest
     steps:
+      - run: env
       - name: Checkout
         id: checkout
         uses: actions/checkout@v3
