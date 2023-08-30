@@ -39705,7 +39705,7 @@ const Effect = __importStar(__nccwpck_require__(5307));
 /**
  * The main function for the action.
  */
-exports.main = Effect.unit;
+exports.main = Effect.logInfo("Hello, world!");
 Effect.runPromise(exports.main).catch((error) => {
     if (error instanceof Error)
         core.setFailed(error.message);
