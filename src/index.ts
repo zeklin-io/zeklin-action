@@ -56,9 +56,9 @@ const logInfo = (message: string) => Effect.sync(() => core.info(message))
 const logDebug = (message: string) => Effect.sync(() => core.debug(message))
 
 const listeners: ExecListeners = {
-  stdline: core.info,
-  errline: core.error,
-  debug: core.debug,
+  stdline: (line) => core.info("-- stdout: " + line),
+  errline: (line) => core.info("-- stderr: " + line),
+  debug: (data) => core.debug("-- debug: " + data),
 }
 
 const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (inputs: Inputs) =>
