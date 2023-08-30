@@ -74677,10 +74677,10 @@ const unsafeParseInputs = () => {
     }
 };
 const logInfo = (message) => Effect.sync(() => core.info(message));
-const logDebug = (message) => Effect.sync(() => core.debug(message));
+const logDebug = (message) => Effect.sync(() => core.debug(`-- ${message}`));
 const listeners = {
-    errline: (line) => core.info("-- stderr: " + line),
-    debug: (data) => core.debug("-- debug: " + data),
+    errline: (line) => core.info("-- listener stderr: " + line),
+    debug: (data) => core.debug("-- listener debug: " + data),
 };
 const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.tryPromise({
     try: () => {
