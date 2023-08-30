@@ -73405,7 +73405,7 @@ const effect_1 = __nccwpck_require__(2090);
 const Effect = __importStar(__nccwpck_require__(5307));
 class Inputs extends effect_1.Data.TaggedClass("Inputs") {
 }
-const parseInputs = () => {
+const unsafeParseInputs = () => {
     const unsafeRequiredInput = (name) => {
         const v = core.getInput(name, { required: true, trimWhitespace: true });
         if (v.length === 0)
@@ -73436,7 +73436,7 @@ const setFailed = (message) => Effect.sync(() => core.setFailed(message));
 /**
  * The main function for the action.
  */
-exports.main = (0, effect_1.pipe)(Effect.suspend(parseInputs), Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)), Effect.tap((inputs) => debug(`Inputs: ${inputs}`)));
+exports.main = (0, effect_1.pipe)(Effect.suspend(unsafeParseInputs), Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)), Effect.tap((inputs) => debug(`Inputs: ${inputs}`)));
 Effect.runPromise(exports.main).catch((error) => {
     if (error instanceof Error)
         core.setFailed(error.message);
