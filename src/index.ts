@@ -54,7 +54,6 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
 
 const logInfo = (message: string) => Effect.sync(() => core.info(message))
 const logDebug = (message: string) => Effect.sync(() => core.debug(message))
-const setFailed = (message: string | Error) => Effect.sync(() => core.setFailed(message))
 
 const listeners: ExecListeners = {
   stdline: core.info,
@@ -63,19 +62,28 @@ const listeners: ExecListeners = {
 }
 
 const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (inputs: Inputs) =>
-  Effect.tryPromise({
-    try: (signal) => {
-      const args: string[] = []
+  pipe(
+    logDebug(`Running: ${inputs.cmd}...`),
+    Effect.flatMap(() =>
+      Effect.tryPromise({
+        try: () => {
+          const args: string[] = []
 
-      const options: ExecOptions = {
-        cwd: Option.getOrUndefined(inputs.workdir),
-        listeners: listeners,
-      }
+          const options: ExecOptions = {
+            cwd: Option.getOrUndefined(inputs.workdir),
+            listeners: listeners,
+          }
 
-      return exec(inputs.cmd, args, options)
-    },
-    catch: (_) => _ as Error,
-  })
+          return exec(inputs.cmd, args, options)
+        },
+        catch: (_) => _ as Error,
+      }),
+    ),
+    Effect.tapBoth({
+      onFailure: (error) => logDebug(`Running: ${inputs.cmd} failed: ${error.message}`),
+      onSuccess: (exitCode) => logDebug(`Running: ${inputs.cmd} exited with: ${exitCode}`),
+    }),
+  )
 
 /**
  * The main function for the action.

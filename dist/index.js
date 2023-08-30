@@ -74678,14 +74678,13 @@ const unsafeParseInputs = () => {
 };
 const logInfo = (message) => Effect.sync(() => core.info(message));
 const logDebug = (message) => Effect.sync(() => core.debug(message));
-const setFailed = (message) => Effect.sync(() => core.setFailed(message));
 const listeners = {
     stdline: core.info,
     errline: core.error,
     debug: core.debug,
 };
-const execCommand = (inputs) => Effect.tryPromise({
-    try: (signal) => {
+const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: ${inputs.cmd}...`), Effect.flatMap(() => Effect.tryPromise({
+    try: () => {
         const args = [];
         const options = {
             cwd: effect_1.Option.getOrUndefined(inputs.workdir),
@@ -74694,7 +74693,10 @@ const execCommand = (inputs) => Effect.tryPromise({
         return (0, exec_1.exec)(inputs.cmd, args, options);
     },
     catch: (_) => _,
-});
+})), Effect.tapBoth({
+    onFailure: (error) => logDebug(`Running: ${inputs.cmd} failed: ${error.message}`),
+    onSuccess: (exitCode) => logDebug(`Running: ${inputs.cmd} exited with: ${exitCode}`),
+}));
 /**
  * The main function for the action.
  */
