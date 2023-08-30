@@ -37,8 +37,7 @@ const inputs: () => Either.Either<Error, Inputs> = () => {
 }
 
 const debug = (message: string) => Effect.sync(() => core.debug(message))
-const setFailed = (message: string) =>
-  Effect.sync(() => core.setFailed(message))
+const setFailed = (message: string) => Effect.sync(() => core.setFailed(message))
 
 /**
  * The main function for the action.
