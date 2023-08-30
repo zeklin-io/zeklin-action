@@ -74679,9 +74679,9 @@ const unsafeParseInputs = () => {
 const logInfo = (message) => Effect.sync(() => core.info(message));
 const logDebug = (message) => Effect.sync(() => core.debug(message));
 const listeners = {
-    stdline: core.info,
-    errline: core.error,
-    debug: core.debug,
+    stdline: (line) => core.info("-- stdout: " + line),
+    errline: (line) => core.info("-- stderr: " + line),
+    debug: (data) => core.debug("-- debug: " + data),
 };
 const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.tryPromise({
     try: () => {
@@ -74690,7 +74690,7 @@ const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: '${inputs.
             cwd: effect_1.Option.getOrUndefined(inputs.workdir),
             listeners: listeners,
         };
-        return (0, exec_1.exec)(inputs.cmd, args, options);
+        return (0, exec_1.exec)(`sh -c "${inputs.cmd}"`, args, options);
     },
     catch: (_) => _,
 })), Effect.tapBoth({
