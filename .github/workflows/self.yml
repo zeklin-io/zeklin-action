@@ -36,3 +36,37 @@ jobs:
       - name: Print Output
         id: output
         run: echo "${{ steps.test-action.outputs.time }}"
+
+  test-jmh:
+    name: zeklin-action with JMH
+    runs-on: ubuntu-latest
+    steps:
+      - run: env
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+        with:
+          repository: openjdk/jmh.git
+          ref: 1.37
+          path: jmh-dir
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+          check-latest: true
+
+      - name: Test Action with JMH
+        uses: ./
+        with:
+          apikey: "this is an api key"
+          workdir: jmh-dir
+          cmd: |
+            mvn clean package -DskipTests
+            java -jar jmh-samples/target/benchmarks.jar -wi 10 -i 10 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
