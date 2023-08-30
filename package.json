@@ -25,7 +25,7 @@
     "bundle": "pnpm pretty && pnpm package",
     "ci-test": "jest",
     "pretty": "prettier --write '**/*.ts'",
-    "format:check": "prettier --check '**/*.ts'",
+    "isPretty": "prettier --check '**/*.ts'",
     "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
     "package": "ncc build src/index.ts --license licenses.txt",
     "package:watch": "pnpm package -- --watch",

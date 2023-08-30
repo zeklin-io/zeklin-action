@@ -35,7 +35,7 @@ jobs:
 
       - name: Check Format
         id: npm-format-check
-        run: pnpm format:check
+        run: pnpm isPretty
 
       - name: Lint
         id: npm-lint
