@@ -74683,7 +74683,7 @@ const listeners = {
     errline: core.error,
     debug: core.debug,
 };
-const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: ${inputs.cmd}...`), Effect.flatMap(() => Effect.tryPromise({
+const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.tryPromise({
     try: () => {
         const args = [];
         const options = {
@@ -74694,8 +74694,8 @@ const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: ${inputs.c
     },
     catch: (_) => _,
 })), Effect.tapBoth({
-    onFailure: (error) => logDebug(`Running: ${inputs.cmd} failed: ${error.message}`),
-    onSuccess: (exitCode) => logDebug(`Running: ${inputs.cmd} exited with: ${exitCode}`),
+    onFailure: (error) => logDebug(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
+    onSuccess: (exitCode) => logDebug(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
 }));
 /**
  * The main function for the action.

@@ -16,7 +16,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v3
 
-      - name: Test Local Action
+      - name: Test Action
         id: test-action
         uses: ./
         with:

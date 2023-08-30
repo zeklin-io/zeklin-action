@@ -63,7 +63,7 @@ const listeners: ExecListeners = {
 
 const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (inputs: Inputs) =>
   pipe(
-    logDebug(`Running: ${inputs.cmd}...`),
+    logDebug(`Running: '${inputs.cmd}' cmd ...`),
     Effect.flatMap(() =>
       Effect.tryPromise({
         try: () => {
@@ -80,8 +80,8 @@ const execCommand: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (
       }),
     ),
     Effect.tapBoth({
-      onFailure: (error) => logDebug(`Running: ${inputs.cmd} failed: ${error.message}`),
-      onSuccess: (exitCode) => logDebug(`Running: ${inputs.cmd} exited with: ${exitCode}`),
+      onFailure: (error) => logDebug(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
+      onSuccess: (exitCode) => logDebug(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
     }),
   )
 
