@@ -43,7 +43,7 @@ const setFailed = (message: string) => Effect.sync(() => core.setFailed(message)
  * The main function for the action.
  */
 export const main: Effect.Effect<never, Error, void> = pipe(
-  Effect.flatten(Effect.sync(inputs)),
+  Effect.suspend(inputs),
   Effect.tapError((error) => setFailed(`Failed to parse inputs: ${error}`)),
   Effect.tap((inputs) => debug(`Inputs: ${inputs}`)),
 )
