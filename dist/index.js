@@ -73450,8 +73450,8 @@ const setFailed = (message) => Effect.sync(() => core.setFailed(message));
  * The main function for the action.
  */
 exports.main = (0, effect_1.pipe)(logInfo(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tapBoth({
-    onFailure: (error) => setFailed(`Failed to parse inputs: ${error}`),
-    onSuccess: (inputs) => logDebug(`Inputs: ${inputs}`),
+    onFailure: (error) => setFailed(error),
+    onSuccess: (inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`),
 }));
 Effect.runPromise(exports.main).catch((error) => {
     if (error instanceof Error)

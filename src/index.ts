@@ -51,7 +51,7 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
 
 const logInfo = (message: string) => Effect.sync(() => core.info(message))
 const logDebug = (message: string) => Effect.sync(() => core.debug(message))
-const setFailed = (message: string) => Effect.sync(() => core.setFailed(message))
+const setFailed = (message: string | Error) => Effect.sync(() => core.setFailed(message))
 
 /**
  * The main function for the action.
@@ -60,8 +60,8 @@ export const main: Effect.Effect<never, Error, void> = pipe(
   logInfo(banner),
   Effect.flatMap(() => Effect.suspend(unsafeParseInputs)),
   Effect.tapBoth({
-    onFailure: (error) => setFailed(`Failed to parse inputs: ${error}`),
-    onSuccess: (inputs) => logDebug(`Inputs: ${inputs}`),
+    onFailure: (error) => setFailed(error),
+    onSuccess: (inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`),
   }),
 )
 
