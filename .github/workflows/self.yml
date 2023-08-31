@@ -45,7 +45,7 @@ jobs:
       JDK_JAVA_OPTIONS: -Xms6g -Xmx6g -XX:+UseG1GC # See https://stackoverflow.com/a/73708006
     strategy:
       matrix:
-        jmh-samples: [0, 1, 2, 3.0, 3.1]
+        jmh-samples: ["0", "1", "2", "3.0", "3.1"]
     steps:
       - run: env
       - uses: actions/checkout@v3
