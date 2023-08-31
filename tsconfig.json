@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "exactOptionalPropertyTypes": true, // https://github.com/Effect-TS/schema#requirements
     "skipLibCheck": true,
     "newLine": "lf"
   },

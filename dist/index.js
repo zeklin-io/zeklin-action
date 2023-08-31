@@ -50062,6 +50062,4349 @@ exports.exhaustive = exhaustive;
 
 /***/ }),
 
+/***/ 9120:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.voidKeyword = exports.unknownKeyword = exports.undefinedKeyword = exports.to = exports.symbolKeyword = exports.stringKeyword = exports.setAnnotation = exports.required = exports.pick = exports.partial = exports.omit = exports.objectKeyword = exports.numberKeyword = exports.neverKeyword = exports.mergeAnnotations = exports.keyof = exports.isVoidKeyword = exports.isUnknownKeyword = exports.isUniqueSymbol = exports.isUnion = exports.isUndefinedKeyword = exports.isTypeLiteral = exports.isTuple = exports.isTransform = exports.isTemplateLiteral = exports.isSymbolKeyword = exports.isStringKeyword = exports.isRefinement = exports.isParameter = exports.isObjectKeyword = exports.isNumberKeyword = exports.isNeverKeyword = exports.isLiteral = exports.isLazy = exports.isEnums = exports.isDeclaration = exports.isBooleanKeyword = exports.isBigIntKeyword = exports.isAnyKeyword = exports.getWeight = exports.getToPropertySignatures = exports.getToIndexSignatures = exports.getPropertySignatures = exports.getParameterBase = exports.getCompiler = exports.getCardinality = exports.getAnnotation = exports.from = exports.createUniqueSymbol = exports.createUnion = exports.createTypeLiteral = exports.createTuple = exports.createTransformByPropertySignatureTransformations = exports.createTransform = exports.createTemplateLiteral = exports.createRefinement = exports.createRecord = exports.createPropertySignatureTransformation = exports.createPropertySignature = exports.createLiteral = exports.createLazy = exports.createIndexSignature = exports.createEnums = exports.createElement = exports.createDeclaration = exports.booleanKeyword = exports.bigIntKeyword = exports.appendRestElement = exports.appendElement = exports.anyKeyword = exports._createTransform = exports.TypeAnnotationId = exports.TitleAnnotationId = exports.MessageAnnotationId = exports.JSONSchemaAnnotationId = exports.IdentifierAnnotationId = exports.ExamplesAnnotationId = exports.DocumentationAnnotationId = exports.DescriptionAnnotationId = exports.BrandAnnotationId = void 0;
+var _Function = /*#__PURE__*/__nccwpck_require__(5873);
+var Number = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(7534));
+var O = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5794));
+var Order = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(6565));
+var _Predicate = /*#__PURE__*/__nccwpck_require__(2985);
+var RA = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(4522));
+var _common = /*#__PURE__*/__nccwpck_require__(5664);
+var PR = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(425));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/**
+ * @since 1.0.0
+ */
+
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+const BrandAnnotationId = "@effect/schema/BrandAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.BrandAnnotationId = BrandAnnotationId;
+const TypeAnnotationId = "@effect/schema/TypeAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.TypeAnnotationId = TypeAnnotationId;
+const MessageAnnotationId = "@effect/schema/MessageAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.MessageAnnotationId = MessageAnnotationId;
+const IdentifierAnnotationId = "@effect/schema/IdentifierAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.IdentifierAnnotationId = IdentifierAnnotationId;
+const TitleAnnotationId = "@effect/schema/TitleAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.TitleAnnotationId = TitleAnnotationId;
+const DescriptionAnnotationId = "@effect/schema/DescriptionAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.DescriptionAnnotationId = DescriptionAnnotationId;
+const ExamplesAnnotationId = "@effect/schema/ExamplesAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.ExamplesAnnotationId = ExamplesAnnotationId;
+const JSONSchemaAnnotationId = "@effect/schema/JSONSchemaAnnotationId";
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.JSONSchemaAnnotationId = JSONSchemaAnnotationId;
+const DocumentationAnnotationId = "@effect/schema/DocumentationAnnotationId";
+/**
+ * @since 1.0.0
+ */
+exports.DocumentationAnnotationId = DocumentationAnnotationId;
+const getAnnotation = key => annotated => Object.prototype.hasOwnProperty.call(annotated.annotations, key) ? O.some(annotated.annotations[key]) : O.none();
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.getAnnotation = getAnnotation;
+const createDeclaration = (typeParameters, type, decode, annotations = {}) => ({
+  _tag: "Declaration",
+  typeParameters,
+  type,
+  decode,
+  annotations
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createDeclaration = createDeclaration;
+const isDeclaration = ast => ast._tag === "Declaration";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isDeclaration = isDeclaration;
+const createLiteral = literal => ({
+  _tag: "Literal",
+  literal,
+  annotations: {}
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createLiteral = createLiteral;
+const isLiteral = ast => ast._tag === "Literal";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isLiteral = isLiteral;
+const createUniqueSymbol = (symbol, annotations = {}) => ({
+  _tag: "UniqueSymbol",
+  symbol,
+  annotations
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createUniqueSymbol = createUniqueSymbol;
+const isUniqueSymbol = ast => ast._tag === "UniqueSymbol";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isUniqueSymbol = isUniqueSymbol;
+const undefinedKeyword = {
+  _tag: "UndefinedKeyword",
+  annotations: {
+    [TitleAnnotationId]: "undefined"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.undefinedKeyword = undefinedKeyword;
+const isUndefinedKeyword = ast => ast._tag === "UndefinedKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isUndefinedKeyword = isUndefinedKeyword;
+const voidKeyword = {
+  _tag: "VoidKeyword",
+  annotations: {
+    [TitleAnnotationId]: "void"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.voidKeyword = voidKeyword;
+const isVoidKeyword = ast => ast._tag === "VoidKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isVoidKeyword = isVoidKeyword;
+const neverKeyword = {
+  _tag: "NeverKeyword",
+  annotations: {
+    [TitleAnnotationId]: "never"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.neverKeyword = neverKeyword;
+const isNeverKeyword = ast => ast._tag === "NeverKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isNeverKeyword = isNeverKeyword;
+const unknownKeyword = {
+  _tag: "UnknownKeyword",
+  annotations: {
+    [TitleAnnotationId]: "unknown"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.unknownKeyword = unknownKeyword;
+const isUnknownKeyword = ast => ast._tag === "UnknownKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isUnknownKeyword = isUnknownKeyword;
+const anyKeyword = {
+  _tag: "AnyKeyword",
+  annotations: {
+    [TitleAnnotationId]: "any"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.anyKeyword = anyKeyword;
+const isAnyKeyword = ast => ast._tag === "AnyKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isAnyKeyword = isAnyKeyword;
+const stringKeyword = {
+  _tag: "StringKeyword",
+  annotations: {
+    [TitleAnnotationId]: "string"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.stringKeyword = stringKeyword;
+const isStringKeyword = ast => ast._tag === "StringKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isStringKeyword = isStringKeyword;
+const numberKeyword = {
+  _tag: "NumberKeyword",
+  annotations: {
+    [TitleAnnotationId]: "number"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.numberKeyword = numberKeyword;
+const isNumberKeyword = ast => ast._tag === "NumberKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isNumberKeyword = isNumberKeyword;
+const booleanKeyword = {
+  _tag: "BooleanKeyword",
+  annotations: {
+    [TitleAnnotationId]: "boolean"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.booleanKeyword = booleanKeyword;
+const isBooleanKeyword = ast => ast._tag === "BooleanKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isBooleanKeyword = isBooleanKeyword;
+const bigIntKeyword = {
+  _tag: "BigIntKeyword",
+  annotations: {
+    [TitleAnnotationId]: "bigint"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.bigIntKeyword = bigIntKeyword;
+const isBigIntKeyword = ast => ast._tag === "BigIntKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isBigIntKeyword = isBigIntKeyword;
+const symbolKeyword = {
+  _tag: "SymbolKeyword",
+  annotations: {
+    [TitleAnnotationId]: "symbol"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.symbolKeyword = symbolKeyword;
+const isSymbolKeyword = ast => ast._tag === "SymbolKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isSymbolKeyword = isSymbolKeyword;
+const objectKeyword = {
+  _tag: "ObjectKeyword",
+  annotations: {
+    [TitleAnnotationId]: "object"
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.objectKeyword = objectKeyword;
+const isObjectKeyword = ast => ast._tag === "ObjectKeyword";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isObjectKeyword = isObjectKeyword;
+const createEnums = enums => ({
+  _tag: "Enums",
+  enums,
+  annotations: {}
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createEnums = createEnums;
+const isEnums = ast => ast._tag === "Enums";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isEnums = isEnums;
+const createTemplateLiteral = (head, spans) => RA.isNonEmptyReadonlyArray(spans) ? {
+  _tag: "TemplateLiteral",
+  head,
+  spans,
+  annotations: {}
+} : createLiteral(head);
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createTemplateLiteral = createTemplateLiteral;
+const isTemplateLiteral = ast => ast._tag === "TemplateLiteral";
+/**
+ * @since 1.0.0
+ */
+exports.isTemplateLiteral = isTemplateLiteral;
+const createElement = (type, isOptional) => ({
+  type,
+  isOptional
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.createElement = createElement;
+const createTuple = (elements, rest, isReadonly, annotations = {}) => ({
+  _tag: "Tuple",
+  elements,
+  rest,
+  isReadonly,
+  annotations
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createTuple = createTuple;
+const isTuple = ast => ast._tag === "Tuple";
+/**
+ * @since 1.0.0
+ */
+exports.isTuple = isTuple;
+const createPropertySignature = (name, type, isOptional, isReadonly, annotations = {}) => ({
+  name,
+  type,
+  isOptional,
+  isReadonly,
+  annotations
+});
+/**
+ * @since 1.0.0
+ */
+exports.createPropertySignature = createPropertySignature;
+const isParameter = ast => {
+  switch (ast._tag) {
+    case "StringKeyword":
+    case "SymbolKeyword":
+    case "TemplateLiteral":
+      return true;
+    case "Refinement":
+      return isParameter(ast.from);
+    default:
+      return false;
+  }
+};
+/**
+ * @since 1.0.0
+ */
+exports.isParameter = isParameter;
+const createIndexSignature = (parameter, type, isReadonly) => {
+  if (isParameter(parameter)) {
+    return {
+      parameter,
+      type,
+      isReadonly
+    };
+  }
+  throw new Error("An index signature parameter type must be 'string', 'symbol', a template literal type or a refinement of the previous types");
+};
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.createIndexSignature = createIndexSignature;
+const createTypeLiteral = (propertySignatures, indexSignatures, annotations = {}) => {
+  // check for duplicate property signatures
+  const keys = {};
+  for (let i = 0; i < propertySignatures.length; i++) {
+    const name = propertySignatures[i].name;
+    if (Object.prototype.hasOwnProperty.call(keys, name)) {
+      throw new Error(`Duplicate property signature ${String(name)}`);
+    }
+    keys[name] = null;
+  }
+  // check for duplicate index signatures
+  const parameters = {
+    string: false,
+    symbol: false
+  };
+  for (let i = 0; i < indexSignatures.length; i++) {
+    const parameter = getParameterBase(indexSignatures[i].parameter);
+    if (isStringKeyword(parameter)) {
+      if (parameters.string) {
+        throw new Error("Duplicate index signature for type `string`");
+      }
+      parameters.string = true;
+    } else if (isSymbolKeyword(parameter)) {
+      if (parameters.symbol) {
+        throw new Error("Duplicate index signature for type `symbol`");
+      }
+      parameters.symbol = true;
+    }
+  }
+  return {
+    _tag: "TypeLiteral",
+    propertySignatures: sortPropertySignatures(propertySignatures),
+    indexSignatures,
+    annotations
+  };
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createTypeLiteral = createTypeLiteral;
+const isTypeLiteral = ast => ast._tag === "TypeLiteral";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isTypeLiteral = isTypeLiteral;
+const createUnion = (candidates, annotations = {}) => {
+  const types = unify(candidates);
+  switch (types.length) {
+    case 0:
+      return neverKeyword;
+    case 1:
+      return types[0];
+    default:
+      {
+        return {
+          _tag: "Union",
+          types: sortUnionMembers(types),
+          annotations
+        };
+      }
+  }
+};
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createUnion = createUnion;
+const isUnion = ast => ast._tag === "Union";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isUnion = isUnion;
+const createLazy = (f, annotations = {}) => ({
+  _tag: "Lazy",
+  f: (0, _common.memoizeThunk)(f),
+  annotations
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createLazy = createLazy;
+const isLazy = ast => ast._tag === "Lazy";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isLazy = isLazy;
+const createRefinement = (from, decode, isReversed, annotations = {}) => ({
+  _tag: "Refinement",
+  from,
+  decode,
+  isReversed,
+  annotations
+});
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createRefinement = createRefinement;
+const isRefinement = ast => ast._tag === "Refinement";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.isRefinement = isRefinement;
+const createPropertySignatureTransformation = (from, to, decode, encode) => ({
+  from,
+  to,
+  decode,
+  encode
+});
+/** @internal */
+exports.createPropertySignatureTransformation = createPropertySignatureTransformation;
+const _createTransform = (from, to, decode, encode, propertySignatureTransformations, annotations = {}) => ({
+  _tag: "Transform",
+  from,
+  to,
+  decode,
+  encode,
+  propertySignatureTransformations,
+  annotations
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports._createTransform = _createTransform;
+const createTransform = (from, to, decode, encode, annotations = {}) => _createTransform(from, to, decode, encode, [], annotations);
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.createTransform = createTransform;
+const createTransformByPropertySignatureTransformations = (from, to, propertySignatureTransformations, annotations = {}) => _createTransform(from, to, input => {
+  for (let i = 0; i < propertySignatureTransformations.length; i++) {
+    const t = propertySignatureTransformations[i];
+    const name = t.from;
+    const from = Object.prototype.hasOwnProperty.call(input, name) ? O.some(input[name]) : O.none();
+    delete input[name];
+    const to = t.decode(from);
+    if (O.isSome(to)) {
+      input[t.to] = to.value;
+    }
+  }
+  return PR.success(input);
+}, input => {
+  for (let i = 0; i < propertySignatureTransformations.length; i++) {
+    const t = propertySignatureTransformations[i];
+    const name = t.to;
+    const from = Object.prototype.hasOwnProperty.call(input, name) ? O.some(input[name]) : O.none();
+    delete input[name];
+    const to = t.encode(from);
+    if (O.isSome(to)) {
+      input[t.from] = to.value;
+    }
+  }
+  return PR.success(input);
+}, propertySignatureTransformations, annotations);
+/**
+ * @category guards
+ * @since 1.0.0
+ */
+exports.createTransformByPropertySignatureTransformations = createTransformByPropertySignatureTransformations;
+const isTransform = ast => ast._tag === "Transform";
+// -------------------------------------------------------------------------------------
+// API
+// -------------------------------------------------------------------------------------
+/**
+ * Adds a group of annotations, potentially overwriting existing annotations.
+ *
+ * @since 1.0.0
+ */
+exports.isTransform = isTransform;
+const mergeAnnotations = (ast, annotations) => ({
+  ...ast,
+  annotations: {
+    ...ast.annotations,
+    ...annotations
+  }
+});
+/**
+ * Adds an annotation, potentially overwriting the existing annotation with the specified id.
+ *
+ * @since 1.0.0
+ */
+exports.mergeAnnotations = mergeAnnotations;
+const setAnnotation = (ast, id, value) => ({
+  ...ast,
+  annotations: {
+    ...ast.annotations,
+    [id]: value
+  }
+});
+/**
+ * Adds a rest element to the end of a tuple, or throws an exception if the rest element is already present.
+ *
+ * @since 1.0.0
+ */
+exports.setAnnotation = setAnnotation;
+const appendRestElement = (ast, restElement) => {
+  if (O.isSome(ast.rest)) {
+    // example: `type A = [...string[], ...number[]]` is illegal
+    throw new Error("A rest element cannot follow another rest element. ts(1265)");
+  }
+  return createTuple(ast.elements, O.some([restElement]), ast.isReadonly);
+};
+/**
+ * Appends an element to a tuple or throws an exception in the following cases:
+ * - A required element cannot follow an optional element. ts(1257)
+ * - An optional element cannot follow a rest element. ts(1266)
+ *
+ * @since 1.0.0
+ */
+exports.appendRestElement = appendRestElement;
+const appendElement = (ast, newElement) => {
+  if (ast.elements.some(e => e.isOptional) && !newElement.isOptional) {
+    throw new Error("A required element cannot follow an optional element. ts(1257)");
+  }
+  return (0, _Function.pipe)(ast.rest, O.match({
+    onNone: () => createTuple([...ast.elements, newElement], O.none(), ast.isReadonly),
+    onSome: rest => {
+      if (newElement.isOptional) {
+        throw new Error("An optional element cannot follow a rest element. ts(1266)");
+      }
+      return createTuple(ast.elements, O.some([...rest, newElement.type]), ast.isReadonly);
+    }
+  }));
+};
+/**
+ * Equivalent at runtime to the TypeScript type-level `keyof` operator.
+ *
+ * @since 1.0.0
+ */
+exports.appendElement = appendElement;
+const keyof = ast => createUnion(_keyof(ast));
+/**
+ * @since 1.0.0
+ */
+exports.keyof = keyof;
+const getPropertySignatures = ast => {
+  switch (ast._tag) {
+    case "TypeLiteral":
+      return ast.propertySignatures;
+    case "Lazy":
+      return getPropertySignatures(ast.f());
+  }
+  throw new Error(`getPropertySignatures: unsupported schema (${ast._tag})`);
+};
+/**
+ * Create a record with the specified key type and value type.
+ *
+ * @since 1.0.0
+ */
+exports.getPropertySignatures = getPropertySignatures;
+const createRecord = (key, value, isReadonly) => {
+  const propertySignatures = [];
+  const indexSignatures = [];
+  const go = key => {
+    switch (key._tag) {
+      case "NeverKeyword":
+        break;
+      case "StringKeyword":
+      case "SymbolKeyword":
+      case "TemplateLiteral":
+      case "Refinement":
+        indexSignatures.push(createIndexSignature(key, value, isReadonly));
+        break;
+      case "Literal":
+        if ((0, _Predicate.isString)(key.literal) || (0, Number.isNumber)(key.literal)) {
+          propertySignatures.push(createPropertySignature(key.literal, value, false, isReadonly));
+        } else {
+          throw new Error(`createRecord: unsupported literal ${String(key.literal)}`);
+        }
+        break;
+      case "UniqueSymbol":
+        propertySignatures.push(createPropertySignature(key.symbol, value, false, isReadonly));
+        break;
+      case "Union":
+        key.types.forEach(go);
+        break;
+      default:
+        throw new Error(`createRecord: unsupported key ${key._tag}`);
+    }
+  };
+  go(key);
+  return createTypeLiteral(propertySignatures, indexSignatures);
+};
+/**
+ * Equivalent at runtime to the built-in TypeScript utility type `Pick`.
+ *
+ * @since 1.0.0
+ */
+exports.createRecord = createRecord;
+const pick = (ast, keys) => createTypeLiteral(getPropertySignatures(ast).filter(ps => keys.includes(ps.name)), []);
+/**
+ * Equivalent at runtime to the built-in TypeScript utility type `Omit`.
+ *
+ * @since 1.0.0
+ */
+exports.pick = pick;
+const omit = (ast, keys) => createTypeLiteral(getPropertySignatures(ast).filter(ps => !keys.includes(ps.name)), []);
+/**
+ * Equivalent at runtime to the built-in TypeScript utility type `Partial`.
+ *
+ * @since 1.0.0
+ */
+exports.omit = omit;
+const partial = ast => {
+  switch (ast._tag) {
+    case "Tuple":
+      return createTuple(ast.elements.map(e => createElement(e.type, true)), (0, _Function.pipe)(ast.rest, O.map(rest => [createUnion([...rest, undefinedKeyword])])), ast.isReadonly);
+    case "TypeLiteral":
+      return createTypeLiteral(ast.propertySignatures.map(f => createPropertySignature(f.name, f.type, true, f.isReadonly, f.annotations)), ast.indexSignatures);
+    case "Union":
+      return createUnion(ast.types.map(member => partial(member)));
+    case "Lazy":
+      return createLazy(() => partial(ast.f()));
+    case "Declaration":
+      throw new Error("`partial` cannot handle declarations");
+    case "Refinement":
+      throw new Error("`partial` cannot handle refinements");
+    case "Transform":
+      throw new Error("`partial` cannot handle transformations");
+    default:
+      return ast;
+  }
+};
+/**
+ * Equivalent at runtime to the built-in TypeScript utility type `Required`.
+ *
+ * @since 1.0.0
+ */
+exports.partial = partial;
+const required = ast => {
+  switch (ast._tag) {
+    case "Tuple":
+      return createTuple(ast.elements.map(e => createElement(e.type, false)), (0, _Function.pipe)(ast.rest, O.map(rest => {
+        const u = createUnion([...rest]);
+        return RA.mapNonEmpty(rest, () => u);
+      })), ast.isReadonly);
+    case "TypeLiteral":
+      return createTypeLiteral(ast.propertySignatures.map(f => createPropertySignature(f.name, f.type, false, f.isReadonly, f.annotations)), ast.indexSignatures);
+    case "Union":
+      return createUnion(ast.types.map(member => required(member)));
+    case "Lazy":
+      return createLazy(() => required(ast.f()));
+    case "Declaration":
+      throw new Error("`required` cannot handle declarations");
+    case "Refinement":
+      throw new Error("`required` cannot handle refinements");
+    case "Transform":
+      throw new Error("`required` cannot handle transformations");
+    default:
+      return ast;
+  }
+};
+/**
+ * @since 1.0.0
+ */
+exports.required = required;
+const getCompiler = match => {
+  const compile = ast => match[ast._tag](ast, compile);
+  return compile;
+};
+/** @internal */
+exports.getCompiler = getCompiler;
+const getToPropertySignatures = ps => ps.map(p => createPropertySignature(p.name, to(p.type), p.isOptional, p.isReadonly, p.annotations));
+/** @internal */
+exports.getToPropertySignatures = getToPropertySignatures;
+const getToIndexSignatures = ps => ps.map(is => createIndexSignature(is.parameter, to(is.type), is.isReadonly));
+/**
+ * @since 1.0.0
+ */
+exports.getToIndexSignatures = getToIndexSignatures;
+const to = ast => {
+  switch (ast._tag) {
+    case "Declaration":
+      return createDeclaration(ast.typeParameters.map(to), to(ast.type), ast.decode, ast.annotations);
+    case "Tuple":
+      return createTuple(ast.elements.map(e => createElement(to(e.type), e.isOptional)), O.map(ast.rest, RA.mapNonEmpty(to)), ast.isReadonly, ast.annotations);
+    case "TypeLiteral":
+      return createTypeLiteral(getToPropertySignatures(ast.propertySignatures), getToIndexSignatures(ast.indexSignatures), ast.annotations);
+    case "Union":
+      return createUnion(ast.types.map(to), ast.annotations);
+    case "Lazy":
+      return createLazy(() => to(ast.f()), ast.annotations);
+    case "Refinement":
+      return createRefinement(to(ast.from), ast.decode, false, ast.annotations);
+    case "Transform":
+      return to(ast.to);
+  }
+  return ast;
+};
+/**
+ * @since 1.0.0
+ */
+exports.to = to;
+const from = ast => {
+  switch (ast._tag) {
+    case "Declaration":
+      return createDeclaration(ast.typeParameters.map(from), from(ast.type), ast.decode, ast.annotations);
+    case "Tuple":
+      return createTuple(ast.elements.map(e => createElement(from(e.type), e.isOptional)), O.map(ast.rest, RA.mapNonEmpty(from)), ast.isReadonly);
+    case "TypeLiteral":
+      return createTypeLiteral(ast.propertySignatures.map(p => createPropertySignature(p.name, from(p.type), p.isOptional, p.isReadonly)), ast.indexSignatures.map(is => createIndexSignature(is.parameter, from(is.type), is.isReadonly)));
+    case "Union":
+      return createUnion(ast.types.map(from));
+    case "Lazy":
+      return createLazy(() => from(ast.f()));
+    case "Refinement":
+    case "Transform":
+      return from(ast.from);
+  }
+  return ast;
+};
+/** @internal */
+exports.from = from;
+const getCardinality = ast => {
+  switch (ast._tag) {
+    case "Declaration":
+      return getCardinality(ast.type);
+    case "NeverKeyword":
+      return 0;
+    case "Literal":
+    case "UndefinedKeyword":
+    case "VoidKeyword":
+    case "UniqueSymbol":
+      return 1;
+    case "BooleanKeyword":
+      return 2;
+    case "StringKeyword":
+    case "NumberKeyword":
+    case "BigIntKeyword":
+    case "SymbolKeyword":
+      return 3;
+    case "ObjectKeyword":
+      return 5;
+    case "UnknownKeyword":
+    case "AnyKeyword":
+      return 6;
+    default:
+      return 4;
+  }
+};
+exports.getCardinality = getCardinality;
+const sortPropertySignatures = /*#__PURE__*/RA.sort( /*#__PURE__*/(0, _Function.pipe)(Number.Order, /*#__PURE__*/Order.mapInput(ps => getCardinality(ps.type))));
+const WeightOrder = /*#__PURE__*/Order.tuple(Number.Order, Number.Order, Number.Order);
+const maxWeight = /*#__PURE__*/Order.max(WeightOrder);
+const emptyWeight = [0, 0, 0];
+const maxWeightAll = weights => weights.reduce(maxWeight, emptyWeight);
+/** @internal */
+const getWeight = ast => {
+  switch (ast._tag) {
+    case "Tuple":
+      {
+        const y = ast.elements.length;
+        const z = O.isSome(ast.rest) ? ast.rest.value.length : 0;
+        return [2, y, z];
+      }
+    case "TypeLiteral":
+      {
+        const y = ast.propertySignatures.length;
+        const z = ast.indexSignatures.length;
+        return y + z === 0 ? [-4, 0, 0] : [4, y, z];
+      }
+    case "Declaration":
+      {
+        const [_, y, z] = getWeight(ast.type);
+        return [6, y, z];
+      }
+    case "Lazy":
+      return [8, 0, 0];
+    case "Union":
+      return maxWeightAll(ast.types.map(getWeight));
+    case "Refinement":
+      {
+        const [x, y, z] = getWeight(ast.from);
+        return [x + 1, y, z];
+      }
+    case "Transform":
+      return getWeight(ast.from);
+    case "ObjectKeyword":
+      return [-2, 0, 0];
+    case "UnknownKeyword":
+    case "AnyKeyword":
+      return [-4, 0, 0];
+    default:
+      return emptyWeight;
+  }
+};
+exports.getWeight = getWeight;
+const sortUnionMembers = /*#__PURE__*/RA.sort( /*#__PURE__*/Order.reverse( /*#__PURE__*/Order.mapInput(WeightOrder, getWeight)));
+const unify = candidates => {
+  let out = (0, _Function.pipe)(candidates, RA.flatMap(ast => {
+    switch (ast._tag) {
+      case "NeverKeyword":
+        return [];
+      case "Union":
+        return ast.types;
+      default:
+        return [ast];
+    }
+  }));
+  if (out.some(isAnyKeyword)) {
+    return [anyKeyword];
+  }
+  if (out.some(isUnknownKeyword)) {
+    return [unknownKeyword];
+  }
+  let i;
+  if ((i = out.findIndex(isStringKeyword)) !== -1) {
+    out = out.filter((m, j) => j === i || !isStringKeyword(m) && !(isLiteral(m) && typeof m.literal === "string"));
+  }
+  if ((i = out.findIndex(isNumberKeyword)) !== -1) {
+    out = out.filter((m, j) => j === i || !isNumberKeyword(m) && !(isLiteral(m) && typeof m.literal === "number"));
+  }
+  if ((i = out.findIndex(isBooleanKeyword)) !== -1) {
+    out = out.filter((m, j) => j === i || !isBooleanKeyword(m) && !(isLiteral(m) && typeof m.literal === "boolean"));
+  }
+  if ((i = out.findIndex(isBigIntKeyword)) !== -1) {
+    out = out.filter((m, j) => j === i || !isBigIntKeyword(m) && !(isLiteral(m) && typeof m.literal === "bigint"));
+  }
+  if ((i = out.findIndex(isSymbolKeyword)) !== -1) {
+    out = out.filter((m, j) => j === i || !isSymbolKeyword(m) && !isUniqueSymbol(m));
+  }
+  return out;
+};
+/** @internal */
+const getParameterBase = ast => {
+  switch (ast._tag) {
+    case "StringKeyword":
+    case "SymbolKeyword":
+    case "TemplateLiteral":
+      return ast;
+    case "Refinement":
+      return getParameterBase(ast.from);
+  }
+};
+exports.getParameterBase = getParameterBase;
+const _keyof = ast => {
+  switch (ast._tag) {
+    case "Declaration":
+      return _keyof(ast.type);
+    case "TypeLiteral":
+      return ast.propertySignatures.map(p => (0, _Predicate.isSymbol)(p.name) ? createUniqueSymbol(p.name) : createLiteral(p.name)).concat(ast.indexSignatures.map(is => getParameterBase(is.parameter)));
+    case "Lazy":
+      return _keyof(ast.f());
+    default:
+      throw new Error(`keyof: unsupported schema (${ast._tag})`);
+  }
+};
+//# sourceMappingURL=AST.js.map
+
+/***/ }),
+
+/***/ 425:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.unionMember = exports.unexpected = exports.type = exports.success = exports.parseError = exports.missing = exports.map = exports.key = exports.index = exports.forbidden = exports.flatMap = exports.failures = exports.failure = exports.eitherOrUndefined = void 0;
+var E = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(65));
+var O = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5794));
+var Effect = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(9505));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/**
+ * @since 1.0.0
+ */
+
+/**
+ * @since 1.0.0
+ */
+const parseError = errors => ({
+  _tag: "ParseError",
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.parseError = parseError;
+const type = (expected, actual, message) => ({
+  _tag: "Type",
+  expected,
+  actual,
+  message: O.fromNullable(message)
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.type = type;
+const forbidden = {
+  _tag: "Forbidden"
+};
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.forbidden = forbidden;
+const index = (index, errors) => ({
+  _tag: "Index",
+  index,
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.index = index;
+const key = (key, errors) => ({
+  _tag: "Key",
+  key,
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.key = key;
+const missing = {
+  _tag: "Missing"
+};
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.missing = missing;
+const unexpected = actual => ({
+  _tag: "Unexpected",
+  actual
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.unexpected = unexpected;
+const unionMember = errors => ({
+  _tag: "UnionMember",
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.unionMember = unionMember;
+const success = E.right;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.success = success;
+const failure = e => E.left(parseError([e]));
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.failure = failure;
+const failures = es => E.left(parseError(es));
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+exports.failures = failures;
+const eitherOrUndefined = self => {
+  const s = self;
+  if (s["_tag"] === "Left" || s["_tag"] === "Right") {
+    return s;
+  }
+};
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+exports.eitherOrUndefined = eitherOrUndefined;
+const flatMap = (self, f) => {
+  const s = self;
+  if (s["_tag"] === "Left") {
+    return s;
+  }
+  if (s["_tag"] === "Right") {
+    return f(s.right);
+  }
+  return Effect.flatMap(self, f);
+};
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+exports.flatMap = flatMap;
+const map = (self, f) => {
+  const s = self;
+  if (s["_tag"] === "Left") {
+    return s;
+  }
+  if (s["_tag"] === "Right") {
+    return E.right(f(s.right));
+  }
+  return Effect.map(self, f);
+};
+exports.map = map;
+//# sourceMappingURL=ParseResult.js.map
+
+/***/ }),
+
+/***/ 6775:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.validateSync = exports.validateResult = exports.validatePromise = exports.validateOption = exports.validateEither = exports.validate = exports.reverse = exports.parseSync = exports.parseResult = exports.parsePromise = exports.parseOption = exports.parseEither = exports.parse = exports.is = exports.encodeSync = exports.encodeResult = exports.encodePromise = exports.encodeOption = exports.encodeEither = exports.encode = exports.decodeSync = exports.decodeResult = exports.decodePromise = exports.decodeOption = exports.decodeEither = exports.decode = exports.asserts = exports._getSearchTree = exports._getLiterals = void 0;
+var E = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(65));
+var _Function = /*#__PURE__*/__nccwpck_require__(5873);
+var O = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5794));
+var P = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(2985));
+var RA = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(4522));
+var Effect = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(9505));
+var AST = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(9120));
+var I = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5664));
+var PR = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(425));
+var _TreeFormatter = /*#__PURE__*/__nccwpck_require__(1981);
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/**
+ * @since 1.0.0
+ */
+
+const getSync = ast => {
+  const parser = go(ast);
+  return (input, options) => {
+    const result = parser(input, options);
+    // @ts-expect-error
+    if (E.isLeft(result)) {
+      throw new Error((0, _TreeFormatter.formatErrors)(result.left.errors));
+    }
+    // @ts-expect-error
+    return result.right;
+  };
+};
+const getOption = ast => {
+  const parser = getEither(ast);
+  return (input, options) => O.getRight(parser(input, options));
+};
+const getEither = ast => {
+  const parser = go(ast);
+  return (input, options) => parser(input, options);
+};
+const getPromise = ast => {
+  const parser = go(ast);
+  return (input, options) => Effect.runPromise(parser(input, {
+    ...options,
+    isEffectAllowed: true
+  }));
+};
+const getEffect = ast => {
+  const parser = go(ast);
+  return (input, options) => parser(input, {
+    ...options,
+    isEffectAllowed: true
+  });
+};
+/**
+ * @category parsing
+ * @since 1.0.0
+ */
+const parseSync = schema => getSync(schema.ast);
+/**
+ * @category parsing
+ * @since 1.0.0
+ */
+exports.parseSync = parseSync;
+const parseOption = schema => getOption(schema.ast);
+/**
+ * @category parsing
+ * @since 1.0.0
+ */
+exports.parseOption = parseOption;
+const parseEither = schema => getEither(schema.ast);
+/**
+ * @category parsing
+ * @since 1.0.0
+ */
+exports.parseEither = parseEither;
+const parseResult = schema => go(schema.ast);
+/**
+ * @category parsing
+ * @since 1.0.0
+ */
+exports.parseResult = parseResult;
+const parsePromise = schema => getPromise(schema.ast);
+/**
+ * @category parsing
+ * @since 1.0.0
+ */
+exports.parsePromise = parsePromise;
+const parse = schema => getEffect(schema.ast);
+/**
+ * @category decoding
+ * @since 1.0.0
+ */
+exports.parse = parse;
+const decodeSync = parseSync;
+/**
+ * @category decoding
+ * @since 1.0.0
+ */
+exports.decodeSync = decodeSync;
+const decodeOption = parseOption;
+/**
+ * @category decoding
+ * @since 1.0.0
+ */
+exports.decodeOption = decodeOption;
+const decodeEither = parseEither;
+/**
+ * @category decoding
+ * @since 1.0.0
+ */
+exports.decodeEither = decodeEither;
+const decodeResult = parseResult;
+/**
+ * @category decoding
+ * @since 1.0.0
+ */
+exports.decodeResult = decodeResult;
+const decodePromise = parsePromise;
+/**
+ * @category decoding
+ * @since 1.0.0
+ */
+exports.decodePromise = decodePromise;
+const decode = parse;
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.decode = decode;
+const validateSync = schema => getSync(AST.to(schema.ast));
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.validateSync = validateSync;
+const validateOption = schema => getOption(AST.to(schema.ast));
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.validateOption = validateOption;
+const validateEither = schema => getEither(AST.to(schema.ast));
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.validateEither = validateEither;
+const validateResult = schema => go(AST.to(schema.ast));
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.validateResult = validateResult;
+const validatePromise = schema => getPromise(AST.to(schema.ast));
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.validatePromise = validatePromise;
+const validate = schema => getEffect(AST.to(schema.ast));
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.validate = validate;
+const is = schema => {
+  const getEither = validateEither(schema);
+  return a => E.isRight(getEither(a));
+};
+/**
+ * @category validation
+ * @since 1.0.0
+ */
+exports.is = is;
+const asserts = schema => {
+  const get = validateSync(schema);
+  return (a, options) => {
+    get(a, options);
+  };
+};
+/**
+ * @category encoding
+ * @since 1.0.0
+ */
+exports.asserts = asserts;
+const encodeSync = schema => getSync(reverse(schema.ast));
+/**
+ * @category encoding
+ * @since 1.0.0
+ */
+exports.encodeSync = encodeSync;
+const encodeOption = schema => getOption(reverse(schema.ast));
+/**
+ * @category encoding
+ * @since 1.0.0
+ */
+exports.encodeOption = encodeOption;
+const encodeEither = schema => getEither(reverse(schema.ast));
+/**
+ * @category encoding
+ * @since 1.0.0
+ */
+exports.encodeEither = encodeEither;
+const encodeResult = schema => go(reverse(schema.ast));
+/**
+ * @category encoding
+ * @since 1.0.0
+ */
+exports.encodeResult = encodeResult;
+const encodePromise = schema => getPromise(reverse(schema.ast));
+/**
+ * @category encoding
+ * @since 1.0.0
+ */
+exports.encodePromise = encodePromise;
+const encode = schema => getEffect(reverse(schema.ast));
+exports.encode = encode;
+const go = (ast, isBoundary = true) => {
+  switch (ast._tag) {
+    case "Refinement":
+      {
+        if (ast.isReversed) {
+          const from = go(AST.to(ast), isBoundary);
+          const to = go(reverse(dropRightRefinement(ast.from)), false);
+          return (i, options) => handleForbidden(PR.flatMap(from(i, options), a => to(a, options)), options);
+        } else {
+          const from = go(ast.from, isBoundary);
+          return (i, options) => handleForbidden(PR.flatMap(from(i, options), a => ast.decode(a, options)), options);
+        }
+      }
+    case "Transform":
+      {
+        const from = go(ast.from, isBoundary);
+        const to = go(ast.to, false);
+        return (i1, options) => handleForbidden(PR.flatMap(from(i1, options), a => PR.flatMap(ast.decode(a, options), i2 => to(i2, options))), options);
+      }
+    case "Declaration":
+      {
+        const decode = ast.decode(...ast.typeParameters);
+        return (i, options) => handleForbidden(decode(i, options), options);
+      }
+    case "Literal":
+      return fromRefinement(ast, u => u === ast.literal);
+    case "UniqueSymbol":
+      return fromRefinement(ast, u => u === ast.symbol);
+    case "UndefinedKeyword":
+      return fromRefinement(ast, P.isUndefined);
+    case "VoidKeyword":
+      return fromRefinement(ast, P.isUndefined);
+    case "NeverKeyword":
+      return fromRefinement(ast, P.isNever);
+    case "UnknownKeyword":
+    case "AnyKeyword":
+      return PR.success;
+    case "StringKeyword":
+      return fromRefinement(ast, P.isString);
+    case "NumberKeyword":
+      return fromRefinement(ast, P.isNumber);
+    case "BooleanKeyword":
+      return fromRefinement(ast, P.isBoolean);
+    case "BigIntKeyword":
+      return fromRefinement(ast, P.isBigint);
+    case "SymbolKeyword":
+      return fromRefinement(ast, P.isSymbol);
+    case "ObjectKeyword":
+      return fromRefinement(ast, P.isObject);
+    case "Enums":
+      return fromRefinement(ast, u => ast.enums.some(([_, value]) => value === u));
+    case "TemplateLiteral":
+      {
+        const regex = getTemplateLiteralRegex(ast);
+        return fromRefinement(ast, u => P.isString(u) && regex.test(u));
+      }
+    case "Tuple":
+      {
+        const elements = ast.elements.map(e => go(e.type, isBoundary));
+        const rest = (0, _Function.pipe)(ast.rest, O.map(RA.mapNonEmpty(ast => go(ast))));
+        let requiredLen = ast.elements.filter(e => !e.isOptional).length;
+        if (O.isSome(ast.rest)) {
+          requiredLen += ast.rest.value.length - 1;
+        }
+        return (input, options) => {
+          if (!Array.isArray(input)) {
+            return PR.failure(PR.type(unknownArray, input));
+          }
+          const allErrors = options?.errors === "all";
+          const es = [];
+          let stepKey = 0;
+          // ---------------------------------------------
+          // handle missing indexes
+          // ---------------------------------------------
+          const len = input.length;
+          for (let i = len; i <= requiredLen - 1; i++) {
+            const e = PR.index(i, [PR.missing]);
+            if (allErrors) {
+              es.push([stepKey++, e]);
+              continue;
+            } else {
+              return PR.failure(e);
+            }
+          }
+          // ---------------------------------------------
+          // handle excess indexes
+          // ---------------------------------------------
+          if (O.isNone(ast.rest)) {
+            for (let i = ast.elements.length; i <= len - 1; i++) {
+              const e = PR.index(i, [PR.unexpected(input[i])]);
+              if (allErrors) {
+                es.push([stepKey++, e]);
+                continue;
+              } else {
+                return PR.failures(mutableAppend(sortByIndex(es), e));
+              }
+            }
+          }
+          const output = [];
+          let i = 0;
+          let queue = undefined;
+          // ---------------------------------------------
+          // handle elements
+          // ---------------------------------------------
+          for (; i < elements.length; i++) {
+            if (len < i + 1) {
+              // the input element is missing...
+              if (ast.elements[i].isOptional) {
+                continue;
+              }
+            } else {
+              const parser = elements[i];
+              const te = parser(input[i], options);
+              const eu = PR.eitherOrUndefined(te);
+              if (eu) {
+                if (E.isLeft(eu)) {
+                  // the input element is present but is not valid
+                  const e = PR.index(i, eu.left.errors);
+                  if (allErrors) {
+                    es.push([stepKey++, e]);
+                    continue;
+                  } else {
+                    return PR.failures(mutableAppend(sortByIndex(es), e));
+                  }
+                }
+                output.push([stepKey++, eu.right]);
+              } else {
+                const nk = stepKey++;
+                const index = i;
+                if (!queue) {
+                  queue = [];
+                }
+                queue.push(({
+                  es,
+                  output
+                }) => Effect.flatMap(Effect.either(te), t => {
+                  if (E.isLeft(t)) {
+                    // the input element is present but is not valid
+                    const e = PR.index(index, t.left.errors);
+                    if (allErrors) {
+                      es.push([nk, e]);
+                      return Effect.unit;
+                    } else {
+                      return PR.failures(mutableAppend(sortByIndex(es), e));
+                    }
+                  }
+                  output.push([nk, t.right]);
+                  return Effect.unit;
+                }));
+              }
+            }
+          }
+          // ---------------------------------------------
+          // handle rest element
+          // ---------------------------------------------
+          if (O.isSome(rest)) {
+            const head = RA.headNonEmpty(rest.value);
+            const tail = RA.tailNonEmpty(rest.value);
+            for (; i < len - tail.length; i++) {
+              const te = head(input[i], options);
+              const eu = PR.eitherOrUndefined(te);
+              if (eu) {
+                if (E.isLeft(eu)) {
+                  const e = PR.index(i, eu.left.errors);
+                  if (allErrors) {
+                    es.push([stepKey++, e]);
+                    continue;
+                  } else {
+                    return PR.failures(mutableAppend(sortByIndex(es), e));
+                  }
+                } else {
+                  output.push([stepKey++, eu.right]);
+                }
+              } else {
+                const nk = stepKey++;
+                const index = i;
+                if (!queue) {
+                  queue = [];
+                }
+                queue.push(({
+                  es,
+                  output
+                }) => Effect.flatMap(Effect.either(te), t => {
+                  if (E.isLeft(t)) {
+                    const e = PR.index(index, t.left.errors);
+                    if (allErrors) {
+                      es.push([nk, e]);
+                      return Effect.unit;
+                    } else {
+                      return PR.failures(mutableAppend(sortByIndex(es), e));
+                    }
+                  } else {
+                    output.push([nk, t.right]);
+                    return Effect.unit;
+                  }
+                }));
+              }
+            }
+            // ---------------------------------------------
+            // handle post rest elements
+            // ---------------------------------------------
+            for (let j = 0; j < tail.length; j++) {
+              i += j;
+              if (len < i + 1) {
+                continue;
+              } else {
+                const te = tail[j](input[i], options);
+                const eu = PR.eitherOrUndefined(te);
+                if (eu) {
+                  if (E.isLeft(eu)) {
+                    // the input element is present but is not valid
+                    const e = PR.index(i, eu.left.errors);
+                    if (allErrors) {
+                      es.push([stepKey++, e]);
+                      continue;
+                    } else {
+                      return PR.failures(mutableAppend(sortByIndex(es), e));
+                    }
+                  }
+                  output.push([stepKey++, eu.right]);
+                } else {
+                  const nk = stepKey++;
+                  const index = i;
+                  if (!queue) {
+                    queue = [];
+                  }
+                  queue.push(({
+                    es,
+                    output
+                  }) => Effect.flatMap(Effect.either(te), t => {
+                    if (E.isLeft(t)) {
+                      // the input element is present but is not valid
+                      const e = PR.index(index, t.left.errors);
+                      if (allErrors) {
+                        es.push([nk, e]);
+                        return Effect.unit;
+                      } else {
+                        return PR.failures(mutableAppend(sortByIndex(es), e));
+                      }
+                    }
+                    output.push([nk, t.right]);
+                    return Effect.unit;
+                  }));
+                }
+              }
+            }
+          }
+          // ---------------------------------------------
+          // compute output
+          // ---------------------------------------------
+          const computeResult = ({
+            es,
+            output
+          }) => RA.isNonEmptyArray(es) ? PR.failures(sortByIndex(es)) : PR.success(sortByIndex(output));
+          if (queue && queue.length > 0) {
+            const cqueue = queue;
+            return Effect.suspend(() => {
+              const state = {
+                es: Array.from(es),
+                output: Array.from(output)
+              };
+              return Effect.flatMap(Effect.forEach(cqueue, f => f(state), {
+                concurrency: "unbounded",
+                discard: true
+              }), () => computeResult(state));
+            });
+          }
+          return computeResult({
+            output,
+            es
+          });
+        };
+      }
+    case "TypeLiteral":
+      {
+        if (ast.propertySignatures.length === 0 && ast.indexSignatures.length === 0) {
+          return fromRefinement(ast, P.isNotNullable);
+        }
+        const propertySignatures = ast.propertySignatures.map(ps => go(ps.type, isBoundary));
+        const indexSignatures = ast.indexSignatures.map(is => [go(is.parameter, isBoundary), go(is.type, isBoundary)]);
+        const parameter = go(AST.createUnion(ast.indexSignatures.map(is => AST.getParameterBase(is.parameter))));
+        const expectedKeys = {};
+        for (let i = 0; i < propertySignatures.length; i++) {
+          expectedKeys[ast.propertySignatures[i].name] = null;
+        }
+        return (input, options) => {
+          if (!P.isRecord(input)) {
+            return PR.failure(PR.type(unknownRecord, input));
+          }
+          const allErrors = options?.errors === "all";
+          const es = [];
+          let stepKey = 0;
+          // ---------------------------------------------
+          // handle excess properties
+          // ---------------------------------------------
+          const onExcessPropertyError = options?.onExcessProperty === "error";
+          if (onExcessPropertyError) {
+            for (const key of I.ownKeys(input)) {
+              if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
+                const te = parameter(key);
+                const eu = PR.eitherOrUndefined(te);
+                if (eu && E.isLeft(eu)) {
+                  const e = PR.key(key, [PR.unexpected(input[key])]);
+                  if (allErrors) {
+                    es.push([stepKey++, e]);
+                    continue;
+                  } else {
+                    return PR.failures(mutableAppend(sortByIndex(es), e));
+                  }
+                }
+              }
+            }
+          }
+          // ---------------------------------------------
+          // handle property signatures
+          // ---------------------------------------------
+          const output = {};
+          let queue = undefined;
+          for (let i = 0; i < propertySignatures.length; i++) {
+            const ps = ast.propertySignatures[i];
+            const parser = propertySignatures[i];
+            const name = ps.name;
+            if (Object.prototype.hasOwnProperty.call(input, name)) {
+              const te = parser(input[name], options);
+              const eu = PR.eitherOrUndefined(te);
+              if (eu) {
+                if (E.isLeft(eu)) {
+                  // the input key is present but is not valid
+                  const e = PR.key(name, eu.left.errors);
+                  if (allErrors) {
+                    es.push([stepKey++, e]);
+                    continue;
+                  } else {
+                    return PR.failures(mutableAppend(sortByIndex(es), e));
+                  }
+                }
+                output[name] = eu.right;
+              } else {
+                const nk = stepKey++;
+                const index = name;
+                if (!queue) {
+                  queue = [];
+                }
+                queue.push(({
+                  es,
+                  output
+                }) => Effect.flatMap(Effect.either(te), t => {
+                  if (E.isLeft(t)) {
+                    // the input key is present but is not valid
+                    const e = PR.key(index, t.left.errors);
+                    if (allErrors) {
+                      es.push([nk, e]);
+                      return Effect.unit;
+                    } else {
+                      return PR.failures(mutableAppend(sortByIndex(es), e));
+                    }
+                  }
+                  output[index] = t.right;
+                  return Effect.unit;
+                }));
+              }
+            } else {
+              // ---------------------------------------------
+              // handle missing keys
+              // ---------------------------------------------
+              if (!ps.isOptional) {
+                const e = PR.key(name, [PR.missing]);
+                if (allErrors) {
+                  es.push([stepKey++, e]);
+                  continue;
+                } else {
+                  return PR.failure(e);
+                }
+              }
+            }
+          }
+          // ---------------------------------------------
+          // handle index signatures
+          // ---------------------------------------------
+          for (let i = 0; i < indexSignatures.length; i++) {
+            const parameter = indexSignatures[i][0];
+            const type = indexSignatures[i][1];
+            const keys = I.getKeysForIndexSignature(input, ast.indexSignatures[i].parameter);
+            for (const key of keys) {
+              if (Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
+                continue;
+              }
+              // ---------------------------------------------
+              // handle keys
+              // ---------------------------------------------
+              const keu = PR.eitherOrUndefined(parameter(key, options));
+              if (keu) {
+                if (E.isLeft(keu)) {
+                  const e = PR.key(key, keu.left.errors);
+                  if (allErrors) {
+                    es.push([stepKey++, e]);
+                    continue;
+                  } else {
+                    return PR.failures(mutableAppend(sortByIndex(es), e));
+                  }
+                }
+              }
+              // there's no else here because index signature parameters are restricted to primitives
+              // ---------------------------------------------
+              // handle values
+              // ---------------------------------------------
+              const vpr = type(input[key], options);
+              const veu = PR.eitherOrUndefined(vpr);
+              if (veu) {
+                if (E.isLeft(veu)) {
+                  const e = PR.key(key, veu.left.errors);
+                  if (allErrors) {
+                    es.push([stepKey++, e]);
+                    continue;
+                  } else {
+                    return PR.failures(mutableAppend(sortByIndex(es), e));
+                  }
+                } else {
+                  output[key] = veu.right;
+                }
+              } else {
+                const nk = stepKey++;
+                const index = key;
+                if (!queue) {
+                  queue = [];
+                }
+                queue.push(({
+                  es,
+                  output
+                }) => Effect.flatMap(Effect.either(vpr), tv => {
+                  if (E.isLeft(tv)) {
+                    const e = PR.key(index, tv.left.errors);
+                    if (allErrors) {
+                      es.push([nk, e]);
+                      return Effect.unit;
+                    } else {
+                      return PR.failures(mutableAppend(sortByIndex(es), e));
+                    }
+                  } else {
+                    output[key] = tv.right;
+                    return Effect.unit;
+                  }
+                }));
+              }
+            }
+          }
+          // ---------------------------------------------
+          // compute output
+          // ---------------------------------------------
+          const computeResult = ({
+            es,
+            output
+          }) => RA.isNonEmptyArray(es) ? PR.failures(sortByIndex(es)) : PR.success(output);
+          if (queue && queue.length > 0) {
+            const cqueue = queue;
+            return Effect.suspend(() => {
+              const state = {
+                es: Array.from(es),
+                output: Object.assign({}, output)
+              };
+              return Effect.flatMap(Effect.forEach(cqueue, f => f(state), {
+                concurrency: "unbounded",
+                discard: true
+              }), () => computeResult(state));
+            });
+          }
+          return computeResult({
+            es,
+            output
+          });
+        };
+      }
+    case "Union":
+      {
+        const searchTree = _getSearchTree(ast.types);
+        const ownKeys = I.ownKeys(searchTree.keys);
+        const len = ownKeys.length;
+        const map = new Map();
+        for (let i = 0; i < ast.types.length; i++) {
+          map.set(ast.types[i], go(ast.types[i], true)); // <= this must be true
+        }
+
+        return (input, options) => {
+          const es = [];
+          let stepKey = 0;
+          let candidates = [];
+          if (len > 0) {
+            // if there is at least one key then input must be an object
+            if (P.isRecord(input)) {
+              for (let i = 0; i < len; i++) {
+                const name = ownKeys[i];
+                const buckets = searchTree.keys[name].buckets;
+                // for each property that should contain a literal, check if the input contains that property
+                if (Object.prototype.hasOwnProperty.call(input, name)) {
+                  const literal = String(input[name]);
+                  // check that the value obtained from the input for the property corresponds to an existing bucket
+                  if (Object.prototype.hasOwnProperty.call(buckets, literal)) {
+                    // retrive the minimal set of candidates for decoding
+                    candidates = candidates.concat(buckets[literal]);
+                  } else {
+                    es.push([stepKey++, PR.key(name, [PR.type(searchTree.keys[name].ast, input[name])])]);
+                  }
+                } else {
+                  es.push([stepKey++, PR.key(name, [PR.missing])]);
+                }
+              }
+            } else {
+              es.push([stepKey++, PR.type(unknownRecord, input)]);
+            }
+          }
+          if (searchTree.otherwise.length > 0) {
+            candidates = candidates.concat(searchTree.otherwise);
+          }
+          let queue = undefined;
+          for (let i = 0; i < candidates.length; i++) {
+            const pr = map.get(candidates[i])(input, options);
+            // the members of a union are ordered based on which one should be decoded first,
+            // therefore if one member has added a task, all subsequent members must
+            // also add a task to the queue even if they are synchronous
+            const eu = !queue || queue.length === 0 ? PR.eitherOrUndefined(pr) : undefined;
+            if (eu) {
+              if (E.isRight(eu)) {
+                return PR.success(eu.right);
+              } else {
+                es.push([stepKey++, PR.unionMember(eu.left.errors)]);
+              }
+            } else {
+              const nk = stepKey++;
+              if (!queue) {
+                queue = [];
+              }
+              queue.push(state => Effect.suspend(() => {
+                if ("finalResult" in state) {
+                  return Effect.unit;
+                } else {
+                  return Effect.flatMap(Effect.either(pr), t => {
+                    if (E.isRight(t)) {
+                      state.finalResult = PR.success(t.right);
+                    } else {
+                      state.es.push([nk, PR.unionMember(t.left.errors)]);
+                    }
+                    return Effect.unit;
+                  });
+                }
+              }));
+            }
+          }
+          // ---------------------------------------------
+          // compute output
+          // ---------------------------------------------
+          const computeResult = es => RA.isNonEmptyArray(es) ? PR.failures(sortByIndex(es)) :
+          // this should never happen
+          PR.failure(PR.type(AST.neverKeyword, input));
+          if (queue && queue.length > 0) {
+            const cqueue = queue;
+            return Effect.suspend(() => {
+              const state = {
+                es: Array.from(es)
+              };
+              return Effect.flatMap(Effect.forEach(cqueue, f => f(state), {
+                concurrency: 1,
+                discard: true
+              }), () => {
+                if ("finalResult" in state) {
+                  return state.finalResult;
+                }
+                return computeResult(state.es);
+              });
+            });
+          }
+          return computeResult(es);
+        };
+      }
+    case "Lazy":
+      {
+        const get = I.memoizeThunk(() => go(ast.f(), isBoundary));
+        return (a, options) => get()(a, options);
+      }
+  }
+};
+const fromRefinement = (ast, refinement) => u => refinement(u) ? PR.success(u) : PR.failure(PR.type(ast, u));
+/** @internal */
+const _getLiterals = ast => {
+  switch (ast._tag) {
+    case "Declaration":
+      return _getLiterals(ast.type);
+    case "TypeLiteral":
+      {
+        const out = [];
+        for (let i = 0; i < ast.propertySignatures.length; i++) {
+          const propertySignature = ast.propertySignatures[i];
+          const type = AST.from(propertySignature.type);
+          if (AST.isLiteral(type) && !propertySignature.isOptional) {
+            out.push([propertySignature.name, type]);
+          }
+        }
+        return out;
+      }
+    case "Refinement":
+    case "Transform":
+      return _getLiterals(ast.from);
+  }
+  return [];
+};
+/**
+ * The purpose of the algorithm is to narrow down the pool of possible candidates for decoding as much as possible.
+ *
+ * This function separates the schemas into two groups, `keys` and `otherwise`:
+ *
+ * - `keys`: the schema has at least one property with a literal value
+ * - `otherwise`: the schema has no properties with a literal value
+ *
+ * If a schema has at least one property with a literal value, so it ends up in `keys`, first a namespace is created for
+ * the name of the property containing the literal, and then within this namespace a "bucket" is created for the literal
+ * value in which to store all the schemas that have the same property and literal value.
+ *
+ * @internal
+ */
+exports._getLiterals = _getLiterals;
+const _getSearchTree = members => {
+  const keys = {};
+  const otherwise = [];
+  for (let i = 0; i < members.length; i++) {
+    const member = members[i];
+    const tags = _getLiterals(member);
+    if (tags.length > 0) {
+      for (let j = 0; j < tags.length; j++) {
+        const [key, literal] = tags[j];
+        const hash = String(literal.literal);
+        keys[key] = keys[key] || {
+          buckets: {},
+          ast: AST.neverKeyword
+        };
+        const buckets = keys[key].buckets;
+        if (Object.prototype.hasOwnProperty.call(buckets, hash)) {
+          if (j < tags.length - 1) {
+            continue;
+          }
+          buckets[hash].push(member);
+          keys[key].ast = AST.createUnion([keys[key].ast, literal]);
+        } else {
+          buckets[hash] = [member];
+          keys[key].ast = AST.createUnion([keys[key].ast, literal]);
+          break;
+        }
+      }
+    } else {
+      otherwise.push(member);
+    }
+  }
+  return {
+    keys,
+    otherwise
+  };
+};
+exports._getSearchTree = _getSearchTree;
+const dropRightRefinement = ast => AST.isRefinement(ast) ? dropRightRefinement(ast.from) : ast;
+const handleForbidden = (conditional, options) => {
+  const eu = PR.eitherOrUndefined(conditional);
+  return eu ? eu : options?.isEffectAllowed === true ? conditional : PR.failure(PR.forbidden);
+};
+const unknownArray = /*#__PURE__*/AST.createTuple([], /*#__PURE__*/O.some([AST.unknownKeyword]), true, {
+  [AST.DescriptionAnnotationId]: "a generic array"
+});
+const unknownRecord = /*#__PURE__*/AST.createTypeLiteral([], [/*#__PURE__*/AST.createIndexSignature(AST.stringKeyword, AST.unknownKeyword, true), /*#__PURE__*/AST.createIndexSignature(AST.symbolKeyword, AST.unknownKeyword, true)], {
+  [AST.DescriptionAnnotationId]: "a generic object"
+});
+const mutableAppend = (self, a) => {
+  self.push(a);
+  return self;
+};
+const getTemplateLiteralRegex = ast => {
+  let pattern = `^${ast.head}`;
+  for (const span of ast.spans) {
+    if (AST.isStringKeyword(span.type)) {
+      pattern += ".*";
+    } else if (AST.isNumberKeyword(span.type)) {
+      pattern += "-?\\d+(\\.\\d+)?";
+    }
+    pattern += span.literal;
+  }
+  pattern += "$";
+  return new RegExp(pattern);
+};
+function sortByIndex(es) {
+  return es.sort(([a], [b]) => a > b ? 1 : a < b ? -1 : 0).map(([_, a]) => a);
+}
+/** @internal */
+const reverse = ast => {
+  switch (ast._tag) {
+    case "Declaration":
+      return AST.createDeclaration(ast.typeParameters.map(reverse), ast.type, ast.decode, ast.annotations);
+    case "Tuple":
+      return AST.createTuple(ast.elements.map(e => AST.createElement(reverse(e.type), e.isOptional)), O.map(ast.rest, RA.mapNonEmpty(reverse)), ast.isReadonly);
+    case "TypeLiteral":
+      return AST.createTypeLiteral(ast.propertySignatures.map(ps => AST.createPropertySignature(ps.name, reverse(ps.type), ps.isOptional, ps.isReadonly, ps.annotations)), ast.indexSignatures.map(is => AST.createIndexSignature(is.parameter, reverse(is.type), is.isReadonly)));
+    case "Union":
+      return AST.createUnion(ast.types.map(reverse));
+    case "Lazy":
+      return AST.createLazy(() => reverse(ast.f()));
+    case "Refinement":
+      return AST.createRefinement(ast.from, ast.decode, !ast.isReversed, ast.annotations);
+    case "Transform":
+      return AST._createTransform(reverse(ast.to), reverse(ast.from), ast.encode, ast.decode, ast.propertySignatureTransformations.map(t => AST.createPropertySignatureTransformation(t.to, t.from, t.encode, t.decode)));
+  }
+  return ast;
+};
+exports.reverse = reverse;
+//# sourceMappingURL=Parser.js.map
+
+/***/ }),
+
+/***/ 3363:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.array = exports.any = exports.annotations = exports.ValidDateTypeId = exports.ValidDateFromSelf = exports.UUIDTypeId = exports.UUID = exports.ULIDTypeId = exports.ULID = exports.TrimmedTypeId = exports.Trim = exports.StartsWithTypeId = exports.PositiveTypeId = exports.PositiveBigintTypeId = exports.PatternTypeId = exports.ParseJson = exports.NumberFromString = exports.NonPositiveTypeId = exports.NonPositiveBigintTypeId = exports.NonNegativeTypeId = exports.NonNegativeBigintTypeId = exports.NonNaNTypeId = exports.NegativeTypeId = exports.NegativeBigintTypeId = exports.MultipleOfTypeId = exports.MinLengthTypeId = exports.MinItemsTypeId = exports.MaxLengthTypeId = exports.MaxItemsTypeId = exports.LessThanTypeId = exports.LessThanOrEqualToTypeId = exports.LessThanOrEqualToBigintTypeId = exports.LessThanBigintTypeId = exports.JsonNumberTypeId = exports.JsonNumber = exports.ItemsCountTypeId = exports.IntTypeId = exports.InstanceOfTypeId = exports.IncludesTypeId = exports.GreaterThanTypeId = exports.GreaterThanOrEqualToTypeId = exports.GreaterThanOrEqualToBigintTypeId = exports.GreaterThanBigintTypeId = exports.FiniteTypeId = exports.EndsWithTypeId = exports.DateFromSelf = exports.Date = exports.Class = exports.BrandTypeId = exports.BigintFromString = exports.BetweenTypeId = exports.BetweenBigintTypeId = void 0;
+Object.defineProperty(exports, "asserts", ({
+  enumerable: true,
+  get: function () {
+    return P.asserts;
+  }
+}));
+exports.declare = exports.dateFromString = exports.dataFromSelf = exports.data = exports.compose = exports.clampBigint = exports.clamp = exports.chunkFromSelf = exports.chunk = exports.brand = exports.boolean = exports.bigintFromString = exports.bigint = exports.betweenBigint = exports.between = exports.attachPropertySignature = void 0;
+Object.defineProperty(exports, "decode", ({
+  enumerable: true,
+  get: function () {
+    return P.decode;
+  }
+}));
+Object.defineProperty(exports, "decodeEither", ({
+  enumerable: true,
+  get: function () {
+    return P.decodeEither;
+  }
+}));
+Object.defineProperty(exports, "decodeOption", ({
+  enumerable: true,
+  get: function () {
+    return P.decodeOption;
+  }
+}));
+Object.defineProperty(exports, "decodePromise", ({
+  enumerable: true,
+  get: function () {
+    return P.decodePromise;
+  }
+}));
+Object.defineProperty(exports, "decodeResult", ({
+  enumerable: true,
+  get: function () {
+    return P.decodeResult;
+  }
+}));
+Object.defineProperty(exports, "decodeSync", ({
+  enumerable: true,
+  get: function () {
+    return P.decodeSync;
+  }
+}));
+exports.element = exports.eitherFromSelf = exports.either = exports.documentation = exports.description = void 0;
+Object.defineProperty(exports, "encode", ({
+  enumerable: true,
+  get: function () {
+    return P.encode;
+  }
+}));
+Object.defineProperty(exports, "encodeEither", ({
+  enumerable: true,
+  get: function () {
+    return P.encodeEither;
+  }
+}));
+Object.defineProperty(exports, "encodeOption", ({
+  enumerable: true,
+  get: function () {
+    return P.encodeOption;
+  }
+}));
+Object.defineProperty(exports, "encodePromise", ({
+  enumerable: true,
+  get: function () {
+    return P.encodePromise;
+  }
+}));
+Object.defineProperty(exports, "encodeResult", ({
+  enumerable: true,
+  get: function () {
+    return P.encodeResult;
+  }
+}));
+Object.defineProperty(exports, "encodeSync", ({
+  enumerable: true,
+  get: function () {
+    return P.encodeSync;
+  }
+}));
+exports.extend = exports.examples = exports.enums = exports.endsWith = void 0;
+exports.filter = filter;
+exports.includes = exports.identifier = exports.greaterThanOrEqualToBigint = exports.greaterThanOrEqualTo = exports.greaterThanBigint = exports.greaterThan = exports.fromBrand = exports.from = exports.finite = void 0;
+exports.int = exports.instanceOf = void 0;
+Object.defineProperty(exports, "is", ({
+  enumerable: true,
+  get: function () {
+    return P.is;
+  }
+}));
+exports.optionalElement = exports.optional = exports.optionFromSelf = exports.optionFromNullable = exports.option = exports.omit = exports.object = exports.numberFromString = exports.number = exports.nullable = exports["null"] = exports.not = exports.nonPositiveBigint = exports.nonPositive = exports.nonNegativeBigint = exports.nonNegative = exports.nonNaN = exports.nonEmptyArray = exports.nonEmpty = exports.never = exports.negativeBigint = exports.negative = exports.multipleOf = exports.minLength = exports.minItems = exports.message = exports.maxLength = exports.maxItems = exports.make = exports.literal = exports.lessThanOrEqualToBigint = exports.lessThanOrEqualTo = exports.lessThanBigint = exports.lessThan = exports.length = exports.lazy = exports.keyof = exports.itemsCount = exports.isSchema = void 0;
+Object.defineProperty(exports, "parse", ({
+  enumerable: true,
+  get: function () {
+    return P.parse;
+  }
+}));
+Object.defineProperty(exports, "parseEither", ({
+  enumerable: true,
+  get: function () {
+    return P.parseEither;
+  }
+}));
+exports.parseJson = void 0;
+Object.defineProperty(exports, "parseOption", ({
+  enumerable: true,
+  get: function () {
+    return P.parseOption;
+  }
+}));
+Object.defineProperty(exports, "parsePromise", ({
+  enumerable: true,
+  get: function () {
+    return P.parsePromise;
+  }
+}));
+Object.defineProperty(exports, "parseResult", ({
+  enumerable: true,
+  get: function () {
+    return P.parseResult;
+  }
+}));
+Object.defineProperty(exports, "parseSync", ({
+  enumerable: true,
+  get: function () {
+    return P.parseSync;
+  }
+}));
+exports.validDate = exports.unknown = exports.uniqueSymbol = exports.union = exports.undefined = exports.tuple = exports.trimmed = exports.trim = exports.transformResult = exports.transform = exports.to = exports.title = exports.templateLiteral = exports.symbol = exports.struct = exports.string = exports.startsWith = exports.split = exports.rest = exports.required = exports.record = exports.readonlySetFromSelf = exports.readonlySet = exports.readonlyMapFromSelf = exports.readonlyMap = exports.propertySignature = exports.positiveBigint = exports.positive = exports.pick = exports.pattern = exports.partial = void 0;
+Object.defineProperty(exports, "validate", ({
+  enumerable: true,
+  get: function () {
+    return P.validate;
+  }
+}));
+Object.defineProperty(exports, "validateEither", ({
+  enumerable: true,
+  get: function () {
+    return P.validateEither;
+  }
+}));
+Object.defineProperty(exports, "validateOption", ({
+  enumerable: true,
+  get: function () {
+    return P.validateOption;
+  }
+}));
+Object.defineProperty(exports, "validatePromise", ({
+  enumerable: true,
+  get: function () {
+    return P.validatePromise;
+  }
+}));
+Object.defineProperty(exports, "validateResult", ({
+  enumerable: true,
+  get: function () {
+    return P.validateResult;
+  }
+}));
+Object.defineProperty(exports, "validateSync", ({
+  enumerable: true,
+  get: function () {
+    return P.validateSync;
+  }
+}));
+exports["void"] = void 0;
+var B = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5641));
+var _Brand = /*#__PURE__*/__nccwpck_require__(6742);
+var C = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(1749));
+var D = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(8417));
+var E = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(65));
+var Equal = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(2594));
+var _Function = /*#__PURE__*/__nccwpck_require__(5873);
+var N = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(7534));
+var O = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5794));
+var _Pipeable = /*#__PURE__*/__nccwpck_require__(5695);
+var _Predicate = /*#__PURE__*/__nccwpck_require__(2985);
+var RA = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(4522));
+var S = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(3095));
+var AST = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(9120));
+var I = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5664));
+var P = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(6775));
+var PR = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(425));
+var _TreeFormatter = /*#__PURE__*/__nccwpck_require__(1981);
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/**
+ * @since 1.0.0
+ */
+
+const TypeId = /*#__PURE__*/Symbol.for("@effect/schema/Schema");
+/**
+ * @since 1.0.0
+ */
+const from = schema => make(AST.from(schema.ast));
+/**
+ * @since 1.0.0
+ */
+exports.from = from;
+const to = schema => make(AST.to(schema.ast));
+/* c8 ignore start */
+exports.to = to;
+/* c8 ignore end */
+// ---------------------------------------------
+// constructors
+// ---------------------------------------------
+class SchemaImpl {
+  ast;
+  _id = TypeId;
+  From;
+  To;
+  constructor(ast) {
+    this.ast = ast;
+  }
+  pipe() {
+    return (0, _Pipeable.pipeArguments)(this, arguments);
+  }
+}
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const make = ast => new SchemaImpl(ast);
+/**
+ * Tests if a value is a `Schema`.
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+exports.make = make;
+const isSchema = input => (0, _Predicate.isObject)(input) && "_id" in input && input["_id"] === TypeId;
+exports.isSchema = isSchema;
+const makeLiteral = value => make(AST.createLiteral(value));
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const literal = (...literals) => union(...literals.map(literal => makeLiteral(literal)));
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.literal = literal;
+const uniqueSymbol = (symbol, annotations) => make(AST.createUniqueSymbol(symbol, annotations));
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.uniqueSymbol = uniqueSymbol;
+const enums = enums => make(AST.createEnums(Object.keys(enums).filter(key => typeof enums[enums[key]] !== "number").map(key => [key, enums[key]])));
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.enums = enums;
+const templateLiteral = (...[head, ...tail]) => {
+  let types = getTemplateLiterals(head.ast);
+  for (const span of tail) {
+    types = RA.flatMap(types, a => getTemplateLiterals(span.ast).map(b => combineTemplateLiterals(a, b)));
+  }
+  return make(AST.createUnion(types));
+};
+exports.templateLiteral = templateLiteral;
+const combineTemplateLiterals = (a, b) => {
+  if (AST.isLiteral(a)) {
+    return AST.isLiteral(b) ? AST.createLiteral(String(a.literal) + String(b.literal)) : AST.createTemplateLiteral(String(a.literal) + b.head, b.spans);
+  }
+  if (AST.isLiteral(b)) {
+    return AST.createTemplateLiteral(a.head, RA.modifyNonEmptyLast(a.spans, span => ({
+      ...span,
+      literal: span.literal + String(b.literal)
+    })));
+  }
+  return AST.createTemplateLiteral(a.head, RA.appendAll(RA.modifyNonEmptyLast(a.spans, span => ({
+    ...span,
+    literal: span.literal + String(b.head)
+  })), b.spans));
+};
+const getTemplateLiterals = ast => {
+  switch (ast._tag) {
+    case "Literal":
+      return [ast];
+    case "NumberKeyword":
+    case "StringKeyword":
+      return [AST.createTemplateLiteral("", [{
+        type: ast,
+        literal: ""
+      }])];
+    case "Union":
+      return RA.flatMap(ast.types, getTemplateLiterals);
+    default:
+      throw new Error(`templateLiteral: unsupported template literal span ${ast._tag}`);
+  }
+};
+/**
+  @category combinators
+  @since 1.0.0
+*/
+const declare = (typeParameters, type, decode, annotations) => make(AST.createDeclaration(typeParameters.map(tp => tp.ast), type.ast, (...typeParameters) => decode(...typeParameters.map(make)), annotations));
+// ---------------------------------------------
+// combinators
+// ---------------------------------------------
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.declare = declare;
+const union = (...members) => make(AST.createUnion(members.map(m => m.ast)));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.union = union;
+const nullable = self => union(_null, self);
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.nullable = nullable;
+const keyof = schema => make(AST.keyof(schema.ast));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.keyof = keyof;
+const tuple = (...elements) => make(AST.createTuple(elements.map(schema => AST.createElement(schema.ast, false)), O.none(), true));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.tuple = tuple;
+const rest = rest => self => {
+  if (AST.isTuple(self.ast)) {
+    return make(AST.appendRestElement(self.ast, rest.ast));
+  }
+  throw new Error("`rest` is not supported on this schema");
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.rest = rest;
+const element = element => self => {
+  if (AST.isTuple(self.ast)) {
+    return make(AST.appendElement(self.ast, AST.createElement(element.ast, false)));
+  }
+  throw new Error("`element` is not supported on this schema");
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.element = element;
+const optionalElement = element => self => {
+  if (AST.isTuple(self.ast)) {
+    return make(AST.appendElement(self.ast, AST.createElement(element.ast, true)));
+  }
+  throw new Error("`optionalElement` is not supported on this schema");
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.optionalElement = optionalElement;
+const array = item => make(AST.createTuple([], O.some([item.ast]), true));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.array = array;
+const nonEmptyArray = item => tuple(item).pipe(rest(item));
+exports.nonEmptyArray = nonEmptyArray;
+class PropertySignatureImpl {
+  _from;
+  _annotations;
+  _optional;
+  From;
+  FromIsOptional;
+  To;
+  ToIsOptional;
+  constructor(_from, _annotations, _optional) {
+    this._from = _from;
+    this._annotations = _annotations;
+    this._optional = _optional;
+  }
+  optional() {
+    if (this._optional) {
+      throw new Error(`duplicate optional configuration`);
+    }
+    return new PropertySignatureImpl(this._from, this._annotations, {
+      to: "optional"
+    });
+  }
+  withDefault(value) {
+    if (this._optional && this._optional.to !== "optional") {
+      throw new Error(`duplicate optional configuration`);
+    }
+    return new PropertySignatureImpl(this._from, this._annotations, {
+      to: "default",
+      value
+    });
+  }
+  toOption() {
+    if (this._optional && this._optional.to !== "optional") {
+      throw new Error(`duplicate optional configuration`);
+    }
+    return new PropertySignatureImpl(this._from, this._annotations, {
+      to: "Option"
+    });
+  }
+}
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const propertySignature = (schema, annotations) => new PropertySignatureImpl(schema.ast, annotations);
+/**
+ * @since 1.0.0
+ */
+exports.propertySignature = propertySignature;
+const optional = (schema, annotations) => propertySignature(schema, annotations).optional();
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.optional = optional;
+const struct = fields => {
+  const ownKeys = I.ownKeys(fields);
+  const propertySignatures = [];
+  const fromPropertySignatures = [];
+  const toPropertySignatures = [];
+  const propertySignatureTransformations = [];
+  for (let i = 0; i < ownKeys.length; i++) {
+    const key = ownKeys[i];
+    const field = fields[key];
+    if (field instanceof PropertySignatureImpl) {
+      const optional = field._optional;
+      if (optional) {
+        switch (optional.to) {
+          case "optional":
+            {
+              propertySignatures.push(AST.createPropertySignature(key, field._from, true, true, field._annotations));
+              fromPropertySignatures.push(AST.createPropertySignature(key, field._from, true, true));
+              toPropertySignatures.push(AST.createPropertySignature(key, AST.to(field._from), true, true, field._annotations));
+              break;
+            }
+          case "default":
+            {
+              fromPropertySignatures.push(AST.createPropertySignature(key, field._from, true, true));
+              toPropertySignatures.push(AST.createPropertySignature(key, AST.to(field._from), false, true, field._annotations));
+              propertySignatureTransformations.push(AST.createPropertySignatureTransformation(key, key, O.orElse(() => O.some(optional.value())), _Function.identity));
+              break;
+            }
+          case "Option":
+            {
+              fromPropertySignatures.push(AST.createPropertySignature(key, field._from, true, true));
+              toPropertySignatures.push(AST.createPropertySignature(key, optionFromSelf(make(AST.to(field._from))).ast, false, true, field._annotations));
+              propertySignatureTransformations.push(AST.createPropertySignatureTransformation(key, key, O.some, O.flatten));
+              break;
+            }
+        }
+      } else {
+        propertySignatures.push(AST.createPropertySignature(key, field._from, false, true, field._annotations));
+        fromPropertySignatures.push(AST.createPropertySignature(key, field._from, false, true));
+        toPropertySignatures.push(AST.createPropertySignature(key, AST.to(field._from), false, true, field._annotations));
+      }
+    } else {
+      propertySignatures.push(AST.createPropertySignature(key, field.ast, false, true));
+      fromPropertySignatures.push(AST.createPropertySignature(key, field.ast, false, true));
+      toPropertySignatures.push(AST.createPropertySignature(key, AST.to(field.ast), false, true));
+    }
+  }
+  if (propertySignatureTransformations.length > 0) {
+    return make(AST.createTransformByPropertySignatureTransformations(AST.createTypeLiteral(fromPropertySignatures, []), AST.createTypeLiteral(toPropertySignatures, []), propertySignatureTransformations));
+  } else {
+    return make(AST.createTypeLiteral(propertySignatures, []));
+  }
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.struct = struct;
+const pick = (...keys) => self => {
+  const ast = self.ast;
+  if (AST.isTransform(ast) && ast.propertySignatureTransformations.length > 0) {
+    return make(AST.createTransformByPropertySignatureTransformations(AST.pick(ast.from, keys), AST.pick(ast.to, keys), ast.propertySignatureTransformations.filter(t => keys.includes(t.to))));
+  }
+  return make(AST.pick(ast, keys));
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.pick = pick;
+const omit = (...keys) => self => {
+  const ast = self.ast;
+  if (AST.isTransform(ast) && ast.propertySignatureTransformations.length > 0) {
+    return make(AST.createTransformByPropertySignatureTransformations(AST.omit(ast.from, keys), AST.omit(ast.to, keys), ast.propertySignatureTransformations.filter(t => !keys.includes(t.to))));
+  }
+  return make(AST.omit(ast, keys));
+};
+/**
+ * Returns a nominal branded schema by applying a brand to a given schema.
+ *
+ * ```
+ * Schema<A> + B -> Schema<A & Brand<B>>
+ * ```
+ *
+ * @param self - The input schema to be combined with the brand.
+ * @param brand - The brand to apply.
+ *
+ * @example
+ * import * as S from "@effect/schema/Schema"
+ *
+ * const Int = S.number.pipe(S.int(), S.brand("Int"))
+ * type Int = S.To<typeof Int> // number & Brand<"Int">
+ *
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.omit = omit;
+const brand = (brand, options) => self => {
+  const annotations = toAnnotations(options);
+  annotations[AST.BrandAnnotationId] = [...getBrands(self.ast), brand];
+  const ast = AST.mergeAnnotations(self.ast, annotations);
+  const schema = make(ast);
+  const validate = P.validateSync(schema);
+  const validateOption = P.validateOption(schema);
+  const validateEither = P.validateEither(schema);
+  const is = P.is(schema);
+  const out = Object.assign(input => validate(input), {
+    [_Brand.RefinedConstructorsTypeId]: _Brand.RefinedConstructorsTypeId,
+    _id: TypeId,
+    ast,
+    option: input => validateOption(input),
+    either: input => E.mapLeft(validateEither(input), e => [{
+      meta: input,
+      message: (0, _TreeFormatter.formatErrors)(e.errors)
+    }]),
+    refine: input => is(input),
+    pipe() {
+      return (0, _Pipeable.pipeArguments)(this, arguments);
+    }
+  });
+  return out;
+};
+exports.brand = brand;
+const getBrands = ast => ast.annotations[AST.BrandAnnotationId] || [];
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const partial = self => make(AST.partial(self.ast));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.partial = partial;
+const required = self => make(AST.required(self.ast));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.required = required;
+const record = (key, value) => make(AST.createRecord(key.ast, value.ast, true));
+exports.record = record;
+const intersectUnionMembers = (xs, ys) => {
+  return AST.createUnion(xs.flatMap(x => {
+    return ys.map(y => {
+      if (AST.isTypeLiteral(x)) {
+        if (AST.isTypeLiteral(y)) {
+          // isTypeLiteral(x) && isTypeLiteral(y)
+          return AST.createTypeLiteral(x.propertySignatures.concat(y.propertySignatures), x.indexSignatures.concat(y.indexSignatures));
+        } else if (AST.isTransform(y) && y.propertySignatureTransformations.length > 0 && AST.isTypeLiteral(y.from) && AST.isTypeLiteral(y.to)) {
+          // isTypeLiteral(x) && isTransform(y)
+          const from = AST.createTypeLiteral(x.propertySignatures.concat(y.from.propertySignatures), x.indexSignatures.concat(y.from.indexSignatures));
+          const to = AST.createTypeLiteral(AST.getToPropertySignatures(x.propertySignatures).concat(y.to.propertySignatures), AST.getToIndexSignatures(x.indexSignatures).concat(y.to.indexSignatures));
+          return AST.createTransformByPropertySignatureTransformations(from, to, y.propertySignatureTransformations);
+        }
+      } else if (AST.isTransform(x) && x.propertySignatureTransformations.length > 0 && AST.isTypeLiteral(x.from) && AST.isTypeLiteral(x.to)) {
+        if (AST.isTypeLiteral(y)) {
+          // isTransform(x) && isTypeLiteral(y)
+          const from = AST.createTypeLiteral(x.from.propertySignatures.concat(y.propertySignatures), x.from.indexSignatures.concat(y.indexSignatures));
+          const to = AST.createTypeLiteral(x.to.propertySignatures.concat(AST.getToPropertySignatures(y.propertySignatures)), x.to.indexSignatures.concat(AST.getToIndexSignatures(y.indexSignatures)));
+          return AST.createTransformByPropertySignatureTransformations(from, to, x.propertySignatureTransformations);
+        } else if (AST.isTransform(y) && y.propertySignatureTransformations.length > 0 && AST.isTypeLiteral(y.from) && AST.isTypeLiteral(y.to)) {
+          // isTransform(x) && isTransform(y)
+          const from = AST.createTypeLiteral(x.from.propertySignatures.concat(y.from.propertySignatures), x.from.indexSignatures.concat(y.from.indexSignatures));
+          const to = AST.createTypeLiteral(x.to.propertySignatures.concat(y.to.propertySignatures), x.to.indexSignatures.concat(y.to.indexSignatures));
+          const propertySignatureTransformations = x.propertySignatureTransformations.concat(y.propertySignatureTransformations);
+          return AST.createTransformByPropertySignatureTransformations(from, to, propertySignatureTransformations);
+        }
+      }
+      throw new Error("`extend` can only handle type literals or unions of type literals");
+    });
+  }));
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const extend = /*#__PURE__*/(0, _Function.dual)(2, (self, that) => make(intersectUnionMembers(AST.isUnion(self.ast) ? self.ast.types : [self.ast], AST.isUnion(that.ast) ? that.ast.types : [that.ast])));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.extend = extend;
+const compose = /*#__PURE__*/(0, _Function.dual)(2, (ab, cd) => transform(ab, cd, _Function.identity, _Function.identity));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.compose = compose;
+const lazy = (f, annotations) => make(AST.createLazy(() => f().ast, annotations));
+exports.lazy = lazy;
+const toAnnotations = options => {
+  const annotations = {};
+  if (options?.typeId !== undefined) {
+    const typeId = options?.typeId;
+    if (typeof typeId === "object") {
+      annotations[AST.TypeAnnotationId] = typeId.id;
+      annotations[typeId.id] = typeId.params;
+    } else {
+      annotations[AST.TypeAnnotationId] = typeId;
+    }
+  }
+  if (options?.message !== undefined) {
+    annotations[AST.MessageAnnotationId] = options?.message;
+  }
+  if (options?.identifier !== undefined) {
+    annotations[AST.IdentifierAnnotationId] = options?.identifier;
+  }
+  if (options?.title !== undefined) {
+    annotations[AST.TitleAnnotationId] = options?.title;
+  }
+  if (options?.description !== undefined) {
+    annotations[AST.DescriptionAnnotationId] = options?.description;
+  }
+  if (options?.examples !== undefined) {
+    annotations[AST.ExamplesAnnotationId] = options?.examples;
+  }
+  if (options?.documentation !== undefined) {
+    annotations[AST.DocumentationAnnotationId] = options?.documentation;
+  }
+  if (options?.jsonSchema !== undefined) {
+    annotations[AST.JSONSchemaAnnotationId] = options?.jsonSchema;
+  }
+  if (options?.arbitrary !== undefined) {
+    annotations[I.ArbitraryHookId] = options?.arbitrary;
+  }
+  return annotations;
+};
+function filter(predicate, options) {
+  return self => {
+    const decode = a => predicate(a) ? PR.success(a) : PR.failure(PR.type(ast, a));
+    const ast = AST.createRefinement(self.ast, decode, false, toAnnotations(options));
+    return make(ast);
+  };
+}
+/**
+  Create a new `Schema` by transforming the input and output of an existing `Schema`
+  using the provided decoding functions.
+
+  @category combinators
+  @since 1.0.0
+ */
+const transformResult = /*#__PURE__*/(0, _Function.dual)(4, (from, to, decode, encode) => make(AST.createTransform(from.ast, to.ast, decode, encode)));
+/**
+  Create a new `Schema` by transforming the input and output of an existing `Schema`
+  using the provided mapping functions.
+
+  @category combinators
+  @since 1.0.0
+*/
+exports.transformResult = transformResult;
+const transform = /*#__PURE__*/(0, _Function.dual)(4, (from, to, decode, encode) => transformResult(from, to, a => E.right(decode(a)), b => E.right(encode(b))));
+/**
+ * Attaches a property signature with the specified key and value to the schema.
+ * This API is useful when you want to add a property to your schema which doesn't describe the shape of the input,
+ * but rather maps to another schema, for example when you want to add a discriminant to a simple union.
+ *
+ * @param self - The input schema.
+ * @param key - The name of the property to add to the schema.
+ * @param value - The value of the property to add to the schema.
+ *
+ * @example
+ * import * as S from "@effect/schema/Schema"
+ * import { pipe } from "@effect/data/Function"
+ *
+ * const Circle = S.struct({ radius: S.number })
+ * const Square = S.struct({ sideLength: S.number })
+ * const Shape = S.union(
+ *   Circle.pipe(S.attachPropertySignature("kind", "circle")),
+ *   Square.pipe(S.attachPropertySignature("kind", "square"))
+ * )
+ *
+ * assert.deepStrictEqual(S.decodeSync(Shape)({ radius: 10 }), {
+ *   kind: "circle",
+ *   radius: 10
+ * })
+ *
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.transform = transform;
+const attachPropertySignature = (key, value) => schema => make(AST.createTransformByPropertySignatureTransformations(schema.ast, to(schema).pipe(extend(struct({
+  [key]: literal(value)
+}))).ast, [AST.createPropertySignatureTransformation(key, key, () => O.some(value), () => O.none())]));
+// ---------------------------------------------
+// annotations
+// ---------------------------------------------
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.attachPropertySignature = attachPropertySignature;
+const annotations = annotations => self => make(AST.mergeAnnotations(self.ast, annotations));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.annotations = annotations;
+const message = message => self => make(AST.setAnnotation(self.ast, AST.MessageAnnotationId, message));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.message = message;
+const identifier = identifier => self => make(AST.setAnnotation(self.ast, AST.IdentifierAnnotationId, identifier));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.identifier = identifier;
+const title = title => self => make(AST.setAnnotation(self.ast, AST.TitleAnnotationId, title));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.title = title;
+const description = description => self => make(AST.setAnnotation(self.ast, AST.DescriptionAnnotationId, description));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.description = description;
+const examples = examples => self => make(AST.setAnnotation(self.ast, AST.ExamplesAnnotationId, examples));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+exports.examples = examples;
+const documentation = documentation => self => make(AST.setAnnotation(self.ast, AST.DocumentationAnnotationId, documentation));
+exports.documentation = documentation;
+const makeClass = (selfSchema, selfFields, base) => {
+  const validator = P.validateSync(selfSchema);
+  const fn = function (props) {
+    Object.assign(this, validator(props));
+  };
+  fn.prototype = Object.create(base);
+  fn.schemaStruct = function schemaStruct() {
+    return selfSchema;
+  };
+  fn.schema = function schema() {
+    return transform(selfSchema, instanceOf(this), input => Object.assign(Object.create(this.prototype), input), input => ({
+      ...input
+    }));
+  };
+  fn.extend = function extend(fields) {
+    const newFields = {
+      ...selfFields,
+      ...fields
+    };
+    return makeClass(struct(newFields), newFields, this.prototype);
+  };
+  fn.transform = function transform(fields, decode, encode) {
+    const newFields = {
+      ...selfFields,
+      ...fields
+    };
+    return makeClass(transformResult(selfSchema, to(struct(newFields)), decode, encode), newFields, this.prototype);
+  };
+  fn.transformFrom = function transform(fields, decode, encode) {
+    const newFields = {
+      ...selfFields,
+      ...fields
+    };
+    return makeClass(transformResult(from(selfSchema), struct(newFields), decode, encode), newFields, this.prototype);
+  };
+  return fn;
+};
+/**
+ * @category classes
+ * @since 1.0.0
+ */
+const Class = fields => makeClass(struct(fields), fields, D.Class.prototype);
+// ---------------------------------------------
+// data
+// ---------------------------------------------
+exports.Class = Class;
+const _undefined = /*#__PURE__*/make(AST.undefinedKeyword);
+exports.undefined = _undefined;
+const _void = /*#__PURE__*/make(AST.voidKeyword);
+exports["void"] = _void;
+const _null = /*#__PURE__*/make( /*#__PURE__*/AST.createLiteral(null));
+exports["null"] = _null;
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+const never = /*#__PURE__*/make(AST.neverKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.never = never;
+const unknown = /*#__PURE__*/make(AST.unknownKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.unknown = unknown;
+const any = /*#__PURE__*/make(AST.anyKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.any = any;
+const string = /*#__PURE__*/make(AST.stringKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.string = string;
+const number = /*#__PURE__*/make(AST.numberKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.number = number;
+const boolean = /*#__PURE__*/make(AST.booleanKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.boolean = boolean;
+const bigint = /*#__PURE__*/make(AST.bigIntKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.bigint = bigint;
+const symbol = /*#__PURE__*/make(AST.symbolKeyword);
+/**
+ * @category primitives
+ * @since 1.0.0
+ */
+exports.symbol = symbol;
+const object = /*#__PURE__*/make(AST.objectKeyword);
+// ---------------------------------------------
+// data/Bigint
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.object = object;
+const GreaterThanBigintTypeId = "@effect/schema/GreaterThanBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.GreaterThanBigintTypeId = GreaterThanBigintTypeId;
+const greaterThanBigint = (min, options) => self => self.pipe(filter(a => a > min, {
+  typeId: GreaterThanBigintTypeId,
+  description: `a bigint greater than ${min}n`,
+  jsonSchema: {
+    exclusiveMinimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.greaterThanBigint = greaterThanBigint;
+const GreaterThanOrEqualToBigintTypeId = "@effect/schema/GreaterThanOrEqualToBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.GreaterThanOrEqualToBigintTypeId = GreaterThanOrEqualToBigintTypeId;
+const greaterThanOrEqualToBigint = (min, options) => self => self.pipe(filter(a => a >= min, {
+  typeId: GreaterThanOrEqualToBigintTypeId,
+  description: `a bigint greater than or equal to ${min}n`,
+  jsonSchema: {
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.greaterThanOrEqualToBigint = greaterThanOrEqualToBigint;
+const LessThanBigintTypeId = "@effect/schema/LessThanBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.LessThanBigintTypeId = LessThanBigintTypeId;
+const lessThanBigint = (max, options) => self => self.pipe(filter(a => a < max, {
+  typeId: LessThanBigintTypeId,
+  description: `a bigint less than ${max}n`,
+  jsonSchema: {
+    exclusiveMaximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.lessThanBigint = lessThanBigint;
+const LessThanOrEqualToBigintTypeId = "@effect/schema/LessThanOrEqualToBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.LessThanOrEqualToBigintTypeId = LessThanOrEqualToBigintTypeId;
+const lessThanOrEqualToBigint = (max, options) => self => self.pipe(filter(a => a <= max, {
+  typeId: LessThanOrEqualToBigintTypeId,
+  description: `a bigint less than or equal to ${max}n`,
+  jsonSchema: {
+    maximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.lessThanOrEqualToBigint = lessThanOrEqualToBigint;
+const BetweenBigintTypeId = "@effect/schema/BetweenBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.BetweenBigintTypeId = BetweenBigintTypeId;
+const betweenBigint = (min, max, options) => self => self.pipe(filter(a => a >= min && a <= max, {
+  typeId: BetweenBigintTypeId,
+  description: `a bigint between ${min}n and ${max}n`,
+  jsonSchema: {
+    maximum: max,
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.betweenBigint = betweenBigint;
+const PositiveBigintTypeId = "@effect/schema/PositiveBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.PositiveBigintTypeId = PositiveBigintTypeId;
+const positiveBigint = options => greaterThanBigint(0n, {
+  typeId: PositiveBigintTypeId,
+  description: "a positive bigint",
+  ...options
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.positiveBigint = positiveBigint;
+const NegativeBigintTypeId = "@effect/schema/NegativeBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.NegativeBigintTypeId = NegativeBigintTypeId;
+const negativeBigint = options => lessThanBigint(0n, {
+  typeId: NegativeBigintTypeId,
+  description: "a negative bigint",
+  ...options
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.negativeBigint = negativeBigint;
+const NonNegativeBigintTypeId = "@effect/schema/NonNegativeBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.NonNegativeBigintTypeId = NonNegativeBigintTypeId;
+const nonNegativeBigint = options => greaterThanOrEqualToBigint(0n, {
+  typeId: NonNegativeBigintTypeId,
+  description: "a non-negative bigint",
+  ...options
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.nonNegativeBigint = nonNegativeBigint;
+const NonPositiveBigintTypeId = "@effect/schema/NonPositiveBigintTypeId";
+/**
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.NonPositiveBigintTypeId = NonPositiveBigintTypeId;
+const nonPositiveBigint = options => lessThanOrEqualToBigint(0n, {
+  typeId: NonPositiveBigintTypeId,
+  description: "a non-positive bigint",
+  ...options
+});
+/**
+ * Clamps a bigint between a minimum and a maximum value.
+ *
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.nonPositiveBigint = nonPositiveBigint;
+const clampBigint = (min, max) => self => transform(self, self.pipe(to, betweenBigint(min, max)), self => B.clamp(self, min, max),
+// this is safe because `self.pipe(to, betweenBigint(min, max))` will check its input anyway
+_Function.identity);
+/**
+ * This combinator transforms a `string` into a `bigint` by parsing the string using the `BigInt` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * @param self - The schema representing the input string
+ *
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.clampBigint = clampBigint;
+const bigintFromString = self => {
+  const schema = transformResult(self, bigint, s => {
+    if (s.trim() === "") {
+      return PR.failure(PR.type(schema.ast, s));
+    }
+    try {
+      return PR.success(BigInt(s));
+    } catch (_) {
+      return PR.failure(PR.type(schema.ast, s));
+    }
+  }, n => PR.success(String(n)) // this is safe because `self` will check its input anyway
+  );
+
+  return schema;
+};
+/**
+ * This schema transforms a `string` into a `bigint` by parsing the string using the `BigInt` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * @category bigint
+ * @since 1.0.0
+ */
+exports.bigintFromString = bigintFromString;
+const BigintFromString = /*#__PURE__*/bigintFromString(string);
+// ---------------------------------------------
+// data/Boolean
+// ---------------------------------------------
+/**
+ * Negates a boolean value
+ *
+ * @category boolean
+ * @since 1.0.0
+ */
+exports.BigintFromString = BigintFromString;
+const not = self => transform(self, to(self), self => !self, self => !self);
+// ---------------------------------------------
+// data/Brand
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.not = not;
+const BrandTypeId = "@effect/schema/BrandTypeId";
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.BrandTypeId = BrandTypeId;
+const fromBrand = (constructor, options) => self => {
+  const decode = a => E.mapLeft(constructor.either(a), brandErrors => PR.parseError([PR.type(ast, a, brandErrors.map(v => v.message).join(", "))]));
+  const ast = AST.createRefinement(self.ast, decode, false, toAnnotations({
+    typeId: BrandTypeId,
+    ...options
+  }));
+  return make(ast);
+};
+// ---------------------------------------------
+// data/Chunk
+// ---------------------------------------------
+exports.fromBrand = fromBrand;
+const chunkArbitrary = item => fc => fc.array(item(fc)).map(C.fromIterable);
+const chunkPretty = item => c => `Chunk(${C.toReadonlyArray(c).map(item).join(", ")})`;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const chunkFromSelf = item => {
+  const schema = declare([item], struct({
+    _id: uniqueSymbol(Symbol.for("@effect/data/Chunk")),
+    length: number
+  }), item => {
+    const parse = P.parseResult(array(item));
+    return (u, options) => !C.isChunk(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(C.toReadonlyArray(u), options), C.fromIterable);
+  }, {
+    [AST.IdentifierAnnotationId]: "Chunk",
+    [I.PrettyHookId]: chunkPretty,
+    [I.ArbitraryHookId]: chunkArbitrary
+  });
+  return schema;
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.chunkFromSelf = chunkFromSelf;
+const chunk = item => transform(array(item), to(chunkFromSelf(item)), C.fromIterable, C.toReadonlyArray);
+// ---------------------------------------------
+// data/Data
+// ---------------------------------------------
+exports.chunk = chunk;
+const toData = a => Array.isArray(a) ? D.array(a) : D.struct(a);
+const dataArbitrary = item => fc => item(fc).map(toData);
+const dataPretty = item => d => `Data(${item(d)})`;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const dataFromSelf = item => {
+  const schema = declare([item], item, item => {
+    const parse = P.parseResult(item);
+    return (u, options) => !Equal.isEqual(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(u, options), toData);
+  }, {
+    [AST.IdentifierAnnotationId]: "Data",
+    [I.PrettyHookId]: dataPretty,
+    [I.ArbitraryHookId]: dataArbitrary
+  });
+  return schema;
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.dataFromSelf = dataFromSelf;
+const data = item => transform(item, to(dataFromSelf(item)), toData, a => Array.isArray(a) ? Array.from(a) : Object.assign({}, a));
+// ---------------------------------------------
+// data/Date
+// ---------------------------------------------
+exports.data = data;
+const dateArbitrary = () => fc => fc.date();
+const datePretty = () => date => `new Date(${JSON.stringify(date)})`;
+/**
+ * @category Date
+ * @since 1.0.0
+ */
+const DateFromSelf = /*#__PURE__*/declare([], /*#__PURE__*/struct({}), () => u => !(0, _Predicate.isDate)(u) ? PR.failure(PR.type(DateFromSelf.ast, u)) : PR.success(u), {
+  [AST.IdentifierAnnotationId]: "Date",
+  [I.PrettyHookId]: datePretty,
+  [I.ArbitraryHookId]: dateArbitrary
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.DateFromSelf = DateFromSelf;
+const ValidDateTypeId = "@effect/schema/ValidDateTypeId";
+/**
+ * A filter excluding invalid dates (e.g. `new Date("fail")`).
+ *
+ * @category Date
+ * @since 1.0.0
+ */
+exports.ValidDateTypeId = ValidDateTypeId;
+const validDate = options => self => self.pipe(filter(a => !isNaN(a.getTime()), {
+  typeId: ValidDateTypeId,
+  description: "a valid Date",
+  ...options
+}));
+/**
+ * A schema representing valid dates, e.g. `new Date("fail")` is excluded, even though it is an instance of `Date`.
+ *
+ * @category Date
+ * @since 1.0.0
+ */
+exports.validDate = validDate;
+const ValidDateFromSelf = /*#__PURE__*/DateFromSelf.pipe( /*#__PURE__*/validDate());
+/**
+  A combinator that transforms a `string` into a valid `Date`.
+
+  @category Date
+  @since 1.0.0
+*/
+exports.ValidDateFromSelf = ValidDateFromSelf;
+const dateFromString = self => transformResult(self, ValidDateFromSelf, s => PR.success(new Date(s)), n => PR.success(n.toISOString()) // this is safe because `self` will check its input anyway
+);
+exports.dateFromString = dateFromString;
+const _Date = /*#__PURE__*/dateFromString(string);
+exports.Date = _Date;
+// ---------------------------------------------
+// data/Either
+// ---------------------------------------------
+const eitherArbitrary = (left, right) => fc => fc.oneof(left(fc).map(E.left), right(fc).map(E.right));
+const eitherPretty = (left, right) => E.match({
+  onLeft: e => `left(${left(e)})`,
+  onRight: a => `right(${right(a)})`
+});
+const eitherInline = (left, right) => union(struct({
+  _tag: literal("Left"),
+  left
+}), struct({
+  _tag: literal("Right"),
+  right
+}));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const eitherFromSelf = (left, right) => {
+  const schema = declare([left, right], eitherInline(left, right), (left, right) => {
+    const parseLeft = P.parseResult(left);
+    const parseRight = P.parseResult(right);
+    return (u, options) => !E.isEither(u) ? PR.failure(PR.type(schema.ast, u)) : E.isLeft(u) ? PR.map(parseLeft(u.left, options), E.left) : PR.map(parseRight(u.right, options), E.right);
+  }, {
+    [AST.IdentifierAnnotationId]: "Either",
+    [I.PrettyHookId]: eitherPretty,
+    [I.ArbitraryHookId]: eitherArbitrary
+  });
+  return schema;
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.eitherFromSelf = eitherFromSelf;
+const either = (left, right) => transform(eitherInline(left, right), to(eitherFromSelf(left, right)), a => a._tag === "Left" ? E.left(a.left) : E.right(a.right), E.match({
+  onLeft: left => ({
+    _tag: "Left",
+    left
+  }),
+  onRight: right => ({
+    _tag: "Right",
+    right
+  })
+}));
+// ---------------------------------------------
+// data/Json
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.either = either;
+const JsonNumberTypeId = "@effect/schema/JsonNumberTypeId";
+/**
+ * The `JsonNumber` is a schema for representing JSON numbers. It ensures that the provided value is a valid
+ * number by filtering out `NaN` and `(+/-) Infinity`. This is useful when you want to validate and represent numbers in JSON
+ * format.
+ *
+ * @example
+ * import * as S from "@effect/schema/Schema"
+ *
+ * const is = S.is(S.JsonNumber)
+ *
+ * assert.deepStrictEqual(is(42), true)
+ * assert.deepStrictEqual(is(Number.NaN), false)
+ * assert.deepStrictEqual(is(Number.POSITIVE_INFINITY), false)
+ * assert.deepStrictEqual(is(Number.NEGATIVE_INFINITY), false)
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.JsonNumberTypeId = JsonNumberTypeId;
+const JsonNumber = /*#__PURE__*/number.pipe( /*#__PURE__*/filter(n => !isNaN(n) && isFinite(n), {
+  typeId: JsonNumberTypeId,
+  description: "a JSON number"
+}));
+// ---------------------------------------------
+// data/Number
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.JsonNumber = JsonNumber;
+const FiniteTypeId = "@effect/schema/FiniteTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.FiniteTypeId = FiniteTypeId;
+const finite = options => self => self.pipe(filter(a => Number.isFinite(a), {
+  typeId: FiniteTypeId,
+  description: "a finite number",
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.finite = finite;
+const GreaterThanTypeId = "@effect/schema/GreaterThanTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.GreaterThanTypeId = GreaterThanTypeId;
+const greaterThan = (min, options) => self => self.pipe(filter(a => a > min, {
+  typeId: GreaterThanTypeId,
+  description: `a number greater than ${min}`,
+  jsonSchema: {
+    exclusiveMinimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.greaterThan = greaterThan;
+const GreaterThanOrEqualToTypeId = "@effect/schema/GreaterThanOrEqualToTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.GreaterThanOrEqualToTypeId = GreaterThanOrEqualToTypeId;
+const greaterThanOrEqualTo = (min, options) => self => self.pipe(filter(a => a >= min, {
+  typeId: GreaterThanOrEqualToTypeId,
+  description: `a number greater than or equal to ${min}`,
+  jsonSchema: {
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.greaterThanOrEqualTo = greaterThanOrEqualTo;
+const MultipleOfTypeId = "@effect/schema/MultipleOfTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.MultipleOfTypeId = MultipleOfTypeId;
+const multipleOf = (divisor, options) => self => self.pipe(filter(a => N.remainder(a, divisor) === 0, {
+  typeId: MultipleOfTypeId,
+  description: `a number divisible by ${divisor}`,
+  jsonSchema: {
+    multipleOf: Math.abs(divisor)
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.multipleOf = multipleOf;
+const IntTypeId = "@effect/schema/IntTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.IntTypeId = IntTypeId;
+const int = options => self => self.pipe(filter(a => Number.isInteger(a), {
+  typeId: IntTypeId,
+  description: "integer",
+  jsonSchema: {
+    type: "integer"
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.int = int;
+const LessThanTypeId = "@effect/schema/LessThanTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.LessThanTypeId = LessThanTypeId;
+const lessThan = (max, options) => self => self.pipe(filter(a => a < max, {
+  typeId: LessThanTypeId,
+  description: `a number less than ${max}`,
+  jsonSchema: {
+    exclusiveMaximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.lessThan = lessThan;
+const LessThanOrEqualToTypeId = "@effect/schema/LessThanOrEqualToTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.LessThanOrEqualToTypeId = LessThanOrEqualToTypeId;
+const lessThanOrEqualTo = (max, options) => self => self.pipe(filter(a => a <= max, {
+  typeId: LessThanOrEqualToTypeId,
+  description: `a number less than or equal to ${max}`,
+  jsonSchema: {
+    maximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.lessThanOrEqualTo = lessThanOrEqualTo;
+const BetweenTypeId = "@effect/schema/BetweenTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.BetweenTypeId = BetweenTypeId;
+const between = (min, max, options) => self => self.pipe(filter(a => a >= min && a <= max, {
+  typeId: BetweenTypeId,
+  description: `a number between ${min} and ${max}`,
+  jsonSchema: {
+    maximum: max,
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.between = between;
+const NonNaNTypeId = "@effect/schema/NonNaNTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.NonNaNTypeId = NonNaNTypeId;
+const nonNaN = options => self => self.pipe(filter(a => !Number.isNaN(a), {
+  typeId: NonNaNTypeId,
+  description: "a number NaN excluded",
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.nonNaN = nonNaN;
+const PositiveTypeId = "@effect/schema/PositiveTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.PositiveTypeId = PositiveTypeId;
+const positive = options => greaterThan(0, {
+  typeId: PositiveTypeId,
+  description: "a positive number",
+  ...options
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.positive = positive;
+const NegativeTypeId = "@effect/schema/NegativeTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.NegativeTypeId = NegativeTypeId;
+const negative = options => lessThan(0, {
+  typeId: NegativeTypeId,
+  description: "a negative number",
+  ...options
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.negative = negative;
+const NonNegativeTypeId = "@effect/schema/NonNegativeTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.NonNegativeTypeId = NonNegativeTypeId;
+const nonNegative = options => greaterThanOrEqualTo(0, {
+  typeId: NonNegativeTypeId,
+  description: "a non-negative number",
+  ...options
+});
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.nonNegative = nonNegative;
+const NonPositiveTypeId = "@effect/schema/NonPositiveTypeId";
+/**
+ * @category number
+ * @since 1.0.0
+ */
+exports.NonPositiveTypeId = NonPositiveTypeId;
+const nonPositive = options => lessThanOrEqualTo(0, {
+  typeId: NonPositiveTypeId,
+  description: "a non-positive number",
+  ...options
+});
+/**
+ * Clamps a number between a minimum and a maximum value.
+ *
+ * @category number
+ * @since 1.0.0
+ */
+exports.nonPositive = nonPositive;
+const clamp = (min, max) => self => transform(self, self.pipe(to, between(min, max)), self => N.clamp(self, min, max),
+// this is safe because `self.pipe(to, between(min, max))` will check its input anyway
+_Function.identity);
+/**
+ * This combinator transforms a `string` into a `number` by parsing the string using the `Number` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * The following special string values are supported: "NaN", "Infinity", "-Infinity".
+ *
+ * @param self - The schema representing the input string
+ *
+ * @category number
+ * @since 1.0.0
+ */
+exports.clamp = clamp;
+const numberFromString = self => {
+  const schema = transformResult(self, number, s => {
+    if (s === "NaN") {
+      return PR.success(NaN);
+    }
+    if (s === "Infinity") {
+      return PR.success(Infinity);
+    }
+    if (s === "-Infinity") {
+      return PR.success(-Infinity);
+    }
+    if (s.trim() === "") {
+      return PR.failure(PR.type(schema.ast, s));
+    }
+    const n = Number(s);
+    return isNaN(n) ? PR.failure(PR.type(schema.ast, s)) : PR.success(n);
+  }, n => PR.success(String(n)) // this is safe because `self` will check its input anyway
+  );
+
+  return schema;
+};
+/**
+ * This schema transforms a `string` into a `number` by parsing the string using the `Number` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * The following special string values are supported: "NaN", "Infinity", "-Infinity".
+ *
+ * @category number
+ * @since 1.0.0
+ */
+exports.numberFromString = numberFromString;
+const NumberFromString = /*#__PURE__*/numberFromString(string);
+// ---------------------------------------------
+// data/Object
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.NumberFromString = NumberFromString;
+const InstanceOfTypeId = "@effect/schema/InstanceOfTypeId";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+exports.InstanceOfTypeId = InstanceOfTypeId;
+const instanceOf = (constructor, options) => {
+  const annotations = toAnnotations(options);
+  const schema = declare([], struct({}), () => input => input instanceof constructor ? PR.success(input) : PR.failure(PR.type(schema.ast, input)), {
+    [AST.TypeAnnotationId]: InstanceOfTypeId,
+    [InstanceOfTypeId]: {
+      constructor
+    },
+    [AST.DescriptionAnnotationId]: `an instance of ${constructor.name}`,
+    ...annotations
+  });
+  return schema;
+};
+// ---------------------------------------------
+// data/Option
+// ---------------------------------------------
+exports.instanceOf = instanceOf;
+const optionArbitrary = value => fc => fc.oneof(fc.constant(O.none()), value(fc).map(O.some));
+const optionPretty = value => O.match({
+  onNone: () => "none()",
+  onSome: a => `some(${value(a)})`
+});
+const optionInline = value => union(struct({
+  _tag: literal("None")
+}), struct({
+  _tag: literal("Some"),
+  value
+}));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const optionFromSelf = value => {
+  const schema = declare([value], optionInline(value), value => {
+    const parse = P.parseResult(value);
+    return (u, options) => !O.isOption(u) ? PR.failure(PR.type(schema.ast, u)) : O.isNone(u) ? PR.success(O.none()) : PR.map(parse(u.value, options), O.some);
+  }, {
+    [AST.IdentifierAnnotationId]: "Option",
+    [I.PrettyHookId]: optionPretty,
+    [I.ArbitraryHookId]: optionArbitrary
+  });
+  return schema;
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.optionFromSelf = optionFromSelf;
+const option = value => transform(optionInline(value), to(optionFromSelf(value)), a => a._tag === "None" ? O.none() : O.some(a.value), O.match({
+  onNone: () => ({
+    _tag: "None"
+  }),
+  onSome: value => ({
+    _tag: "Some",
+    value
+  })
+}));
+/**
+ * @category option
+ * @since 1.0.0
+ */
+exports.option = option;
+const optionFromNullable = value => transform(nullable(value), to(optionFromSelf(value)), O.fromNullable, O.getOrNull);
+// ---------------------------------------------
+// data/ReadonlyArray
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.optionFromNullable = optionFromNullable;
+const MinItemsTypeId = "@effect/schema/MinItemsTypeId";
+/**
+ * @category array
+ * @since 1.0.0
+ */
+exports.MinItemsTypeId = MinItemsTypeId;
+const minItems = (n, options) => self => self.pipe(filter(a => a.length >= n, {
+  typeId: MinItemsTypeId,
+  description: `an array of at least ${n} items`,
+  jsonSchema: {
+    minItems: n
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.minItems = minItems;
+const MaxItemsTypeId = "@effect/schema/MaxItemsTypeId";
+/**
+ * @category array
+ * @since 1.0.0
+ */
+exports.MaxItemsTypeId = MaxItemsTypeId;
+const maxItems = (n, options) => self => self.pipe(filter(a => a.length <= n, {
+  typeId: MaxItemsTypeId,
+  description: `an array of at most ${n} items`,
+  jsonSchema: {
+    maxItems: n
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.maxItems = maxItems;
+const ItemsCountTypeId = "@effect/schema/ItemsCountTypeId";
+/**
+ * @category array
+ * @since 1.0.0
+ */
+exports.ItemsCountTypeId = ItemsCountTypeId;
+const itemsCount = (n, options) => self => self.pipe(filter(a => a.length === n, {
+  typeId: ItemsCountTypeId,
+  description: `an array of exactly ${n} items`,
+  jsonSchema: {
+    minItems: n,
+    maxItems: n
+  },
+  ...options
+}));
+// ---------------------------------------------
+// data/ReadonlyMap
+// ---------------------------------------------
+exports.itemsCount = itemsCount;
+const isMap = u => u instanceof Map;
+const readonlyMapArbitrary = (key, value) => fc => fc.array(fc.tuple(key(fc), value(fc))).map(as => new Map(as));
+const readonlyMapPretty = (key, value) => map => `new Map([${Array.from(map.entries()).map(([k, v]) => `[${key(k)}, ${value(v)}]`).join(", ")}])`;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const readonlyMapFromSelf = (key, value) => {
+  const schema = declare([key, value], struct({
+    size: number
+  }), (key, value) => {
+    const parse = P.parseResult(array(tuple(key, value)));
+    return (u, options) => !isMap(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(Array.from(u.entries()), options), as => new Map(as));
+  }, {
+    [AST.IdentifierAnnotationId]: "ReadonlyMap",
+    [I.PrettyHookId]: readonlyMapPretty,
+    [I.ArbitraryHookId]: readonlyMapArbitrary
+  });
+  return schema;
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.readonlyMapFromSelf = readonlyMapFromSelf;
+const readonlyMap = (key, value) => transform(array(tuple(key, value)), to(readonlyMapFromSelf(key, value)), as => new Map(as), map => Array.from(map.entries()));
+// ---------------------------------------------
+// data/ReadonlySet
+// ---------------------------------------------
+exports.readonlyMap = readonlyMap;
+const isSet = u => u instanceof Set;
+const readonlySetArbitrary = item => fc => fc.array(item(fc)).map(as => new Set(as));
+const readonlySetPretty = item => set => `new Set([${Array.from(set.values()).map(a => item(a)).join(", ")}])`;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const readonlySetFromSelf = item => {
+  const schema = declare([item], struct({
+    size: number
+  }), item => {
+    const parse = P.parseResult(array(item));
+    return (u, options) => !isSet(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(Array.from(u.values()), options), as => new Set(as));
+  }, {
+    [AST.IdentifierAnnotationId]: "ReadonlySet",
+    [I.PrettyHookId]: readonlySetPretty,
+    [I.ArbitraryHookId]: readonlySetArbitrary
+  });
+  return schema;
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+exports.readonlySetFromSelf = readonlySetFromSelf;
+const readonlySet = item => transform(array(item), to(readonlySetFromSelf(item)), as => new Set(as), set => Array.from(set));
+// ---------------------------------------------
+// data/String
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.readonlySet = readonlySet;
+const TrimmedTypeId = "@effect/schema/TrimmedTypeId";
+/**
+ * Verifies that a string contains no leading or trailing whitespaces.
+ *
+ * Note. This combinator does not make any transformations, it only validates.
+ * If what you were looking for was a combinator to trim strings, then check out the `trim` combinator.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+exports.TrimmedTypeId = TrimmedTypeId;
+const trimmed = options => self => self.pipe(filter(a => a === a.trim(), {
+  typeId: TrimmedTypeId,
+  description: "a string with no leading or trailing whitespace",
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.trimmed = trimmed;
+const MaxLengthTypeId = "@effect/schema/MaxLengthTypeId";
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.MaxLengthTypeId = MaxLengthTypeId;
+const maxLength = (maxLength, options) => self => self.pipe(filter(a => a.length <= maxLength, {
+  typeId: MaxLengthTypeId,
+  description: `a string at most ${maxLength} character(s) long`,
+  jsonSchema: {
+    maxLength
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.maxLength = maxLength;
+const MinLengthTypeId = "@effect/schema/MinLengthTypeId";
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.MinLengthTypeId = MinLengthTypeId;
+const minLength = (minLength, options) => self => self.pipe(filter(a => a.length >= minLength, {
+  typeId: MinLengthTypeId,
+  description: `a string at least ${minLength} character(s) long`,
+  jsonSchema: {
+    minLength
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.minLength = minLength;
+const PatternTypeId = "@effect/schema/PatternTypeId";
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.PatternTypeId = PatternTypeId;
+const pattern = (regex, options) => self => {
+  const pattern = regex.source;
+  return self.pipe(filter(a => {
+    // The following line ensures that `lastIndex` is reset to `0` in case the user has specified the `g` flag
+    regex.lastIndex = 0;
+    return regex.test(a);
+  }, {
+    typeId: {
+      id: PatternTypeId,
+      params: {
+        regex
+      }
+    },
+    description: `a string matching the pattern ${pattern}`,
+    jsonSchema: {
+      pattern
+    },
+    arbitrary: () => fc => fc.stringMatching(regex),
+    ...options
+  }));
+};
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.pattern = pattern;
+const StartsWithTypeId = "@effect/schema/StartsWithTypeId";
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.StartsWithTypeId = StartsWithTypeId;
+const startsWith = (startsWith, options) => self => self.pipe(filter(a => a.startsWith(startsWith), {
+  typeId: {
+    id: StartsWithTypeId,
+    params: {
+      startsWith
+    }
+  },
+  description: `a string starting with ${JSON.stringify(startsWith)}`,
+  jsonSchema: {
+    pattern: `^${startsWith}`
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.startsWith = startsWith;
+const EndsWithTypeId = "@effect/schema/EndsWithTypeId";
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.EndsWithTypeId = EndsWithTypeId;
+const endsWith = (endsWith, options) => self => self.pipe(filter(a => a.endsWith(endsWith), {
+  typeId: {
+    id: EndsWithTypeId,
+    params: {
+      endsWith
+    }
+  },
+  description: `a string ending with ${JSON.stringify(endsWith)}`,
+  jsonSchema: {
+    pattern: `^.*${endsWith}$`
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.endsWith = endsWith;
+const IncludesTypeId = "@effect/schema/IncludesTypeId";
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.IncludesTypeId = IncludesTypeId;
+const includes = (searchString, options) => self => self.pipe(filter(a => a.includes(searchString), {
+  typeId: {
+    id: IncludesTypeId,
+    params: {
+      includes: searchString
+    }
+  },
+  description: `a string including ${JSON.stringify(searchString)}`,
+  jsonSchema: {
+    pattern: `.*${searchString}.*`
+  },
+  ...options
+}));
+/**
+ * This combinator allows removing whitespaces from the beginning and end of a string.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+exports.includes = includes;
+const trim = self => transform(self, to(self).pipe(trimmed()), s => s.trim(),
+// this is safe because `pipe(to(self), trimmed())` will check its input anyway
+_Function.identity);
+/**
+ * This schema allows removing whitespaces from the beginning and end of a string.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+exports.trim = trim;
+const Trim = /*#__PURE__*/trim(string);
+/**
+ * This combinator allows splitting a string into an array of strings.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+exports.Trim = Trim;
+const split = /*#__PURE__*/(0, _Function.dual)(2, (self, separator) => transform(self, array(string), S.split(separator), RA.join(separator)));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.split = split;
+const UUIDTypeId = "@effect/schema/UUIDTypeId";
+exports.UUIDTypeId = UUIDTypeId;
+const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const UUID = /*#__PURE__*/string.pipe( /*#__PURE__*/pattern(uuidRegex, {
+  typeId: UUIDTypeId,
+  title: "UUID",
+  arbitrary: () => fc => fc.uuid()
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+exports.UUID = UUID;
+const ULIDTypeId = "@effect/schema/ULIDTypeId";
+exports.ULIDTypeId = ULIDTypeId;
+const ulidRegex = /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/i;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const ULID = /*#__PURE__*/string.pipe( /*#__PURE__*/pattern(ulidRegex, {
+  typeId: ULIDTypeId,
+  title: "ULID",
+  arbitrary: () => fc => fc.ulid()
+}));
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.ULID = ULID;
+const length = (length, options) => self => minLength(length, options)(maxLength(length)(self));
+/**
+ * @category string
+ * @since 1.0.0
+ */
+exports.length = length;
+const nonEmpty = options => minLength(1, options);
+/**
+ * The `parseJson` combinator offers a method to convert JSON strings into the `unknown` type using the underlying
+ * functionality of `JSON.parse`. It also employs `JSON.stringify` for encoding.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+exports.nonEmpty = nonEmpty;
+const parseJson = (self, options) => {
+  const schema = transformResult(self, unknown, s => {
+    try {
+      return PR.success(JSON.parse(s, options?.reviver));
+    } catch (e) {
+      return PR.failure(PR.type(schema.ast, s, e.message));
+    }
+  }, u => {
+    try {
+      return PR.success(JSON.stringify(u, options?.replacer, options?.space)); // this is safe because `self` will check its input anyway
+    } catch (e) {
+      return PR.failure(PR.type(schema.ast, u, e.message));
+    }
+  });
+  return schema;
+};
+/**
+ * The `ParseJson` schema offers a method to convert JSON strings into the `unknown` type using the underlying
+ * functionality of `JSON.parse`. It also employs `JSON.stringify` for encoding.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+exports.parseJson = parseJson;
+const ParseJson = /*#__PURE__*/parseJson(string);
+exports.ParseJson = ParseJson;
+//# sourceMappingURL=Schema.js.map
+
+/***/ }),
+
+/***/ 1981:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.formatExpected = exports.formatErrors = exports.formatActual = void 0;
+var _Function = /*#__PURE__*/__nccwpck_require__(5873);
+var O = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(5794));
+var AST = /*#__PURE__*/_interopRequireWildcard( /*#__PURE__*/__nccwpck_require__(9120));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/**
+ * @since 1.0.0
+ */
+
+const make = (value, forest = []) => ({
+  value,
+  forest
+});
+/**
+ * @since 1.0.0
+ */
+const formatErrors = errors => drawTree(make(`error(s) found`, errors.map(go)));
+exports.formatErrors = formatErrors;
+const drawTree = tree => tree.value + draw("\n", tree.forest);
+const draw = (indentation, forest) => {
+  let r = "";
+  const len = forest.length;
+  let tree;
+  for (let i = 0; i < len; i++) {
+    tree = forest[i];
+    const isLast = i === len - 1;
+    r += indentation + (isLast ? "└" : "├") + "─ " + tree.value;
+    r += draw(indentation + (len > 1 && !isLast ? "│  " : "   "), tree.forest);
+  }
+  return r;
+};
+/** @internal */
+const formatActual = actual => {
+  if (actual === undefined || actual === null || typeof actual === "number" || typeof actual === "symbol" || actual instanceof Date) {
+    return String(actual);
+  }
+  if (typeof actual === "bigint") {
+    return String(actual) + "n";
+  }
+  try {
+    return JSON.stringify(actual);
+  } catch (e) {
+    return String(actual);
+  }
+};
+exports.formatActual = formatActual;
+const formatTemplateLiteralSpan = span => {
+  switch (span.type._tag) {
+    case "StringKeyword":
+      return "${string}";
+    case "NumberKeyword":
+      return "${number}";
+  }
+};
+const formatTemplateLiteral = ast => ast.head + ast.spans.map(span => formatTemplateLiteralSpan(span) + span.literal).join("");
+const getMessage = /*#__PURE__*/AST.getAnnotation(AST.MessageAnnotationId);
+const getTitle = /*#__PURE__*/AST.getAnnotation(AST.TitleAnnotationId);
+const getIdentifier = /*#__PURE__*/AST.getAnnotation(AST.IdentifierAnnotationId);
+const getDescription = /*#__PURE__*/AST.getAnnotation(AST.DescriptionAnnotationId);
+const getExpected = ast => (0, _Function.pipe)(getIdentifier(ast), O.orElse(() => getTitle(ast)), O.orElse(() => getDescription(ast)));
+/** @internal */
+const formatExpected = ast => {
+  switch (ast._tag) {
+    case "StringKeyword":
+    case "NumberKeyword":
+    case "BooleanKeyword":
+    case "BigIntKeyword":
+    case "UndefinedKeyword":
+    case "SymbolKeyword":
+    case "ObjectKeyword":
+    case "AnyKeyword":
+    case "UnknownKeyword":
+    case "VoidKeyword":
+    case "NeverKeyword":
+      return O.getOrElse(getExpected(ast), () => ast._tag);
+    case "Literal":
+      return O.getOrElse(getExpected(ast), () => formatActual(ast.literal));
+    case "UniqueSymbol":
+      return O.getOrElse(getExpected(ast), () => formatActual(ast.symbol));
+    case "Union":
+      return ast.types.map(formatExpected).join(" or ");
+    case "TemplateLiteral":
+      return O.getOrElse(getExpected(ast), () => formatTemplateLiteral(ast));
+    case "Tuple":
+      return O.getOrElse(getExpected(ast), () => "<anonymous tuple or array schema>");
+    case "TypeLiteral":
+      return O.getOrElse(getExpected(ast), () => "<anonymous type literal schema>");
+    case "Enums":
+      return O.getOrElse(getExpected(ast), () => ast.enums.map((_, value) => JSON.stringify(value)).join(" | "));
+    case "Lazy":
+      return O.getOrElse(getExpected(ast), () => "<anonymous lazy schema>");
+    case "Declaration":
+      return O.getOrElse(getExpected(ast), () => "<anonymous declaration schema>");
+    case "Refinement":
+      return O.getOrElse(getExpected(ast), () => "<anonymous refinement schema>");
+    case "Transform":
+      return O.getOrElse(getExpected(ast), () => `${formatExpected(ast.from)} -> ${formatExpected(ast.to)}`);
+  }
+};
+exports.formatExpected = formatExpected;
+const go = e => {
+  switch (e._tag) {
+    case "Type":
+      return make((0, _Function.pipe)(getMessage(e.expected), O.map(f => f(e.actual)), O.orElse(() => e.message), O.getOrElse(() => `Expected ${formatExpected(e.expected)}, actual ${formatActual(e.actual)}`)));
+    case "Forbidden":
+      return make("is forbidden");
+    case "Index":
+      {
+        const es = e.errors.map(go);
+        if (es.length === 1 && es[0].forest.length !== 0) {
+          return make(`[${e.index}]${es[0].value}`, es[0].forest);
+        }
+        return make(`[${e.index}]`, es);
+      }
+    case "Unexpected":
+      return make(`is unexpected`);
+    case "Key":
+      {
+        const es = e.errors.map(go);
+        if (es.length === 1 && es[0].forest.length !== 0) {
+          return make(`[${formatActual(e.key)}]${es[0].value}`, es[0].forest);
+        }
+        return make(`[${formatActual(e.key)}]`, es);
+      }
+    case "Missing":
+      return make(`is missing`);
+    case "UnionMember":
+      return make(`union member`, e.errors.map(go));
+  }
+};
+//# sourceMappingURL=TreeFormatter.js.map
+
+/***/ }),
+
+/***/ 5664:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.ownKeys = exports.memoizeThunk = exports.getKeysForIndexSignature = exports.PrettyHookId = exports.ArbitraryHookId = void 0;
+/**
+ * @since 1.0.0
+ */
+// ---------------------------------------------
+// hooks
+// ---------------------------------------------
+/** @internal */
+const ArbitraryHookId = "@effect/schema/ArbitraryHookId";
+/** @internal */
+exports.ArbitraryHookId = ArbitraryHookId;
+const PrettyHookId = "@effect/schema/PrettyHookId";
+// ---------------------------------------------
+// Schema APIs
+// ---------------------------------------------
+/** @internal */
+exports.PrettyHookId = PrettyHookId;
+const getKeysForIndexSignature = (input, parameter) => {
+  switch (parameter._tag) {
+    case "StringKeyword":
+    case "TemplateLiteral":
+      return Object.keys(input);
+    case "SymbolKeyword":
+      return Object.getOwnPropertySymbols(input);
+    case "Refinement":
+      return getKeysForIndexSignature(input, parameter.from);
+  }
+};
+// ---------------------------------------------
+// general helpers
+// ---------------------------------------------
+/** @internal */
+exports.getKeysForIndexSignature = getKeysForIndexSignature;
+const ownKeys = o => Object.keys(o).concat(Object.getOwnPropertySymbols(o));
+/** @internal */
+exports.ownKeys = ownKeys;
+const memoizeThunk = f => {
+  let done = false;
+  let a;
+  return () => {
+    if (done) {
+      return a;
+    }
+    a = f();
+    done = true;
+    return a;
+  };
+};
+exports.memoizeThunk = memoizeThunk;
+//# sourceMappingURL=common.js.map
+
+/***/ }),
+
 /***/ 6594:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -74601,6 +78944,235 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 6693:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.debugVariables = exports.REF = exports.WORKFLOW_URL = exports.GITHUB_SERVER_URL = exports.GITHUB_HEAD_REF = exports.GITHUB_ACTOR_ID = exports.GITHUB_ACTOR = exports.GITHUB_API_URL = exports.RUNNER_ARCH = exports.RUNNER_OS = exports.RUNNER_ENVIRONMENT = exports.GITHUB_REF_TYPE = exports.GITHUB_REF_NAME = exports.GITHUB_SHA = exports.GITHUB_REPOSITORY_OWNER_ID = exports.GITHUB_REPOSITORY_ID = exports.GITHUB_REPOSITORY = exports.GITHUB_RUN_ATTEMPT = exports.GITHUB_RUNNER_NAME = exports.GITHUB_RUN_NUMBER = exports.GITHUB_RUN_ID = exports.ZEKLIN_SERVER_URL = exports.Ref_ = exports.Ref = exports.NES = void 0;
+const effect_1 = __nccwpck_require__(2090);
+const utils_1 = __nccwpck_require__(3924);
+const S = __importStar(__nccwpck_require__(3363));
+const optionalEnvvar = (v) => (v ? effect_1.Option.fromNullable(v) : effect_1.Option.none());
+const NESBrand = Symbol.for("NonEmptyString");
+const NESSchema = (0, effect_1.pipe)(S.string, S.trim, S.nonEmpty(), S.brand(NESBrand));
+exports.NES = {
+    unsafe: (s) => s,
+    fromString: (s) => S.parseOption(NESSchema)(s),
+    unsafeFromString: (s) => S.parseSync(NESSchema)(s),
+};
+const HttpsUrlBrand = Symbol.for("HttpsUrl");
+const HttpsUrlSchema = (0, effect_1.pipe)(S.string, S.trim, S.startsWith("https://"), S.brand(HttpsUrlBrand));
+const HttpsUrl = {
+    unsafeFromString: (s) => S.parseSync(HttpsUrlSchema)(s),
+};
+exports.Ref = effect_1.Data.taggedEnum();
+exports.Ref_ = {
+    unsafeMake(refType, value) {
+        switch (refType.toLowerCase()) {
+            case "branch":
+                return (0, exports.Ref)("Branch")({ value: value });
+            case "tag":
+                return (0, exports.Ref)("Tag")({ value: value });
+            default:
+                throw new Error(`Invalid ref type: ${refType}`);
+        }
+    },
+};
+const RunnerOs = {
+    unsafeFromString: (s) => {
+        switch (s.toLowerCase()) {
+            case "linux":
+                return "linux";
+            case "windows":
+                return "windows";
+            case "macos":
+                return "macos";
+            default:
+                throw new Error(`Invalid runner OS: ${s}`);
+        }
+    },
+};
+const RunnerArch = {
+    unsafeFromString: (s) => {
+        switch (s.toLowerCase()) {
+            case "x86":
+                return "x86";
+            case "x64":
+                return "x64";
+            case "arm":
+                return "arm";
+            case "arm64":
+                return "arm64";
+            default:
+                throw new Error(`Invalid runner arch: ${s}`);
+        }
+    },
+};
+// -- Envvars --
+//
+// Documentation of GitHub envvars: https://docs.github.com/en/actions/learn-github-actions/variables
+//
+exports.ZEKLIN_SERVER_URL = exports.NES.unsafeFromString(process.env["ZEKLIN_SERVER_URL"] ?? "https://api.zeklin.io");
+/**
+ * A unique number for each workflow run within a repository.
+ * This number does not change if you re-run the workflow run.
+ * For example, 1658821493.
+ */
+exports.GITHUB_RUN_ID = Number(process.env.GITHUB_RUN_ID);
+/**
+ * A unique number for each run of a particular workflow in a repository.
+ * This number begins at 1 for the workflow's first run, and increments with each new run.
+ * This number does not change if you re-run the workflow run.
+ * For example, 3.
+ */
+exports.GITHUB_RUN_NUMBER = Number(process.env.GITHUB_RUN_NUMBER);
+/**
+ * [Not documented]
+ */
+exports.GITHUB_RUNNER_NAME = exports.NES.unsafeFromString(process.env.GITHUB_RUNNER_NAME);
+/**
+ * A unique number for each attempt of a particular workflow run in a repository.
+ * This number begins at 1 for the workflow run's first attempt, and increments with each re-run.
+ * For example, 3.
+ */
+exports.GITHUB_RUN_ATTEMPT = Number(process.env.GITHUB_RUN_ATTEMPT);
+/**
+ * The owner and repository name.
+ * For example, octocat/Hello-World.
+ */
+exports.GITHUB_REPOSITORY = exports.NES.unsafeFromString(process.env.GITHUB_REPOSITORY);
+/**
+ * The ID of the repository.
+ * For example, 123456789.
+ * Note that this is different from the repository name.
+ */
+exports.GITHUB_REPOSITORY_ID = Number(process.env.GITHUB_REPOSITORY_ID);
+/**
+ * The repository owner's account ID.
+ * For example, 1234567.
+ * Note that this is different from the owner's name.
+ */
+exports.GITHUB_REPOSITORY_OWNER_ID = Number(process.env.GITHUB_REPOSITORY_OWNER_ID);
+/**
+ * The commit SHA that triggered the workflow.
+ * The value of this commit SHA depends on the event that triggered the workflow.
+ * For more information, see [Events that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
+ * For example, ffac537e6cbbf934b08745a378932722df287a53.
+ */
+exports.GITHUB_SHA = exports.NES.unsafeFromString(process.env.GITHUB_SHA);
+/**
+ * The short ref name of the branch or tag that triggered the workflow run.
+ * This value matches the branch or tag name shown on GitHub.
+ * For example, feature-branch-1.
+ */
+exports.GITHUB_REF_NAME = exports.NES.unsafeFromString(process.env.GITHUB_REF_NAME);
+/**
+ * The type of ref that triggered the workflow run.
+ * Valid values are "branch" or "tag".
+ */
+exports.GITHUB_REF_TYPE = exports.NES.unsafeFromString(process.env.GITHUB_REF_TYPE);
+/**
+ * [Not documented]
+ *
+ * In GitHub, the value seems to be "github-hosted"
+ * TBC: In self-hosted runners, the value is probably something like to be "self-hosted"
+ */
+exports.RUNNER_ENVIRONMENT = exports.NES.unsafeFromString(process.env.RUNNER_ENVIRONMENT);
+/**
+ * The operating system of the runner executing the job.
+ * Possible values are Linux, Windows, or macOS.
+ * For example, Windows
+ */
+exports.RUNNER_OS = RunnerOs.unsafeFromString(process.env.RUNNER_OS);
+/**
+ * The architecture of the runner executing the job.
+ * Possible values are X86, X64, ARM, or ARM64.
+ */
+exports.RUNNER_ARCH = RunnerArch.unsafeFromString(process.env.RUNNER_ARCH);
+/**
+ * Returns the API URL.
+ * For example: https://api.github.com.
+ */
+exports.GITHUB_API_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_API_URL);
+/**
+ * The name of the person or app that initiated the workflow.
+ * For example, octocat.
+ */
+exports.GITHUB_ACTOR = exports.NES.unsafeFromString(process.env.GITHUB_ACTOR);
+/**
+ * The account ID of the person or app that triggered the initial workflow run.
+ * For example, 1234567. Note that this is different from the actor username.
+ */
+exports.GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
+/**
+ * The head ref or source branch of the pull request in a workflow run.
+ * This property is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
+ * For example, feature-branch-1.
+ */
+exports.GITHUB_HEAD_REF = optionalEnvvar(process.env.GITHUB_HEAD_REF).pipe(effect_1.Option.map(exports.NES.unsafeFromString));
+/**
+ * The URL of the GitHub server.
+ * For example: https://github.com.
+ */
+exports.GITHUB_SERVER_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_SERVER_URL);
+/**
+ * Comes from https://docs.github.com/en/actions/learn-github-actions/variables
+ */
+exports.WORKFLOW_URL = HttpsUrl.unsafeFromString(`${exports.GITHUB_SERVER_URL}/${exports.GITHUB_REPOSITORY}/actions/runs/${exports.GITHUB_RUN_ID}`);
+exports.REF = exports.Ref_.unsafeMake(exports.GITHUB_REF_TYPE, exports.GITHUB_REF_NAME);
+const debugVariables = () => {
+    (0, utils_1.logDebug)(`ZEKLIN_SERVER_URL: ${exports.ZEKLIN_SERVER_URL}`);
+    (0, utils_1.logDebug)(`GITHUB_RUN_ID: ${exports.GITHUB_RUN_ID}`);
+    (0, utils_1.logDebug)(`GITHUB_RUN_NUMBER: ${exports.GITHUB_RUN_NUMBER}`);
+    (0, utils_1.logDebug)(`GITHUB_RUNNER_NAME: ${exports.GITHUB_RUNNER_NAME}`);
+    (0, utils_1.logDebug)(`GITHUB_RUN_ATTEMPT: ${exports.GITHUB_RUN_ATTEMPT}`);
+    (0, utils_1.logDebug)(`GITHUB_REPOSITORY: ${exports.GITHUB_REPOSITORY}`);
+    (0, utils_1.logDebug)(`GITHUB_REPOSITORY_ID: ${exports.GITHUB_REPOSITORY_ID}`);
+    (0, utils_1.logDebug)(`GITHUB_REPOSITORY_OWNER_ID: ${exports.GITHUB_REPOSITORY_OWNER_ID}`);
+    (0, utils_1.logDebug)(`GITHUB_SHA: ${exports.GITHUB_SHA}`);
+    (0, utils_1.logDebug)(`GITHUB_REF_NAME: ${exports.GITHUB_REF_NAME}`);
+    (0, utils_1.logDebug)(`GITHUB_REF_TYPE: ${exports.GITHUB_REF_TYPE}`);
+    (0, utils_1.logDebug)(`RUNNER_ENVIRONMENT: ${exports.RUNNER_ENVIRONMENT}`);
+    (0, utils_1.logDebug)(`RUNNER_OS: ${exports.RUNNER_OS}`);
+    (0, utils_1.logDebug)(`RUNNER_ARCH: ${exports.RUNNER_ARCH}`);
+    (0, utils_1.logDebug)(`GITHUB_API_URL: ${exports.GITHUB_API_URL}`);
+    (0, utils_1.logDebug)(`GITHUB_ACTOR: ${exports.GITHUB_ACTOR}`);
+    (0, utils_1.logDebug)(`GITHUB_ACTOR_ID: ${exports.GITHUB_ACTOR_ID}`);
+    (0, utils_1.logDebug)(`GITHUB_HEAD_REF: ${exports.GITHUB_HEAD_REF}`);
+    (0, utils_1.logDebug)(`GITHUB_SERVER_URL: ${exports.GITHUB_SERVER_URL}`);
+    (0, utils_1.logDebug)(`WORKFLOW_URL: ${exports.WORKFLOW_URL}`);
+    (0, utils_1.logDebug)(`REF: ${exports.REF}`);
+};
+exports.debugVariables = debugVariables;
+
+
+/***/ }),
+
 /***/ 474:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -74630,12 +79202,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.main = void 0;
+exports.main = exports.Inputs = void 0;
 const core = __importStar(__nccwpck_require__(7733));
 const core_1 = __nccwpck_require__(7733);
 const effect_1 = __nccwpck_require__(2090);
 const Effect = __importStar(__nccwpck_require__(5307));
-const exec_1 = __nccwpck_require__(1757);
+const utils_1 = __nccwpck_require__(3924);
+const envvars_1 = __nccwpck_require__(6693);
+const run_1 = __nccwpck_require__(8214);
 const banner = String.raw `
  ___________
 < Zeklin.io >
@@ -74648,8 +79222,12 @@ const banner = String.raw `
           \\__|\\ |    (-___-)        | /|__/
           '  '--'    ==\`-'==        '--'  '
 `;
+if (process.env.GITHUB_ACTIONS !== "true") {
+    (0, core_1.setFailed)("The script must be run in GitHub Actions environment");
+}
 class Inputs extends effect_1.Data.TaggedClass("Inputs") {
 }
+exports.Inputs = Inputs;
 const unsafeParseInputs = () => {
     const unsafeRequiredInput = (name) => {
         const v = core.getInput(name, { required: true, trimWhitespace: true });
@@ -74657,7 +79235,7 @@ const unsafeParseInputs = () => {
         if (v.length === 0)
             throw new Error(`Input ${name} is required`);
         else
-            return v;
+            return envvars_1.NES.unsafe(v);
     };
     const unsafeRequiredMultilineInput = (name) => {
         const v = core.getMultilineInput(name, { required: true, trimWhitespace: true });
@@ -74665,19 +79243,17 @@ const unsafeParseInputs = () => {
         if (v.length === 0)
             throw new Error(`Input ${name} is required`);
         else
-            return effect_1.Chunk.fromIterable(v);
+            return (0, effect_1.pipe)(effect_1.Chunk.fromIterable(v), effect_1.Chunk.filterMap(envvars_1.NES.fromString));
     };
     const optionalInput = (name) => {
         const v = core.getInput(name, { required: false, trimWhitespace: true });
         core.debug(`-- input ${name}: ${v}`);
-        if (v.length === 0)
-            return effect_1.Option.none();
-        else
-            return effect_1.Option.some(v);
+        return envvars_1.NES.fromString(v);
     };
     try {
         return effect_1.Either.right(new Inputs({
             apikey: unsafeRequiredInput("apikey"),
+            outputFilePath: unsafeRequiredInput("output-file-path"),
             cmd: unsafeRequiredMultilineInput("cmd"),
             workdir: optionalInput("workdir"),
         }));
@@ -74686,41 +79262,179 @@ const unsafeParseInputs = () => {
         return effect_1.Either.left(error);
     }
 };
-const logInfo = (message) => Effect.sync(() => core.info(message));
-const logDebug = (message) => Effect.sync(() => core.debug(`-- ${message}`));
-const listeners = {
-    errline: (line) => core.info(`-- listener stderr: ${line}`),
-    debug: (data) => core.debug(`-- listener debug: ${data}`),
+/**
+ * The main function for the action.
+ */
+exports.main = (0, effect_1.pipe)((0, utils_1.logInfo)(banner), Effect.map(() => (0, envvars_1.debugVariables)()), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tap((inputs) => (0, utils_1.logDebug)(`Inputs: ${JSON.stringify(inputs)}`)), Effect.flatMap((inputs) => (0, run_1.run)(inputs)));
+Effect.runPromise(exports.main).catch((error) => {
+    if (error instanceof Error)
+        core.setFailed(error.message);
+});
+
+
+/***/ }),
+
+/***/ 8214:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = void 0;
+const core = __importStar(__nccwpck_require__(7733));
+const core_1 = __nccwpck_require__(7733);
+const effect_1 = __nccwpck_require__(2090);
+const Effect = __importStar(__nccwpck_require__(5307));
+const exec_1 = __nccwpck_require__(1757);
+const httpm = __importStar(__nccwpck_require__(4284));
+const fs = __importStar(__nccwpck_require__(3292));
+const utils_1 = __nccwpck_require__(3924);
+const envvars = __importStar(__nccwpck_require__(6693));
+// prettier-ignore
+class PostJmhResultBody extends effect_1.Data.TaggedClass("PostJmhResultBody") {
+    static from(data, computedAt) {
+        return new PostJmhResultBody({
+            workflowRunId: envvars.GITHUB_RUN_ID,
+            workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
+            workflowRunnerName: envvars.GITHUB_RUNNER_NAME,
+            workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
+            workflowUrl: envvars.WORKFLOW_URL,
+            runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
+            runnerOs: envvars.RUNNER_OS,
+            runnerArch: envvars.RUNNER_ARCH,
+            orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
+            projectId: envvars.GITHUB_REPOSITORY_ID,
+            ref: envvars.REF,
+            headRef: envvars.GITHUB_HEAD_REF,
+            commitHash: envvars.GITHUB_SHA,
+            actor: envvars.GITHUB_ACTOR,
+            actorId: envvars.GITHUB_ACTOR_ID,
+            data: data,
+            computedAt: computedAt
+        });
+    }
+}
 const execCommands = (inputs) => {
     const args = [];
+    // @ts-ignore
     const options = {
         cwd: effect_1.Option.getOrUndefined(inputs.workdir),
-        listeners: listeners,
+        listeners: {
+            errline: (line) => core.info(`-- listener stderr: ${line}`),
+            debug: (data) => core.debug(`-- listener debug: ${data}`),
+        },
     };
     const execCommand = (cmd) => Effect.tryPromise({
         try: () => (0, exec_1.exec)(cmd, args, options),
         catch: (_) => _,
     });
-    return (0, effect_1.pipe)(logDebug(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.forEach(inputs.cmd, execCommand, {
+    return (0, effect_1.pipe)((0, utils_1.logDebug)(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.forEach(inputs.cmd, execCommand, {
         concurrency: 1,
         batching: false,
         discard: false,
     })), Effect.map((exitCodes) => exitCodes[exitCodes.length - 1]), Effect.tapBoth({
-        onFailure: (error) => logDebug(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
-        onSuccess: (exitCode) => logDebug(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
+        onFailure: (error) => (0, utils_1.logDebug)(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
+        onSuccess: (exitCode) => (0, utils_1.logDebug)(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
     }));
 };
+const findResults = (inputs) => (0, effect_1.pipe)(Effect.tryPromise({
+    try: () => {
+        const file = effect_1.Option.match(inputs.workdir, {
+            onNone: () => inputs.outputFilePath,
+            onSome: (workdir) => `${workdir}/${inputs.outputFilePath}`,
+        });
+        return fs.readFile(file, { encoding: "utf-8" });
+    },
+    catch: (_) => _,
+}), Effect.flatMap((data) => Effect.try({
+    try: () => JSON.parse(data),
+    catch: (_) => _,
+})));
+const pingServer = Effect.tryPromise({
+    try: () => {
+        const client = new httpm.HttpClient("zeklin-action");
+        return client.get(`${envvars.ZEKLIN_SERVER_URL}/ping`);
+    },
+    catch: (_) => _,
+});
+const uploadResults = (results, computedAt) => Effect.tryPromise({
+    try: () => {
+        const body = PostJmhResultBody.from(results, computedAt);
+        const client = new httpm.HttpClient("zeklin-action");
+        return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body);
+    },
+    catch: (_) => _,
+});
 /**
  * The main function for the action.
  */
-exports.main = (0, effect_1.pipe)(logInfo(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)), Effect.flatMap((inputs) => execCommands(inputs).pipe(Effect.map((_) => [_, inputs]))), Effect.flatMap(([exitCode, inputs]) => exitCode === core_1.ExitCode.Success
-    ? logInfo(`🎉 '${inputs.cmd}' ran successfully!`)
-    : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))));
-Effect.runPromise(exports.main).catch((error) => {
-    if (error instanceof Error)
-        core.setFailed(error.message);
+const run = (inputs) => (0, effect_1.pipe)(execCommands(inputs), Effect.flatMap((exitCode) => exitCode === core_1.ExitCode.Success
+    ? (0, utils_1.logInfo)(`🎉 '${inputs.cmd}' ran successfully!`).pipe(Effect.as(new Date()))
+    : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt]))), Effect.flatMap((data) => pingServer.pipe(Effect.as(data))), Effect.flatMap(([results, computedAt]) => uploadResults(results, computedAt)));
+exports.run = run;
+
+
+/***/ }),
+
+/***/ 3924:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
 });
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.logDebug = exports.logInfo = void 0;
+const Effect = __importStar(__nccwpck_require__(5307));
+const core = __importStar(__nccwpck_require__(7733));
+const logInfo = (message) => Effect.sync(() => core.info(message));
+exports.logInfo = logInfo;
+const logDebug = (message) => Effect.sync(() => core.debug(`-- ${message}`));
+exports.logDebug = logDebug;
 
 
 /***/ }),
@@ -74762,6 +79476,14 @@ module.exports = require("events");
 
 "use strict";
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ 3292:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs/promises");
 
 /***/ }),
 
