@@ -101,6 +101,7 @@ const findResults: (inputs: Inputs) => Effect.Effect<never, Error, JSON> = (inpu
         catch: (_) => _ as Error,
       }),
     ),
+    Effect.tap((data) => logDebug(`Found results: ${JSON.stringify(data, null, 2)}`)),
   )
 
 const pingServer: Effect.Effect<never, Error, void> = Effect.tryPromise({
