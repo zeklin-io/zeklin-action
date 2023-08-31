@@ -77,6 +77,7 @@ jobs:
         uses: ./
         env:
           NODE_DEBUG: http # See: https://github.com/actions/toolkit/tree/main/packages/http-client#debugging
+          ZEKLIN_SERVER_URL: ${{ secrets.ZEKLIN_SERVER_URL }}
         with:
           apikey: "this is an api key"
           workdir: jmh-dir/jmh-samples-${{ matrix.jmh-samples }}
