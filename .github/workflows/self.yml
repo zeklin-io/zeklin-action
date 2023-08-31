@@ -22,7 +22,7 @@ jobs:
         uses: ./
         with:
           apikey: "this is an api key"
-          output-file-path: '../empty_report.json'
+          output-file-path: 'empty_report.json'
           workdir: "."
           cmd: |
             echo 'hello world'
