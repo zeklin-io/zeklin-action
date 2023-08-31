@@ -74659,6 +74659,14 @@ const unsafeParseInputs = () => {
         else
             return v;
     };
+    const unsafeRequiredMultilineInput = (name) => {
+        const v = core.getMultilineInput(name, { required: true, trimWhitespace: true });
+        core.debug(`-- input ${name}: ${v}`);
+        if (v.length === 0)
+            throw new Error(`Input ${name} is required`);
+        else
+            return effect_1.Chunk.fromIterable(v);
+    };
     const optionalInput = (name) => {
         const v = core.getInput(name, { required: false, trimWhitespace: true });
         core.debug(`-- input ${name}: ${v}`);
@@ -74670,7 +74678,7 @@ const unsafeParseInputs = () => {
     try {
         return effect_1.Either.right(new Inputs({
             apikey: unsafeRequiredInput("apikey"),
-            cmd: unsafeRequiredInput("cmd"),
+            cmd: unsafeRequiredMultilineInput("cmd"),
             workdir: optionalInput("workdir"),
         }));
     }
@@ -74684,24 +74692,29 @@ const listeners = {
     errline: (line) => core.info("-- listener stderr: " + line),
     debug: (data) => core.debug("-- listener debug: " + data),
 };
-const execCommand = (inputs) => (0, effect_1.pipe)(logDebug(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.tryPromise({
-    try: () => {
-        const args = [];
-        const options = {
-            cwd: effect_1.Option.getOrUndefined(inputs.workdir),
-            listeners: listeners,
-        };
-        return (0, exec_1.exec)(inputs.cmd, args, options);
-    },
-    catch: (_) => _,
-})), Effect.tapBoth({
-    onFailure: (error) => logDebug(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
-    onSuccess: (exitCode) => logDebug(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
-}));
+const execCommands = (inputs) => {
+    const args = [];
+    const options = {
+        cwd: effect_1.Option.getOrUndefined(inputs.workdir),
+        listeners: listeners,
+    };
+    const execCommand = (cmd) => Effect.tryPromise({
+        try: () => (0, exec_1.exec)(cmd, args, options),
+        catch: (_) => _,
+    });
+    return (0, effect_1.pipe)(logDebug(`Running: '${inputs.cmd}' cmd ...`), Effect.flatMap(() => Effect.forEach(inputs.cmd, execCommand, {
+        concurrency: 1,
+        batching: false,
+        discard: false,
+    })), Effect.map((exitCodes) => exitCodes[exitCodes.length - 1]), Effect.tapBoth({
+        onFailure: (error) => logDebug(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
+        onSuccess: (exitCode) => logDebug(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
+    }));
+};
 /**
  * The main function for the action.
  */
-exports.main = (0, effect_1.pipe)(logInfo(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)), Effect.flatMap((inputs) => execCommand(inputs).pipe(Effect.map((_) => [_, inputs]))), Effect.flatMap(([exitCode, inputs]) => exitCode === core_1.ExitCode.Success
+exports.main = (0, effect_1.pipe)(logInfo(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)), Effect.flatMap((inputs) => execCommands(inputs).pipe(Effect.map((_) => [_, inputs]))), Effect.flatMap(([exitCode, inputs]) => exitCode === core_1.ExitCode.Success
     ? logInfo(`🎉 '${inputs.cmd}' ran successfully!`)
     : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))));
 Effect.runPromise(exports.main).catch((error) => {
