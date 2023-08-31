@@ -23,7 +23,6 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   orgId: number                // GITHUB_REPOSITORY_OWNER_ID
   projectId: number            // GITHUB_REPOSITORY_ID
   ref: Ref                     // GITHUB_REF_TYPE & GITHUB_REF_NAME
-  headRef: Option.Option<NES>  // GITHUB_HEAD_REF
   commitHash: NES              // GITHUB_SHA
   actor: NES                   // GITHUB_ACTOR
   actorId: number              // GITHUB_ACTOR_ID
@@ -34,7 +33,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
     return new PostJmhResultBody({
       workflowRunId: envvars.GITHUB_RUN_ID,
       workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
-      workflowRunnerName: envvars.GITHUB_RUNNER_NAME,
+      workflowRunnerName: envvars.RUNNER_NAME,
       workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
       workflowUrl: envvars.WORKFLOW_URL,
       runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
@@ -43,7 +42,6 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
       projectId: envvars.GITHUB_REPOSITORY_ID,
       ref: envvars.REF,
-      headRef: envvars.GITHUB_HEAD_REF,
       commitHash: envvars.GITHUB_SHA,
       actor: envvars.GITHUB_ACTOR,
       actorId: envvars.GITHUB_ACTOR_ID,

@@ -2,8 +2,6 @@ import { Data, Option, pipe } from "effect"
 import { logDebug } from "./utils"
 import * as S from "@effect/schema/Schema"
 
-const optionalEnvvar = (v: string | undefined): Option.Option<string> => (v ? Option.fromNullable(v) : Option.none())
-
 const NESBrand = Symbol.for("NonEmptyString")
 const NESSchema = pipe(S.string, S.trim, S.nonEmpty(), S.brand(NESBrand))
 export type NES = S.To<typeof NESSchema>
@@ -94,7 +92,7 @@ export const GITHUB_RUN_NUMBER: number = Number(process.env.GITHUB_RUN_NUMBER!)
 /**
  * [Not documented]
  */
-export const GITHUB_RUNNER_NAME: NES = NES.unsafeFromString(process.env.GITHUB_RUNNER_NAME!)
+export const RUNNER_NAME: NES = NES.unsafeFromString(process.env.RUNNER_NAME!)
 
 /**
  * A unique number for each attempt of a particular workflow run in a repository.
@@ -184,13 +182,6 @@ export const GITHUB_ACTOR: NES = NES.unsafeFromString(process.env.GITHUB_ACTOR!)
 export const GITHUB_ACTOR_ID: number = Number(process.env.GITHUB_ACTOR_ID!)
 
 /**
- * The head ref or source branch of the pull request in a workflow run.
- * This property is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
- * For example, feature-branch-1.
- */
-export const GITHUB_HEAD_REF: Option.Option<NES> = optionalEnvvar(process.env.GITHUB_HEAD_REF).pipe(Option.map(NES.unsafeFromString))
-
-/**
  * The URL of the GitHub server.
  * For example: https://github.com.
  */
@@ -207,7 +198,7 @@ export const debugVariables = () => {
   logDebug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
   logDebug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
   logDebug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`)
-  logDebug(`GITHUB_RUNNER_NAME: ${GITHUB_RUNNER_NAME}`)
+  logDebug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`)
   logDebug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`)
   logDebug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`)
   logDebug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`)
@@ -221,7 +212,6 @@ export const debugVariables = () => {
   logDebug(`GITHUB_API_URL: ${GITHUB_API_URL}`)
   logDebug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
   logDebug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
-  logDebug(`GITHUB_HEAD_REF: ${GITHUB_HEAD_REF}`)
   logDebug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`)
   logDebug(`WORKFLOW_URL: ${WORKFLOW_URL}`)
   logDebug(`REF: ${REF}`)

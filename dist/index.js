@@ -78973,11 +78973,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.debugVariables = exports.REF = exports.WORKFLOW_URL = exports.GITHUB_SERVER_URL = exports.GITHUB_HEAD_REF = exports.GITHUB_ACTOR_ID = exports.GITHUB_ACTOR = exports.GITHUB_API_URL = exports.RUNNER_ARCH = exports.RUNNER_OS = exports.RUNNER_ENVIRONMENT = exports.GITHUB_REF_TYPE = exports.GITHUB_REF_NAME = exports.GITHUB_SHA = exports.GITHUB_REPOSITORY_OWNER_ID = exports.GITHUB_REPOSITORY_ID = exports.GITHUB_REPOSITORY = exports.GITHUB_RUN_ATTEMPT = exports.GITHUB_RUNNER_NAME = exports.GITHUB_RUN_NUMBER = exports.GITHUB_RUN_ID = exports.ZEKLIN_SERVER_URL = exports.Ref_ = exports.Ref = exports.NES = void 0;
+exports.debugVariables = exports.REF = exports.WORKFLOW_URL = exports.GITHUB_SERVER_URL = exports.GITHUB_ACTOR_ID = exports.GITHUB_ACTOR = exports.GITHUB_API_URL = exports.RUNNER_ARCH = exports.RUNNER_OS = exports.RUNNER_ENVIRONMENT = exports.GITHUB_REF_TYPE = exports.GITHUB_REF_NAME = exports.GITHUB_SHA = exports.GITHUB_REPOSITORY_OWNER_ID = exports.GITHUB_REPOSITORY_ID = exports.GITHUB_REPOSITORY = exports.GITHUB_RUN_ATTEMPT = exports.RUNNER_NAME = exports.GITHUB_RUN_NUMBER = exports.GITHUB_RUN_ID = exports.ZEKLIN_SERVER_URL = exports.Ref_ = exports.Ref = exports.NES = void 0;
 const effect_1 = __nccwpck_require__(2090);
 const utils_1 = __nccwpck_require__(3924);
 const S = __importStar(__nccwpck_require__(3363));
-const optionalEnvvar = (v) => (v ? effect_1.Option.fromNullable(v) : effect_1.Option.none());
 const NESBrand = Symbol.for("NonEmptyString");
 const NESSchema = (0, effect_1.pipe)(S.string, S.trim, S.nonEmpty(), S.brand(NESBrand));
 exports.NES = {
@@ -79054,7 +79053,7 @@ exports.GITHUB_RUN_NUMBER = Number(process.env.GITHUB_RUN_NUMBER);
 /**
  * [Not documented]
  */
-exports.GITHUB_RUNNER_NAME = exports.NES.unsafeFromString(process.env.GITHUB_RUNNER_NAME);
+exports.RUNNER_NAME = exports.NES.unsafeFromString(process.env.RUNNER_NAME);
 /**
  * A unique number for each attempt of a particular workflow run in a repository.
  * This number begins at 1 for the workflow run's first attempt, and increments with each re-run.
@@ -79130,12 +79129,6 @@ exports.GITHUB_ACTOR = exports.NES.unsafeFromString(process.env.GITHUB_ACTOR);
  */
 exports.GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
 /**
- * The head ref or source branch of the pull request in a workflow run.
- * This property is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
- * For example, feature-branch-1.
- */
-exports.GITHUB_HEAD_REF = optionalEnvvar(process.env.GITHUB_HEAD_REF).pipe(effect_1.Option.map(exports.NES.unsafeFromString));
-/**
  * The URL of the GitHub server.
  * For example: https://github.com.
  */
@@ -79149,7 +79142,7 @@ const debugVariables = () => {
     (0, utils_1.logDebug)(`ZEKLIN_SERVER_URL: ${exports.ZEKLIN_SERVER_URL}`);
     (0, utils_1.logDebug)(`GITHUB_RUN_ID: ${exports.GITHUB_RUN_ID}`);
     (0, utils_1.logDebug)(`GITHUB_RUN_NUMBER: ${exports.GITHUB_RUN_NUMBER}`);
-    (0, utils_1.logDebug)(`GITHUB_RUNNER_NAME: ${exports.GITHUB_RUNNER_NAME}`);
+    (0, utils_1.logDebug)(`GITHUB_RUNNER_NAME: ${exports.RUNNER_NAME}`);
     (0, utils_1.logDebug)(`GITHUB_RUN_ATTEMPT: ${exports.GITHUB_RUN_ATTEMPT}`);
     (0, utils_1.logDebug)(`GITHUB_REPOSITORY: ${exports.GITHUB_REPOSITORY}`);
     (0, utils_1.logDebug)(`GITHUB_REPOSITORY_ID: ${exports.GITHUB_REPOSITORY_ID}`);
@@ -79163,7 +79156,6 @@ const debugVariables = () => {
     (0, utils_1.logDebug)(`GITHUB_API_URL: ${exports.GITHUB_API_URL}`);
     (0, utils_1.logDebug)(`GITHUB_ACTOR: ${exports.GITHUB_ACTOR}`);
     (0, utils_1.logDebug)(`GITHUB_ACTOR_ID: ${exports.GITHUB_ACTOR_ID}`);
-    (0, utils_1.logDebug)(`GITHUB_HEAD_REF: ${exports.GITHUB_HEAD_REF}`);
     (0, utils_1.logDebug)(`GITHUB_SERVER_URL: ${exports.GITHUB_SERVER_URL}`);
     (0, utils_1.logDebug)(`WORKFLOW_URL: ${exports.WORKFLOW_URL}`);
     (0, utils_1.logDebug)(`REF: ${exports.REF}`);
@@ -79222,9 +79214,6 @@ const banner = String.raw `
           \\__|\\ |    (-___-)        | /|__/
           '  '--'    ==\`-'==        '--'  '
 `;
-if (process.env.GITHUB_ACTIONS !== "true") {
-    (0, core_1.setFailed)("The script must be run in GitHub Actions environment");
-}
 class Inputs extends effect_1.Data.TaggedClass("Inputs") {
 }
 exports.Inputs = Inputs;
@@ -79265,7 +79254,11 @@ const unsafeParseInputs = () => {
 /**
  * The main function for the action.
  */
-exports.main = (0, effect_1.pipe)((0, utils_1.logInfo)(banner), Effect.map(() => (0, envvars_1.debugVariables)()), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tap((inputs) => (0, utils_1.logDebug)(`Inputs: ${JSON.stringify(inputs)}`)), Effect.flatMap((inputs) => (0, run_1.run)(inputs)));
+exports.main = (0, effect_1.pipe)((0, utils_1.logInfo)(banner), Effect.flatMap(() => Effect.suspend(unsafeParseInputs)), Effect.tap((inputs) => (0, utils_1.logDebug)(`Inputs: ${JSON.stringify(inputs)}`)), Effect.flatMap((inputs) => (0, run_1.run)(inputs)));
+if (process.env.GITHUB_ACTIONS !== "true") {
+    (0, core_1.setFailed)("The script must be run in GitHub Actions environment");
+}
+(0, envvars_1.debugVariables)();
 Effect.runPromise(exports.main).catch((error) => {
     if (error instanceof Error)
         core.setFailed(error.message);
@@ -79319,7 +79312,7 @@ class PostJmhResultBody extends effect_1.Data.TaggedClass("PostJmhResultBody") {
         return new PostJmhResultBody({
             workflowRunId: envvars.GITHUB_RUN_ID,
             workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
-            workflowRunnerName: envvars.GITHUB_RUNNER_NAME,
+            workflowRunnerName: envvars.RUNNER_NAME,
             workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
             workflowUrl: envvars.WORKFLOW_URL,
             runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
@@ -79328,7 +79321,6 @@ class PostJmhResultBody extends effect_1.Data.TaggedClass("PostJmhResultBody") {
             orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
             projectId: envvars.GITHUB_REPOSITORY_ID,
             ref: envvars.REF,
-            headRef: envvars.GITHUB_HEAD_REF,
             commitHash: envvars.GITHUB_SHA,
             actor: envvars.GITHUB_ACTOR,
             actorId: envvars.GITHUB_ACTOR_ID,
