@@ -74689,8 +74689,8 @@ const unsafeParseInputs = () => {
 const logInfo = (message) => Effect.sync(() => core.info(message));
 const logDebug = (message) => Effect.sync(() => core.debug(`-- ${message}`));
 const listeners = {
-    errline: (line) => core.info("-- listener stderr: " + line),
-    debug: (data) => core.debug("-- listener debug: " + data),
+    errline: (line) => core.info(`-- listener stderr: ${line}`),
+    debug: (data) => core.debug(`-- listener debug: ${data}`),
 };
 const execCommands = (inputs) => {
     const args = [];
