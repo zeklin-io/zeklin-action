@@ -10,6 +10,7 @@ import { logDebug, logInfo } from "./utils"
 import * as envvars from "./envvars"
 import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars"
 import * as path from "path"
+import * as http from "http"
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
@@ -120,12 +121,19 @@ const pingServer: Effect.Effect<never, Error, void> = Effect.tryPromise({
   catch: (_) => _ as Error,
 })
 
-const uploadResults: (results: JSON, computedAt: Date) => Effect.Effect<never, Error, void> = (results: JSON, computedAt: Date) =>
+const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect.Effect<never, Error, void> = (
+  inputs: Inputs,
+  results: JSON,
+  computedAt: Date,
+) =>
   Effect.tryPromise({
     try: () => {
       const body = PostJmhResultBody.from(results, computedAt)
+      const auth = {
+        Authorization: `Token ${inputs.apikey}`,
+      } as http.OutgoingHttpHeaders
       const client = new httpm.HttpClient("zeklin-action")
-      return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body)
+      return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body, auth)
     },
     catch: (_) => _ as Error,
   })
@@ -143,5 +151,5 @@ export const run: (inputs: Inputs) => Effect.Effect<never, Error, void> = (input
     ),
     Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt] as const))),
     Effect.flatMap((data) => pingServer.pipe(Effect.as(data))),
-    Effect.flatMap(([results, computedAt]) => uploadResults(results, computedAt)),
+    Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt)),
   )

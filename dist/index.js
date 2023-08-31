@@ -79377,11 +79377,14 @@ const pingServer = Effect.tryPromise({
     },
     catch: (_) => _,
 });
-const uploadResults = (results, computedAt) => Effect.tryPromise({
+const uploadResults = (inputs, results, computedAt) => Effect.tryPromise({
     try: () => {
         const body = PostJmhResultBody.from(results, computedAt);
+        const auth = {
+            Authorization: `Token ${inputs.apikey}`,
+        };
         const client = new httpm.HttpClient("zeklin-action");
-        return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body);
+        return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body, auth);
     },
     catch: (_) => _,
 });
@@ -79390,7 +79393,7 @@ const uploadResults = (results, computedAt) => Effect.tryPromise({
  */
 const run = (inputs) => (0, effect_1.pipe)(execCommands(inputs), Effect.flatMap((exitCode) => exitCode === core_1.ExitCode.Success
     ? (0, utils_1.logInfo)(`🎉 '${inputs.cmd}' ran successfully!`).pipe(Effect.as(new Date()))
-    : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt]))), Effect.flatMap((data) => pingServer.pipe(Effect.as(data))), Effect.flatMap(([results, computedAt]) => uploadResults(results, computedAt)));
+    : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt]))), Effect.flatMap((data) => pingServer.pipe(Effect.as(data))), Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt)));
 exports.run = run;
 
 

@@ -24,7 +24,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          apikey: "this is an api key"
+          apikey: ${{ secrets.ZEKLIN_API_KEY }}
           output-file-path: 'empty_report.json'
           workdir: "."
           cmd: |
@@ -36,7 +36,7 @@ jobs:
         continue-on-error: true
         uses: ./
         with:
-          apikey: "this is an api key"
+          apikey: ${{ secrets.ZEKLIN_API_KEY }}
           cmd: sh -c "if true; then exit 1; fi"
           output-file-path: '../empty_report.json'
 
@@ -81,7 +81,7 @@ jobs:
         env:
           NODE_DEBUG: http # See: https://github.com/actions/toolkit/tree/main/packages/http-client#debugging
         with:
-          apikey: "this is an api key"
+          apikey: ${{ secrets.ZEKLIN_API_KEY }}
           workdir: jmh-dir/jmh-samples-${{ matrix.jmh-samples }}
           output-file-path: 'reports.json'
           cmd: |
