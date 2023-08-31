@@ -79,10 +79,6 @@ const execCommands: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = 
       }),
     ),
     Effect.map((exitCodes) => exitCodes[exitCodes.length - 1]),
-    Effect.tapBoth({
-      onFailure: (error) => logDebug(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
-      onSuccess: (exitCode) => logDebug(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
-    }),
   )
 }
 

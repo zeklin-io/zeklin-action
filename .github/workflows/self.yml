@@ -23,7 +23,7 @@ jobs:
         with:
           apikey: "this is an api key"
           cmd: echo 'hello world'
-          output-file-path: 'reports.json'
+          output-file-path: '../empty_report.json'
           workdir: "."
 
       - name: Test Failing Action
@@ -33,7 +33,7 @@ jobs:
         with:
           apikey: "this is an api key"
           cmd: sh -c "if true; then exit 1; fi"
-          output-file-path: 'reports.json'
+          output-file-path: '../empty_report.json'
 
       - name: Print Output
         id: output
