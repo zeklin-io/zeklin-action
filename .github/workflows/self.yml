@@ -70,4 +70,6 @@ jobs:
         with:
           apikey: "this is an api key"
           workdir: jmh-dir/jmh-samples-${{ matrix.jmh-samples }}
-          cmd: java -jar target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
+          cmd: |
+            java -jar target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
+            ls
