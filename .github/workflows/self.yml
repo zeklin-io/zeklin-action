@@ -23,7 +23,8 @@ jobs:
         with:
           apikey: "this is an api key"
           cmd: echo 'hello world'
-          workdir: "." # optional
+          output-file-path: 'reports.json'
+          workdir: "."
 
       - name: Test Failing Action
         id: test-failing-action
@@ -32,6 +33,7 @@ jobs:
         with:
           apikey: "this is an api key"
           cmd: sh -c "if true; then exit 1; fi"
+          output-file-path: 'reports.json'
 
       - name: Print Output
         id: output
@@ -45,7 +47,7 @@ jobs:
       JDK_JAVA_OPTIONS: -Xms6g -Xmx6g -XX:+UseG1GC # See https://stackoverflow.com/a/73708006
     strategy:
       matrix:
-        jmh-samples: ["0", "1", "2", "3.0", "3.1"]
+        jmh-samples: [ "0", "1", "2", "3.0", "3.1" ]
     steps:
       - run: env
       - uses: actions/checkout@v3
@@ -75,6 +77,7 @@ jobs:
         with:
           apikey: "this is an api key"
           workdir: jmh-dir/jmh-samples-${{ matrix.jmh-samples }}
+          output-file-path: 'reports.json'
           cmd: |
             java -jar target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
             ls
