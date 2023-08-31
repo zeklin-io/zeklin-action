@@ -19,10 +19,6 @@ const banner = String.raw`
           '  '--'    ==\`-'==        '--'  '
 `
 
-if (process.env.GITHUB_ACTIONS !== "true") {
-  setFailed("The script must be run in GitHub Actions environment")
-}
-
 export class Inputs extends Data.TaggedClass("Inputs")<{
   apikey: NES
   cmd: Chunk.Chunk<NES>
@@ -76,11 +72,16 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
  */
 export const main: Effect.Effect<never, Error, void> = pipe(
   logInfo(banner),
-  Effect.map(() => debugVariables()),
   Effect.flatMap(() => Effect.suspend(unsafeParseInputs)),
   Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)),
   Effect.flatMap((inputs) => run(inputs)),
 )
+
+if (process.env.GITHUB_ACTIONS !== "true") {
+  setFailed("The script must be run in GitHub Actions environment")
+}
+
+debugVariables()
 
 Effect.runPromise(main).catch((error) => {
   if (error instanceof Error) core.setFailed(error.message)
