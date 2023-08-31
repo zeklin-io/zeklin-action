@@ -9,6 +9,7 @@ import { Inputs } from "./index"
 import { logDebug, logInfo } from "./utils"
 import * as envvars from "./envvars"
 import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars"
+import * as path from "path"
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
@@ -86,10 +87,17 @@ const findResults: (inputs: Inputs) => Effect.Effect<never, Error, JSON> = (inpu
   pipe(
     Effect.tryPromise({
       try: () => {
-        const file: string = Option.match(inputs.workdir, {
-          onNone: () => inputs.outputFilePath,
-          onSome: (workdir) => `${workdir}/${inputs.outputFilePath}`,
-        })
+        // short name
+        const output = inputs.outputFilePath
+
+        const file: string = (() => {
+          if (path.isAbsolute(output)) return output
+          else
+            return Option.match(inputs.workdir, {
+              onNone: () => output,
+              onSome: (workdir) => `${workdir}/${output}`,
+            })
+        })()
 
         return fs.readFile(file, { encoding: "utf-8" })
       },

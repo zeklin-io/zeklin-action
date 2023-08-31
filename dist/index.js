@@ -79306,6 +79306,7 @@ const httpm = __importStar(__nccwpck_require__(4284));
 const fs = __importStar(__nccwpck_require__(3292));
 const utils_1 = __nccwpck_require__(3924);
 const envvars = __importStar(__nccwpck_require__(6693));
+const path = __importStar(__nccwpck_require__(1017));
 // prettier-ignore
 class PostJmhResultBody extends effect_1.Data.TaggedClass("PostJmhResultBody") {
     static from(data, computedAt) {
@@ -79347,24 +79348,28 @@ const execCommands = (inputs) => {
         concurrency: 1,
         batching: false,
         discard: false,
-    })), Effect.map((exitCodes) => exitCodes[exitCodes.length - 1]), Effect.tapBoth({
-        onFailure: (error) => (0, utils_1.logDebug)(`Running: '${inputs.cmd}' cmd failed: ${error.message}`),
-        onSuccess: (exitCode) => (0, utils_1.logDebug)(`Running: '${inputs.cmd}' cmd exited with: ${exitCode}`),
-    }));
+    })), Effect.map((exitCodes) => exitCodes[exitCodes.length - 1]));
 };
 const findResults = (inputs) => (0, effect_1.pipe)(Effect.tryPromise({
     try: () => {
-        const file = effect_1.Option.match(inputs.workdir, {
-            onNone: () => inputs.outputFilePath,
-            onSome: (workdir) => `${workdir}/${inputs.outputFilePath}`,
-        });
+        // short name
+        const output = inputs.outputFilePath;
+        const file = (() => {
+            if (path.isAbsolute(output))
+                return output;
+            else
+                return effect_1.Option.match(inputs.workdir, {
+                    onNone: () => output,
+                    onSome: (workdir) => `${workdir}/${output}`,
+                });
+        })();
         return fs.readFile(file, { encoding: "utf-8" });
     },
     catch: (_) => _,
 }), Effect.flatMap((data) => Effect.try({
     try: () => JSON.parse(data),
     catch: (_) => _,
-})));
+})), Effect.tap((data) => (0, utils_1.logDebug)(`Found results: ${JSON.stringify(data, null, 2)}`)));
 const pingServer = Effect.tryPromise({
     try: () => {
         const client = new httpm.HttpClient("zeklin-action");
