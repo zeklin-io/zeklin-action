@@ -74718,10 +74718,8 @@ exports.main = (0, effect_1.pipe)(logInfo(banner), Effect.flatMap(() => Effect.s
     ? logInfo(`🎉 '${inputs.cmd}' ran successfully!`)
     : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))));
 Effect.runPromise(exports.main).catch((error) => {
-    if (error instanceof Error) {
-        core.error(error);
+    if (error instanceof Error)
         core.setFailed(error.message);
-    }
 });
 
 

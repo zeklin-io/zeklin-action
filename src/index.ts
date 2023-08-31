@@ -120,8 +120,5 @@ export const main: Effect.Effect<never, Error, void> = pipe(
 )
 
 Effect.runPromise(main).catch((error) => {
-  if (error instanceof Error) {
-    core.error(error)
-    core.setFailed(error.message)
-  }
+  if (error instanceof Error) core.setFailed(error.message)
 })
