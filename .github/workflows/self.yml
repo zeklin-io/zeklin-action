@@ -40,13 +40,16 @@ jobs:
   test-jmh:
     name: zeklin-action with JMH
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jmh-samples: [0, 1, 2, 3]
     steps:
       - run: env
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
         with:
-          repository: openjdk/jmh.git
-          ref: 1.37
+          repository: zeklin-io/jmh
+          ref: master
           path: jmh-dir
 
       - name: Set up JDK
@@ -57,11 +60,14 @@ jobs:
           cache: maven
           check-latest: true
 
-      - name: Test Action with JMH
+      - name: Build project
+        run: |
+          cd jmh-dir
+          mvn clean package -DskipTests
+
+      - name: Test Action with JMH - ${{ matrix.jmh-samples }}
         uses: ./
         with:
           apikey: "this is an api key"
-          workdir: jmh-dir
-          cmd: |
-            mvn clean package -DskipTests
-            java -jar jmh-samples/target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
+          workdir: jmh-dir/jmh-samples-${{ matrix.jmh-samples }}
+          cmd: java -jar target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
