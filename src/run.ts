@@ -3,14 +3,12 @@ import { ExitCode } from "@actions/core"
 import { Data, Option, pipe } from "effect"
 import * as Effect from "effect/Effect"
 import { exec, ExecOptions } from "@actions/exec"
-import * as httpm from "@actions/http-client"
 import * as fs from "fs/promises"
 import { Inputs } from "./index"
 import { logDebug, logInfo } from "./utils"
 import * as envvars from "./envvars"
 import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars"
 import * as path from "path"
-import * as http from "http"
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
@@ -114,9 +112,18 @@ const findResults: (inputs: Inputs) => Effect.Effect<never, Error, JSON> = (inpu
   )
 
 const pingServer: Effect.Effect<never, Error, void> = Effect.tryPromise({
-  try: () => {
-    const client = new httpm.HttpClient("zeklin-action")
-    return client.get(`${envvars.ZEKLIN_SERVER_URL}/ping`)
+  try: (signal) => {
+    return fetch(`${envvars.ZEKLIN_SERVER_URL}/ping`, {
+      method: "GET",
+      headers: {
+        "User-Agent": "zeklin-action",
+      },
+      signal: signal,
+    }).then((response) => {
+      if (!response.ok) {
+        Promise.reject(Error(`Failed to ping Zeklin servers: ${response.status} ${response.statusText}`))
+      }
+    })
   },
   catch: (_) => _ as Error,
 })
@@ -127,13 +134,24 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
   computedAt: Date,
 ) =>
   Effect.tryPromise({
-    try: () => {
+    try: (signal) => {
       const body = PostJmhResultBody.from(results, computedAt)
-      const auth = {
-        Authorization: `Token ${inputs.apikey}`,
-      } as http.OutgoingHttpHeaders
-      const client = new httpm.HttpClient("zeklin-action")
-      return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, body, auth)
+      const blob = new Blob([JSON.stringify(body)])
+
+      return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+        method: "POST",
+        body: blob,
+        headers: {
+          "User-Agent": "zeklin-action",
+          "Content-Type": "application/json",
+          Authorization: `Token ${inputs.apikey}`,
+        },
+        signal: signal,
+      }).then((response) => {
+        if (!response.ok) {
+          Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
+        }
+      })
     },
     catch: (_) => _ as Error,
   })

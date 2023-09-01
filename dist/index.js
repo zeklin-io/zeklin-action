@@ -79302,7 +79302,6 @@ const core_1 = __nccwpck_require__(7733);
 const effect_1 = __nccwpck_require__(2090);
 const Effect = __importStar(__nccwpck_require__(5307));
 const exec_1 = __nccwpck_require__(1757);
-const httpm = __importStar(__nccwpck_require__(4284));
 const fs = __importStar(__nccwpck_require__(3292));
 const utils_1 = __nccwpck_require__(3924);
 const envvars = __importStar(__nccwpck_require__(6693));
@@ -79371,20 +79370,39 @@ const findResults = (inputs) => (0, effect_1.pipe)(Effect.tryPromise({
     catch: (_) => _,
 })), Effect.tap((data) => (0, utils_1.logDebug)(`Found results: ${JSON.stringify(data, null, 2)}`)));
 const pingServer = Effect.tryPromise({
-    try: () => {
-        const client = new httpm.HttpClient("zeklin-action");
-        return client.get(`${envvars.ZEKLIN_SERVER_URL}/ping`);
+    try: (signal) => {
+        return fetch(`${envvars.ZEKLIN_SERVER_URL}/ping`, {
+            method: "GET",
+            headers: {
+                "User-Agent": "zeklin-action",
+            },
+            signal: signal,
+        }).then((response) => {
+            if (!response.ok) {
+                Promise.reject(Error(`Failed to ping Zeklin servers: ${response.status} ${response.statusText}`));
+            }
+        });
     },
     catch: (_) => _,
 });
 const uploadResults = (inputs, results, computedAt) => Effect.tryPromise({
-    try: () => {
+    try: (signal) => {
         const body = PostJmhResultBody.from(results, computedAt);
-        const auth = {
-            Authorization: `Token ${inputs.apikey}`,
-        };
-        const client = new httpm.HttpClient("zeklin-action");
-        return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, body, auth);
+        const blob = new Blob([JSON.stringify(body)]);
+        return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+            method: "POST",
+            body: blob,
+            headers: {
+                "User-Agent": "zeklin-action",
+                "Content-Type": "application/json",
+                Authorization: `Token ${inputs.apikey}`,
+            },
+            signal: signal,
+        }).then((response) => {
+            if (!response.ok) {
+                Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`));
+            }
+        });
     },
     catch: (_) => _,
 });
