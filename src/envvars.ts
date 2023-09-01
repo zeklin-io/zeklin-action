@@ -1,5 +1,5 @@
 import { Data, Option, pipe } from "effect"
-import { logDebug } from "./utils"
+import { logDebug } from "./utils.js"
 import * as S from "@effect/schema/Schema"
 
 const NESBrand = Symbol.for("NonEmptyString")

@@ -4,11 +4,12 @@ import { Data, Option, pipe } from "effect"
 import * as Effect from "effect/Effect"
 import { exec, ExecOptions } from "@actions/exec"
 import * as fs from "fs/promises"
-import { Inputs } from "./index"
-import { logDebug, logInfo } from "./utils"
-import * as envvars from "./envvars"
-import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars"
+import { Inputs } from "./index.js"
+import { logDebug, logInfo } from "./utils.js"
+import * as envvars from "./envvars.js"
+import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars.js"
 import * as path from "path"
+import fetch from "node-fetch"
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{

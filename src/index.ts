@@ -2,9 +2,9 @@ import * as core from "@actions/core"
 import { setFailed } from "@actions/core"
 import { Chunk, Data, Either, Option, pipe } from "effect"
 import * as Effect from "effect/Effect"
-import { logDebug, logInfo } from "./utils"
-import { debugVariables, NES } from "./envvars"
-import { run } from "./run"
+import { logDebug, logInfo } from "./utils.js"
+import { debugVariables, NES } from "./envvars.js"
+import { run } from "./run.js"
 
 const banner = String.raw`
  ___________

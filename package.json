@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "author": "Zeklin",
   "private": true,
+  "type": "module",
   "homepage": "https://github.com/zeklin-io/zeklin-action",
   "repository": {
     "type": "git",
@@ -27,7 +28,7 @@
     "pretty": "prettier --write '**/*.ts'",
     "isPretty": "prettier --check '**/*.ts'",
     "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
-    "package": "ncc build src/index.ts --license licenses.txt",
+    "package": "ncc build src/index.ts --target es2022 --license licenses.txt",
     "package:watch": "pnpm package -- --watch",
     "test": "(jest && make-coverage-badge --output-path ./badges/coverage.svg) || make-coverage-badge --output-path ./badges/coverage.svg",
     "all": "pnpm pretty && pnpm lint && pnpm test && pnpm package",
