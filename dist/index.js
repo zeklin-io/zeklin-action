@@ -79384,7 +79384,7 @@ const uploadResults = (inputs, results, computedAt) => Effect.tryPromise({
             Authorization: `Token ${inputs.apikey}`,
         };
         const client = new httpm.HttpClient("zeklin-action");
-        return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body, auth);
+        return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, body, auth);
     },
     catch: (_) => _,
 });

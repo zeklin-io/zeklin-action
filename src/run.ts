@@ -133,7 +133,7 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
         Authorization: `Token ${inputs.apikey}`,
       } as http.OutgoingHttpHeaders
       const client = new httpm.HttpClient("zeklin-action")
-      return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/results/jmh`, body, auth)
+      return client.postJson(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, body, auth)
     },
     catch: (_) => _ as Error,
   })
