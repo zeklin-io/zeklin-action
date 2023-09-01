@@ -11,6 +11,12 @@ import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars.js"
 import * as path from "path"
 import fetch from "node-fetch"
 
+const github = require("@actions/github")
+
+const context = github.context
+
+core.debug(`-- context: ${JSON.stringify(context, null, 2)}`)
+
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   workflowRunId: number        // GITHUB_RUN_ID
