@@ -4,8 +4,11 @@ author: 'Zeklin.io'
 
 # Define your inputs here.
 inputs:
-  apikey:
+  api-key:
     description: 'Your Zeklin API key'
+    required: true
+  api-key-id:
+    description: 'The ID of your Zeklin API key'
     required: true
   cmd:
     description: 'The command to run to run your benchmarks'

@@ -44321,14 +44321,15 @@ const pingServer = Effect_tryPromise({
 const uploadResults = (inputs, results, computedAt) => Effect_tryPromise({
     try: (signal) => {
         const body = PostJmhResultBody.from(results, computedAt);
-        const buff = Buffer.from(JSON.stringify(body), "utf-8");
+        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
+        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
         return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
             method: "POST",
             body: buff,
             headers: {
                 "User-Agent": "zeklin-action",
                 "Content-Type": "application/json",
-                Authorization: `Token ${inputs.apikey}`,
+                Authorization: `Basic ${credentials}`,
             },
             signal: signal,
         }).then((response) => {
@@ -44392,7 +44393,8 @@ const unsafeParseInputs = () => {
     };
     try {
         return Either_right(new Inputs({
-            apikey: unsafeRequiredInput("apikey"),
+            apikey: unsafeRequiredInput("api-key"),
+            apikeyId: unsafeRequiredInput("api-key-id"),
             outputFilePath: unsafeRequiredInput("output-file-path"),
             cmd: unsafeRequiredMultilineInput("cmd"),
             workdir: optionalInput("workdir"),

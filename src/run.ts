@@ -137,7 +137,8 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
   Effect.tryPromise({
     try: (signal) => {
       const body = PostJmhResultBody.from(results, computedAt)
-      const buff = Buffer.from(JSON.stringify(body), "utf-8")
+      const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
+      const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
       return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
         method: "POST",
@@ -145,7 +146,7 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
         headers: {
           "User-Agent": "zeklin-action",
           "Content-Type": "application/json",
-          Authorization: `Token ${inputs.apikey}`,
+          Authorization: `Basic ${credentials}`,
         },
         signal: signal,
       }).then((response) => {

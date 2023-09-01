@@ -21,6 +21,7 @@ const banner = String.raw`
 
 export class Inputs extends Data.TaggedClass("Inputs")<{
   apikey: NES
+  apikeyId: NES
   cmd: Chunk.Chunk<NES>
   outputFilePath: NES
   workdir: Option.Option<NES>
@@ -56,7 +57,8 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
   try {
     return Either.right(
       new Inputs({
-        apikey: unsafeRequiredInput("apikey"),
+        apikey: unsafeRequiredInput("api-key"),
+        apikeyId: unsafeRequiredInput("api-key-id"),
         outputFilePath: unsafeRequiredInput("output-file-path"),
         cmd: unsafeRequiredMultilineInput("cmd"),
         workdir: optionalInput("workdir"),
