@@ -44321,10 +44321,10 @@ const pingServer = Effect_tryPromise({
 const uploadResults = (inputs, results, computedAt) => Effect_tryPromise({
     try: (signal) => {
         const body = PostJmhResultBody.from(results, computedAt);
-        const blob = new Blob([JSON.stringify(body)]);
+        const buff = Buffer.from(JSON.stringify(body), "utf-8");
         return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
             method: "POST",
-            body: blob,
+            body: buff,
             headers: {
                 "User-Agent": "zeklin-action",
                 "Content-Type": "application/json",
