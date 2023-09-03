@@ -26,7 +26,7 @@ jobs:
         with:
           api-key: ${{ secrets.ZEKLIN_API_KEY }}
           api-key-id: ${{ secrets.ZEKLIN_API_KEY_ID }}
-          output-file-path: 'empty_report.json'
+          output-file-path: 'jmh_samples_all.json'
           workdir: "."
           cmd: |
             echo 'hello world'
