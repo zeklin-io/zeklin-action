@@ -70,6 +70,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   pr: PullRequest | undefined
   data: JSON
   computedAt: Date
+  context: Context
 }> {
   static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
     const r =
@@ -89,7 +90,8 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
         actorId: envvars.GITHUB_ACTOR_ID,
         pr: PullRequest.unsafeFrom(context),
         data: data,
-        computedAt: computedAt
+        computedAt: computedAt,
+        context: context
       })
 
     core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`)
