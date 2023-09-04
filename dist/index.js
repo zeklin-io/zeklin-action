@@ -15955,7 +15955,27 @@ __nccwpck_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.10.0/node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(7733);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Function.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/GlobalValue.mjs
+/**
+ * @since 1.0.0
+ */
+const globalStoreId = /*#__PURE__*/Symbol.for("@effect/data/GlobalValue/globalStoreId");
+if (!(globalStoreId in globalThis)) {
+  ;
+  globalThis[globalStoreId] = /*#__PURE__*/new Map();
+}
+const globalStore = globalThis[globalStoreId];
+/**
+ * @since 1.0.0
+ */
+const globalValue = (id, compute) => {
+  if (!globalStore.has(id)) {
+    globalStore.set(id, compute());
+  }
+  return globalStore.get(id);
+};
+//# sourceMappingURL=GlobalValue.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Function.mjs
 /**
  * Tests if a value is a `function`.
  *
@@ -16361,7 +16381,7 @@ const hole = /*#__PURE__*/(/* unused pure expression or super */ null && (Functi
  */
 const SK = (_, b) => b;
 //# sourceMappingURL=Function.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Predicate.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Predicate.mjs
 /**
  * @since 1.0.0
  */
@@ -16623,7 +16643,7 @@ const Predicate_isObject = input => typeof input === "object" && input != null |
  * @category guards
  * @since 1.0.0
  */
-const isTagged = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, tag) => Predicate_isObject(self) && "_tag" in self && self["_tag"] === tag)));
+const isTagged = /*#__PURE__*/Function_dual(2, (self, tag) => Predicate_isObject(self) && "_tag" in self && self["_tag"] === tag);
 /**
  * A guard that succeeds when the input is `null` or `undefined`.
  *
@@ -16923,7 +16943,7 @@ const some = collection => a => {
   return false;
 };
 //# sourceMappingURL=Predicate.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/DeterministicRandom.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/PCGRandom.mjs
 /*
  * Copyright 2014 Thom Chiovoloni, released under the MIT license.
  *
@@ -17080,31 +17100,12 @@ function add64(out, aHi, aLo, bHi, bLo) {
   out[0] = hi;
   out[1] = lo;
 }
-//# sourceMappingURL=DeterministicRandom.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Global.mjs
+//# sourceMappingURL=PCGRandom.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Hash.mjs
 /**
  * @since 1.0.0
  */
-const globalStoreId = /*#__PURE__*/Symbol.for("@effect/data/Global/globalStoreId");
-if (!(globalStoreId in globalThis)) {
-  ;
-  globalThis[globalStoreId] = /*#__PURE__*/new Map();
-}
-const globalStore = globalThis[globalStoreId];
-/**
- * @since 1.0.0
- */
-const globalValue = (id, compute) => {
-  if (!globalStore.has(id)) {
-    globalStore.set(id, compute());
-  }
-  return globalStore.get(id);
-};
-//# sourceMappingURL=Global.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Hash.mjs
-/**
- * @since 1.0.0
- */
+
 
 
 /** @internal */
@@ -17246,7 +17247,7 @@ const array = arr => {
   return optimize(h);
 };
 //# sourceMappingURL=Hash.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Equal.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Equal.mjs
 
 /**
  * @since 1.0.0
@@ -17285,53 +17286,47 @@ const isEqual = u => typeof u === "object" && u !== null && Equal_symbol in u;
  */
 const equivalence = () => (self, that) => Hash_hash(self) === Hash_hash(that) && equals(self, that);
 //# sourceMappingURL=Equal.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Data.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Data.mjs
 /**
  * @since 1.0.0
  */
 
 
-const protoArr = /*#__PURE__*/(/* unused pure expression or super */ null && ((() => {
-  const proto = {
-    [Hash.symbol]() {
-      return Hash.array(this);
-    },
-    [Equal.symbol](that) {
-      if (Array.isArray(that) && this.length === that.length) {
-        return this.every((v, i) => Equal.equals(v, that[i]));
-      } else {
+const protoArr = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(Array.prototype), {
+  [symbol]() {
+    return array(this);
+  },
+  [Equal_symbol](that) {
+    if (Array.isArray(that) && this.length === that.length) {
+      return this.every((v, i) => equals(v, that[i]));
+    } else {
+      return false;
+    }
+  }
+});
+const protoStruct = {
+  [symbol]() {
+    return structure(this);
+  },
+  [Equal_symbol](that) {
+    const selfKeys = Object.keys(this);
+    const thatKeys = Object.keys(that);
+    if (selfKeys.length !== thatKeys.length) {
+      return false;
+    }
+    for (const key of selfKeys) {
+      if (!(key in that && equals(this[key], that[key]))) {
         return false;
       }
     }
-  };
-  return Object.setPrototypeOf(proto, Array.prototype);
-})()));
-const protoStruct = /*#__PURE__*/(() => {
-  const proto = {
-    [symbol]() {
-      return structure(this);
-    },
-    [Equal_symbol](that) {
-      const selfKeys = Object.keys(this);
-      const thatKeys = Object.keys(that);
-      if (selfKeys.length !== thatKeys.length) {
-        return false;
-      }
-      for (const key of selfKeys) {
-        if (!(key in that && equals(this[key], that[key]))) {
-          return false;
-        }
-      }
-      return true;
-    }
-  };
-  return Object.setPrototypeOf(proto, Object.prototype);
-})();
+    return true;
+  }
+};
 /**
  * @category constructors
  * @since 1.0.0
  */
-const Data_struct = as => unsafeStruct(Object.assign({}, as));
+const Data_struct = as => Object.assign(Object.create(protoStruct), as);
 /**
  * @category constructors
  * @since 1.0.0
@@ -17352,7 +17347,7 @@ const Data_array = as => unsafeArray(as.slice(0));
  * @since 1.0.0
  */
 const unsafeArray = as => Object.setPrototypeOf(as, protoArr);
-const _case = () => args => args === undefined ? Data_struct({}) : Data_struct(args);
+const _case = () => args => args === undefined ? Object.create(protoStruct) : Data_struct(args);
 
 /**
  * Provides a tagged constructor for the specified `Case`.
@@ -17360,14 +17355,11 @@ const _case = () => args => args === undefined ? Data_struct({}) : Data_struct(a
  * @since 1.0.0
  * @category constructors
  */
-const tagged = tag =>
-// @ts-expect-error
-args => args === undefined ? Data_struct({
-  _tag: tag
-}) : Data_struct({
-  ...args,
-  _tag: tag
-});
+const tagged = tag => args => {
+  const value = args === undefined ? Object.create(protoStruct) : Data_struct(args);
+  value._tag = tag;
+  return value;
+};
 /**
  * Provides a Tagged constructor for a Case Class.
  *
@@ -17384,37 +17376,45 @@ const TaggedClass = tag => {
   return Base;
 };
 /**
+ * @since 1.0.0
+ * @category constructors
+ */
+class Structural {
+  constructor(args) {
+    if (args) {
+      Object.assign(this, args);
+    }
+  }
+  /**
+   * @since 1.0.0
+   */
+  [symbol]() {
+    return structure(this);
+  }
+  /**
+   * @since 1.0.0
+   */
+  [Equal_symbol](that) {
+    const selfKeys = Object.keys(this);
+    const thatKeys = Object.keys(that);
+    if (selfKeys.length !== thatKeys.length) {
+      return false;
+    }
+    for (const key of selfKeys) {
+      if (!(key in that && equals(this[key], that[key]))) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+/**
  * Provides a constructor for a Case Class.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Class = /*#__PURE__*/(() => {
-  class Base {
-    constructor(args) {
-      if (args) {
-        Object.assign(this, args);
-      }
-    }
-    [symbol]() {
-      return structure(this);
-    }
-    [Equal_symbol](that) {
-      const selfKeys = Object.keys(this);
-      const thatKeys = Object.keys(that);
-      if (selfKeys.length !== thatKeys.length) {
-        return false;
-      }
-      for (const key of selfKeys) {
-        if (!(key in that && equals(this[key], that[key]))) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-  return Base;
-})();
+const Class = Structural;
 /**
  * Create a constructor for a tagged union of `Data` structs.
  *
@@ -17450,7 +17450,7 @@ const Class = /*#__PURE__*/(() => {
  */
 const taggedEnum = () => tagged;
 //# sourceMappingURL=Data.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Equivalence.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Equivalence.mjs
 /**
  * This module provides an implementation of the `Equivalence` type class, which defines a binary relation
  * that is reflexive, symmetric, and transitive. In other words, it defines a notion of equivalence between values of a certain type.
@@ -17617,7 +17617,17 @@ const Equivalence_struct = fields => {
   });
 };
 //# sourceMappingURL=Equivalence.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Inspectable.mjs
+/**
+ * @since 1.0.0
+ */
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+const NodeInspectSymbol = /*#__PURE__*/Symbol.for("nodejs.util.inspect.custom");
+//# sourceMappingURL=Inspectable.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Effect.mjs
 /** @internal */
 const EffectTypeId = /*#__PURE__*/Symbol.for("@effect/io/Effect");
 /** @internal */
@@ -17627,7 +17637,7 @@ const effectVariance = {
   _A: _ => _
 };
 //# sourceMappingURL=Effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Pipeable.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Pipeable.mjs
 /**
  * @since 1.0.0
  */
@@ -17665,207 +17675,153 @@ const Pipeable_pipeArguments = (self, args) => {
   }
 };
 //# sourceMappingURL=Pipeable.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Option.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Option.mjs
 /**
  * @since 1.0.0
  */
-var _a, _b;
+
 
 
 
 
 const TypeId = /*#__PURE__*/Symbol.for("@effect/data/Option");
-/** @internal */
-class Some {
-  [(_a = EffectTypeId, Equal_symbol)](that) {
-    return isOption(that) && isSome(that) && equals(that.i0, this.i0);
-  }
-  [symbol]() {
-    return Hash_hash(this.i0);
-  }
+const CommonProto = {
+  [EffectTypeId]: effectVariance,
+  [TypeId]: {
+    _A: _ => _
+  },
+  [NodeInspectSymbol]() {
+    return this.toJSON();
+  },
+  pipe() {
+    return Pipeable_pipeArguments(this, arguments);
+  },
   toString() {
-    return `Some(${String(this.i0)})`;
+    return JSON.stringify(this, null, 2);
   }
+};
+const SomeProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(CommonProto), {
+  _tag: "Some",
+  [Equal_symbol](that) {
+    return isOption(that) && isSome(that) && equals(that.value, this.value);
+  },
+  [symbol]() {
+    return combine(Hash_hash(this._tag))(Hash_hash(this.value));
+  },
   toJSON() {
     return {
       _tag: this._tag,
-      value: this.i0
+      value: this.value
     };
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
-    return this.toJSON();
-  }
-  get [TypeId]() {
-    return {
-      _A: _ => _
-    };
-  }
-  get value() {
-    return this.i0;
-  }
-  constructor(i0) {
-    this.i0 = i0;
-    this._tag = "Some";
-    this._id = TypeId;
-    this.i1 = undefined;
-    this.i2 = undefined;
-    this[_a] = effectVariance;
-  }
-  pipe() {
-    return Pipeable_pipeArguments(this, arguments);
-  }
-}
-/** @internal */
-class None {
-  constructor() {
-    this._tag = "None";
-    this._id = TypeId;
-    this.i0 = undefined;
-    this.i1 = undefined;
-    this.i2 = undefined;
-    this[_b] = effectVariance;
-  }
-  [(_b = EffectTypeId, Equal_symbol)](that) {
+});
+const NoneProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(CommonProto), {
+  _tag: "None",
+  [Equal_symbol](that) {
     return isOption(that) && isNone(that);
-  }
+  },
   [symbol]() {
-    return Hash_hash(this._tag);
-  }
-  toString() {
-    return `None()`;
-  }
+    return combine(Hash_hash(this._tag));
+  },
   toJSON() {
     return {
       _tag: this._tag
     };
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
-    return this.toJSON();
-  }
-  get [TypeId]() {
-    return {
-      _A: _ => _
-    };
-  }
-  pipe() {
-    return Pipeable_pipeArguments(this, arguments);
-  }
-}
+});
 /** @internal */
-const isOption = input => typeof input === "object" && input != null && "_tag" in input && (input["_tag"] === "None" || input["_tag"] === "Some") && isEqual(input);
+const isOption = input => typeof input === "object" && input != null && TypeId in input;
 /** @internal */
 const isNone = fa => fa._tag === "None";
 /** @internal */
 const isSome = fa => fa._tag === "Some";
 /** @internal */
-const none = /*#__PURE__*/new None();
+const none = /*#__PURE__*/Object.create(NoneProto);
 /** @internal */
-const Option_some = a => new Some(a);
+const Option_some = value => {
+  const a = Object.create(SomeProto);
+  a.value = value;
+  return a;
+};
 //# sourceMappingURL=Option.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Either.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Either.mjs
 /**
  * @since 1.0.0
  */
-var Either_a, Either_b;
 
 
 
 
 
 
+
+/**
+ * @internal
+ */
 const Either_TypeId = /*#__PURE__*/Symbol.for("@effect/data/Either");
-/** @internal */
-class Right {
-  [(Either_a = EffectTypeId, Equal_symbol)](that) {
-    return isEither(that) && isRight(that) && equals(that.i0, this.i0);
-  }
-  [symbol]() {
-    return Hash_hash(this.i0);
-  }
-  get right() {
-    return this.i0;
-  }
-  constructor(i0) {
-    this.i0 = i0;
-    this._tag = "Right";
-    this._id = Either_TypeId;
-    this.i1 = undefined;
-    this.i2 = undefined;
-    this[Either_a] = effectVariance;
-  }
-  get [Either_TypeId]() {
-    return {
-      _E: _ => _,
-      _A: _ => _
-    };
-  }
+const Either_CommonProto = {
+  [EffectTypeId]: effectVariance,
+  [Either_TypeId]: {
+    _A: _ => _
+  },
+  [NodeInspectSymbol]() {
+    return this.toJSON();
+  },
+  pipe() {
+    return Pipeable_pipeArguments(this, arguments);
+  },
   toString() {
-    return `right(${String(this.i0)})`;
+    return JSON.stringify(this, null, 2);
   }
+};
+const RightProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(Either_CommonProto), {
+  _tag: "Right",
+  [Equal_symbol](that) {
+    return isEither(that) && isRight(that) && equals(that.right, this.right);
+  },
+  [symbol]() {
+    return combine(Hash_hash(this._tag))(Hash_hash(this.right));
+  },
   toJSON() {
     return {
       _tag: this._tag,
-      right: this.i0
+      right: this.right
     };
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
-    return this.toJSON();
-  }
-  pipe() {
-    return Pipeable_pipeArguments(this, arguments);
-  }
-}
-/** @internal */
-class Left {
-  [(Either_b = EffectTypeId, Equal_symbol)](that) {
-    return isEither(that) && isLeft(that) && equals(that.i0, this.i0);
-  }
+});
+const LeftProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(Either_CommonProto), {
+  _tag: "Left",
+  [Equal_symbol](that) {
+    return isEither(that) && isLeft(that) && equals(that.left, this.left);
+  },
   [symbol]() {
-    return Hash_hash(this.i0);
-  }
-  get [Either_TypeId]() {
-    return {
-      _E: _ => _,
-      _A: _ => _
-    };
-  }
-  get left() {
-    return this.i0;
-  }
-  constructor(i0) {
-    this.i0 = i0;
-    this._tag = "Left";
-    this._id = Either_TypeId;
-    this.i1 = undefined;
-    this.i2 = undefined;
-    this[Either_b] = effectVariance;
-  }
-  toString() {
-    return `left(${String(this.i0)})`;
-  }
+    return combine(Hash_hash(this._tag))(Hash_hash(this.left));
+  },
   toJSON() {
     return {
       _tag: this._tag,
-      left: this.i0
+      left: this.left
     };
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
-    return this.toJSON();
-  }
-  pipe() {
-    return Pipeable_pipeArguments(this, arguments);
-  }
-}
+});
 /** @internal */
-const isEither = input => typeof input === "object" && input != null && "_tag" in input && (input["_tag"] === "Left" || input["_tag"] === "Right") && isEqual(input);
+const isEither = input => typeof input === "object" && input != null && Either_TypeId in input;
 /** @internal */
 const isLeft = ma => ma._tag === "Left";
 /** @internal */
 const isRight = ma => ma._tag === "Right";
 /** @internal */
-const left = e => new Left(e);
+const left = left => {
+  const a = Object.create(LeftProto);
+  a.left = left;
+  return a;
+};
 /** @internal */
-const right = a => new Right(a);
+const right = right => {
+  const a = Object.create(RightProto);
+  a.right = right;
+  return a;
+};
 /** @internal */
 const getLeft = self => isRight(self) ? none : Option_some(self.left);
 /** @internal */
@@ -17873,7 +17829,7 @@ const getRight = self => isLeft(self) ? none : Option_some(self.right);
 /** @internal */
 const fromOption = /*#__PURE__*/Function_dual(2, (self, onNone) => isNone(self) ? left(onNone()) : right(self.value));
 //# sourceMappingURL=Either.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Order.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Order.mjs
 /**
  * @since 1.0.0
  */
@@ -18099,7 +18055,7 @@ const clamp = O => dual(3, (self, minimum, maximum) => min(O)(maximum, max(O)(mi
  */
 const between = O => dual(3, (self, minimum, maximum) => !lessThan(O)(self, minimum) && !greaterThan(O)(self, maximum));
 //# sourceMappingURL=Order.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Number.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Number.mjs
 /**
  * This module provides utility functions and type class instances for working with the `number` type in TypeScript.
  * It includes functions for basic arithmetic operations, as well as type class instances for
@@ -18446,8 +18402,7 @@ const remainder = /*#__PURE__*/(/* unused pure expression or super */ null && (d
   return selfInt % divisorInt / Math.pow(10, decCount);
 })));
 //# sourceMappingURL=Number.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Option.mjs
-
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Option.mjs
 
 
 
@@ -18460,7 +18415,7 @@ const remainder = /*#__PURE__*/(/* unused pure expression or super */ null && (d
  * @category symbols
  * @since 1.0.0
  */
-const Option_TypeId = /*#__PURE__*/Symbol.for("@effect/data/Option");
+const Option_TypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/data/Option")));
 /**
  * Creates a new `Option` that represents the absence of a value.
  *
@@ -18492,7 +18447,7 @@ const mjs_Option_some = Option_some;
  * @category guards
  * @since 1.0.0
  */
-const Option_isOption = input => Predicate_isObject(input) && "_id" in input && input["_id"] === Option_TypeId;
+const Option_isOption = isOption;
 /**
  * Determine if a `Option` is a `None`.
  *
@@ -19418,14 +19373,14 @@ const gen = f => {
   }
 };
 //# sourceMappingURL=Option.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/ReadonlyArray.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/ReadonlyArray.mjs
 /**
  * @since 1.0.0
  */
 /** @internal */
 const isNonEmptyArray = self => self.length > 0;
 //# sourceMappingURL=ReadonlyArray.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/ReadonlyRecord.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/ReadonlyRecord.mjs
 /**
  * This module provides utility functions for working with records in TypeScript.
  *
@@ -19905,7 +19860,7 @@ const partition = /*#__PURE__*/(/* unused pure expression or super */ null && (d
   return [left, right];
 })));
 //# sourceMappingURL=ReadonlyRecord.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/ReadonlyArray.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/ReadonlyArray.mjs
 /**
  * This module provides utility functions for working with arrays in TypeScript.
  *
@@ -21199,7 +21154,8 @@ const cartesianWith = /*#__PURE__*/(/* unused pure expression or super */ null &
  */
 const cartesian = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, that) => cartesianWith(self, that, (a, b) => [a, b]))));
 //# sourceMappingURL=ReadonlyArray.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Chunk.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Chunk.mjs
+
 
 
 
@@ -21225,71 +21181,28 @@ const emptyArray = [];
  */
 const Chunk_getEquivalence = isEquivalent => make((self, that) => toReadonlyArray(self).every((value, i) => isEquivalent(value, Chunk_unsafeGet(that, i))));
 const Chunk_equivalence = /*#__PURE__*/Chunk_getEquivalence(equals);
-class ChunkImpl {
-  constructor(backing) {
-    this.backing = backing;
-    this._id = Chunk_TypeId;
-    switch (backing._tag) {
-      case "IEmpty":
-        {
-          this.length = 0;
-          this.depth = 0;
-          this.left = this;
-          this.right = this;
-          break;
-        }
-      case "IConcat":
-        {
-          this.length = backing.left.length + backing.right.length;
-          this.depth = 1 + Math.max(backing.left.depth, backing.right.depth);
-          this.left = backing.left;
-          this.right = backing.right;
-          break;
-        }
-      case "IArray":
-        {
-          this.length = backing.array.length;
-          this.depth = 0;
-          this.left = _empty;
-          this.right = _empty;
-          break;
-        }
-      case "ISingleton":
-        {
-          this.length = 1;
-          this.depth = 0;
-          this.left = _empty;
-          this.right = _empty;
-          break;
-        }
-      case "ISlice":
-        {
-          this.length = backing.length;
-          this.depth = backing.chunk.depth + 1;
-          this.left = _empty;
-          this.right = _empty;
-          break;
-        }
-    }
-  }
+const ChunkProto = {
+  [Chunk_TypeId]: {
+    _A: _ => _
+  },
   toString() {
     return `Chunk(${toReadonlyArray(this).map(String).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "Chunk",
       values: toReadonlyArray(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   [Equal_symbol](that) {
     return isChunk(that) && Chunk_equivalence(this, that);
-  }
+  },
   [symbol]() {
     return array(toReadonlyArray(this));
-  }
+  },
   [Symbol.iterator]() {
     switch (this.backing._tag) {
       case "IArray":
@@ -21305,19 +21218,66 @@ class ChunkImpl {
           return toReadonlyArray(this)[Symbol.iterator]();
         }
     }
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
+const makeChunk = backing => {
+  const chunk = Object.create(ChunkProto);
+  chunk.backing = backing;
+  switch (backing._tag) {
+    case "IEmpty":
+      {
+        chunk.length = 0;
+        chunk.depth = 0;
+        chunk.left = undefined;
+        chunk.right = undefined;
+        break;
+      }
+    case "IConcat":
+      {
+        chunk.length = backing.left.length + backing.right.length;
+        chunk.depth = 1 + Math.max(backing.left.depth, backing.right.depth);
+        chunk.left = backing.left;
+        chunk.right = backing.right;
+        break;
+      }
+    case "IArray":
+      {
+        chunk.length = backing.array.length;
+        chunk.depth = 0;
+        chunk.left = _empty;
+        chunk.right = _empty;
+        break;
+      }
+    case "ISingleton":
+      {
+        chunk.length = 1;
+        chunk.depth = 0;
+        chunk.left = _empty;
+        chunk.right = _empty;
+        break;
+      }
+    case "ISlice":
+      {
+        chunk.length = backing.length;
+        chunk.depth = backing.chunk.depth + 1;
+        chunk.left = _empty;
+        chunk.right = _empty;
+        break;
+      }
+  }
+  return chunk;
+};
 /**
  * Checks if `u` is a `Chunk<unknown>`
  *
  * @category constructors
  * @since 1.0.0
  */
-const isChunk = u => Predicate_isObject(u) && "_id" in u && u["_id"] === Chunk_TypeId;
-const _empty = /*#__PURE__*/new ChunkImpl({
+const isChunk = u => Predicate_isObject(u) && Chunk_TypeId in u;
+const _empty = /*#__PURE__*/makeChunk({
   _tag: "IEmpty"
 });
 /**
@@ -21338,7 +21298,7 @@ const Chunk_make = (...as) => as.length === 1 ? Chunk_of(as[0]) : unsafeFromNonE
  * @category constructors
  * @since 1.0.0
  */
-const Chunk_of = a => new ChunkImpl({
+const Chunk_of = a => makeChunk({
   _tag: "ISingleton",
   a
 });
@@ -21348,7 +21308,7 @@ const Chunk_of = a => new ChunkImpl({
  * @category conversions
  * @since 1.0.0
  */
-const Chunk_fromIterable = self => isChunk(self) ? self : new ChunkImpl({
+const Chunk_fromIterable = self => isChunk(self) ? self : makeChunk({
   _tag: "IArray",
   array: ReadonlyArray_fromIterable(self)
 });
@@ -21425,14 +21385,14 @@ const Chunk_reverse = self => {
       return self;
     case "IArray":
       {
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IArray",
           array: ReadonlyArray_reverse(self.backing.array)
         });
       }
     case "IConcat":
       {
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IConcat",
           left: Chunk_reverse(self.backing.right),
           right: Chunk_reverse(self.backing.left)
@@ -21455,7 +21415,7 @@ const Chunk_get = /*#__PURE__*/Function_dual(2, (self, index) => index < 0 || in
  * @since 1.0.0
  * @category unsafe
  */
-const unsafeFromArray = self => new ChunkImpl({
+const unsafeFromArray = self => makeChunk({
   _tag: "IArray",
   array: self
 });
@@ -21530,7 +21490,7 @@ const Chunk_take = /*#__PURE__*/Function_dual(2, (self, n) => {
     switch (self.backing._tag) {
       case "ISlice":
         {
-          return new ChunkImpl({
+          return makeChunk({
             _tag: "ISlice",
             chunk: self.backing.chunk,
             length: n,
@@ -21540,7 +21500,7 @@ const Chunk_take = /*#__PURE__*/Function_dual(2, (self, n) => {
       case "IConcat":
         {
           if (n > self.left.length) {
-            return new ChunkImpl({
+            return makeChunk({
               _tag: "IConcat",
               left: self.left,
               right: Chunk_take(self.right, n - self.left.length)
@@ -21550,7 +21510,7 @@ const Chunk_take = /*#__PURE__*/Function_dual(2, (self, n) => {
         }
       default:
         {
-          return new ChunkImpl({
+          return makeChunk({
             _tag: "ISlice",
             chunk: self,
             offset: 0,
@@ -21574,7 +21534,7 @@ const Chunk_drop = /*#__PURE__*/Function_dual(2, (self, n) => {
     switch (self.backing._tag) {
       case "ISlice":
         {
-          return new ChunkImpl({
+          return makeChunk({
             _tag: "ISlice",
             chunk: self.backing.chunk,
             offset: self.backing.offset + n,
@@ -21586,7 +21546,7 @@ const Chunk_drop = /*#__PURE__*/Function_dual(2, (self, n) => {
           if (n > self.left.length) {
             return Chunk_drop(self.right, n - self.left.length);
           }
-          return new ChunkImpl({
+          return makeChunk({
             _tag: "IConcat",
             left: Chunk_drop(self.left, n),
             right: self.right
@@ -21594,7 +21554,7 @@ const Chunk_drop = /*#__PURE__*/Function_dual(2, (self, n) => {
         }
       default:
         {
-          return new ChunkImpl({
+          return makeChunk({
             _tag: "ISlice",
             chunk: self,
             offset: n,
@@ -21649,7 +21609,7 @@ const Chunk_appendAll = /*#__PURE__*/Function_dual(2, (self, that) => {
   }
   const diff = that.depth - self.depth;
   if (Math.abs(diff) <= 1) {
-    return new ChunkImpl({
+    return makeChunk({
       _tag: "IConcat",
       left: self,
       right: that
@@ -21657,7 +21617,7 @@ const Chunk_appendAll = /*#__PURE__*/Function_dual(2, (self, that) => {
   } else if (diff < -1) {
     if (self.left.depth >= self.right.depth) {
       const nr = Chunk_appendAll(self.right, that);
-      return new ChunkImpl({
+      return makeChunk({
         _tag: "IConcat",
         left: self.left,
         right: nr
@@ -21665,23 +21625,23 @@ const Chunk_appendAll = /*#__PURE__*/Function_dual(2, (self, that) => {
     } else {
       const nrr = Chunk_appendAll(self.right.right, that);
       if (nrr.depth === self.depth - 3) {
-        const nr = new ChunkImpl({
+        const nr = makeChunk({
           _tag: "IConcat",
           left: self.right.left,
           right: nrr
         });
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IConcat",
           left: self.left,
           right: nr
         });
       } else {
-        const nl = new ChunkImpl({
+        const nl = makeChunk({
           _tag: "IConcat",
           left: self.left,
           right: self.right.left
         });
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IConcat",
           left: nl,
           right: nrr
@@ -21691,7 +21651,7 @@ const Chunk_appendAll = /*#__PURE__*/Function_dual(2, (self, that) => {
   } else {
     if (that.right.depth >= that.left.depth) {
       const nl = Chunk_appendAll(self, that.left);
-      return new ChunkImpl({
+      return makeChunk({
         _tag: "IConcat",
         left: nl,
         right: that.right
@@ -21699,23 +21659,23 @@ const Chunk_appendAll = /*#__PURE__*/Function_dual(2, (self, that) => {
     } else {
       const nll = Chunk_appendAll(self, that.left.left);
       if (nll.depth === that.depth - 3) {
-        const nl = new ChunkImpl({
+        const nl = makeChunk({
           _tag: "IConcat",
           left: nll,
           right: that.left.right
         });
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IConcat",
           left: nl,
           right: that.right
         });
       } else {
-        const nr = new ChunkImpl({
+        const nr = makeChunk({
           _tag: "IConcat",
           left: that.left.right,
           right: that.right
         });
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IConcat",
           left: nll,
           right: nr
@@ -22173,7 +22133,7 @@ const Chunk_reduce = reduce;
  */
 const Chunk_reduceRight = reduceRight;
 //# sourceMappingURL=Chunk.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Either.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Either.mjs
 /**
  * @since 1.0.0
  */
@@ -22186,7 +22146,7 @@ const Chunk_reduceRight = reduceRight;
  * @category symbols
  * @since 1.0.0
  */
-const mjs_Either_TypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/data/Either")));
+const mjs_Either_TypeId = Either_TypeId;
 /**
  * Constructs a new `Either` holding a `Right` value. This usually represents a successful value due to the right bias
  * of this structure.
@@ -22260,7 +22220,7 @@ const try_ = evaluate => {
  * @category guards
  * @since 1.0.0
  */
-const Either_isEither = input => isObject(input) && "_id" in input && input["_id"] === mjs_Either_TypeId;
+const Either_isEither = isEither;
 /**
  * Determine if a `Either` is a `Left`.
  *
@@ -22340,6 +22300,7 @@ const mapBoth = /*#__PURE__*/(/* unused pure expression or super */ null && (dua
  * @param self - The input `Either` value to map.
  * @param f - A transformation function to apply to the `Left` value of the input `Either`.
  *
+ * @category mapping
  * @since 1.0.0
  */
 const mapLeft = /*#__PURE__*/Function_dual(2, (self, f) => Either_isLeft(self) ? Either_left(f(self.left)) : Either_right(self.right));
@@ -22352,7 +22313,7 @@ const mapLeft = /*#__PURE__*/Function_dual(2, (self, f) => Either_isLeft(self) ?
  * @category mapping
  * @since 1.0.0
  */
-const mapRight = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, f) => Either_isRight(self) ? Either_right(f(self.right)) : Either_left(self.left))));
+const Either_map = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, f) => Either_isRight(self) ? Either_right(f(self.right)) : Either_left(self.left))));
 /**
  * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the `onLeft function,
  * if the value is a `Right` the inner value is applied to the `onRight` function.
@@ -22543,8 +22504,8 @@ const Either_gen = f => {
   }
 };
 //# sourceMappingURL=Either.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Context.mjs
-var Context_a;
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Context.mjs
+
 
 
 
@@ -22555,64 +22516,71 @@ var Context_a;
 /** @internal */
 const TagTypeId = /*#__PURE__*/Symbol.for("@effect/data/Context/Tag");
 /** @internal */
-class TagImpl {
-  [(Context_a = EffectTypeId, Equal_symbol)](that) {
+const TagProto = {
+  _tag: "Tag",
+  [EffectTypeId]: effectVariance,
+  [TagTypeId]: {
+    _S: _ => _,
+    _I: _ => _
+  },
+  [Equal_symbol](that) {
     return this === that;
-  }
+  },
   [symbol]() {
     return random(this);
-  }
-  get [TagTypeId]() {
-    return {
-      _S: _ => _,
-      _I: _ => _
-    };
-  }
-  constructor(identifier) {
-    this._tag = "Tag";
-    this.i0 = undefined;
-    this.i1 = undefined;
-    this.i2 = undefined;
-    this[Context_a] = effectVariance;
-    const limit = Error.stackTraceLimit;
-    Error.stackTraceLimit = 3;
-    this.creationError = new Error();
-    Error.stackTraceLimit = limit;
-    if (typeof identifier !== "undefined") {
-      this.i0 = identifier;
-      return globalValue(identifier, () => this);
-    }
-  }
-  get stack() {
-    return this.creationError.stack;
-  }
+  },
   toString() {
-    return JSON.stringify(this);
-  }
+    return JSON.stringify(this, null, 2);
+  },
   toJSON() {
     return {
       _tag: "Tag",
-      identifier: this.i0,
+      identifier: this.identifier,
       stack: this.stack
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
-  }
+  },
   of(self) {
     return self;
-  }
+  },
   context(self) {
     return Context_make(this, self);
   }
-}
+};
+const tagRegistry = /*#__PURE__*/globalValue("@effect/data/Context/Tag/tagRegistry", () => new Map());
 /** @internal */
-const ContextTypeId = /*#__PURE__*/Symbol.for("@effect/data/Context");
+const makeTag = identifier => {
+  if (identifier && tagRegistry.has(identifier)) {
+    return tagRegistry.get(identifier);
+  }
+  const limit = Error.stackTraceLimit;
+  Error.stackTraceLimit = 2;
+  const creationError = new Error();
+  Error.stackTraceLimit = limit;
+  const tag = Object.create(TagProto);
+  Object.defineProperty(tag, "stack", {
+    get() {
+      return creationError.stack;
+    }
+  });
+  if (identifier) {
+    tag.identifier = identifier;
+    tagRegistry.set(identifier, tag);
+  }
+  return tag;
+};
 /** @internal */
-class ContextImpl {
+const Context_TypeId = /*#__PURE__*/Symbol.for("@effect/data/Context");
+/** @internal */
+const ContextProto = {
+  [Context_TypeId]: {
+    _S: _ => _
+  },
   [Equal_symbol](that) {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
@@ -22625,25 +22593,38 @@ class ContextImpl {
       }
     }
     return false;
-  }
+  },
   [symbol]() {
     return number(this.unsafeMap.size);
-  }
-  constructor(unsafeMap) {
-    this.unsafeMap = unsafeMap;
-    this._id = ContextTypeId;
-    this._S = _ => _;
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
+  },
+  toString() {
+    return JSON.stringify(this, null, 2);
+  },
+  toJSON() {
+    return {
+      _tag: "Context",
+      services: Array.from(this.unsafeMap)
+    };
+  },
+  [NodeInspectSymbol]() {
+    return this.toJSON();
   }
-}
+};
+/** @internal */
+const makeContext = unsafeMap => {
+  const context = Object.create(ContextProto);
+  context.unsafeMap = unsafeMap;
+  return context;
+};
 const serviceNotFoundError = tag => {
-  const error = new Error(`Service not found${tag.i0 ? `: ${String(tag.i0)}` : ""}`);
+  const error = new Error(`Service not found${tag.identifier ? `: ${String(tag.identifier)}` : ""}`);
   if (tag.stack) {
     const lines = tag.stack.split("\n");
     if (lines.length > 2) {
-      const afterAt = lines[3].match(/at (.*)/);
+      const afterAt = lines[2].match(/at (.*)/);
       if (afterAt) {
         error.message = error.message + ` (defined at ${afterAt[1]})`;
       }
@@ -22657,18 +22638,19 @@ const serviceNotFoundError = tag => {
   return error;
 };
 /** @internal */
-const isContext = u => typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId;
+const isContext = u => typeof u === "object" && u !== null && Context_TypeId in u;
 /** @internal */
 const isTag = u => typeof u === "object" && u !== null && TagTypeId in u;
+const Context_empty = /*#__PURE__*/makeContext( /*#__PURE__*/new Map());
 /** @internal */
-const Context_empty = () => new ContextImpl(new Map());
+const internal_Context_empty = () => Context_empty;
 /** @internal */
-const Context_make = (tag, service) => new ContextImpl(new Map([[tag, service]]));
+const Context_make = (tag, service) => makeContext(new Map([[tag, service]]));
 /** @internal */
 const add = /*#__PURE__*/Function_dual(3, (self, tag, service) => {
   const map = new Map(self.unsafeMap);
   map.set(tag, service);
-  return new ContextImpl(map);
+  return makeContext(map);
 });
 /** @internal */
 const Context_unsafeGet = /*#__PURE__*/Function_dual(2, (self, tag) => {
@@ -22692,7 +22674,7 @@ const Context_merge = /*#__PURE__*/Function_dual(2, (self, that) => {
   for (const [tag, s] of that.unsafeMap) {
     map.set(tag, s);
   }
-  return new ContextImpl(map);
+  return makeContext(map);
 });
 /** @internal */
 const pick = (...tags) => self => {
@@ -22703,7 +22685,7 @@ const pick = (...tags) => self => {
       newEnv.set(tag, s);
     }
   }
-  return new ContextImpl(newEnv);
+  return makeContext(newEnv);
 };
 /** @internal */
 const omit = (...tags) => self => {
@@ -22711,10 +22693,10 @@ const omit = (...tags) => self => {
   for (const tag of tags) {
     newEnv.delete(tag);
   }
-  return new ContextImpl(newEnv);
+  return makeContext(newEnv);
 };
 //# sourceMappingURL=Context.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Context.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Context.mjs
 
 const Context_TagTypeId = TagTypeId;
 /**
@@ -22737,8 +22719,13 @@ const Context_TagTypeId = TagTypeId;
  * @since 1.0.0
  * @category constructors
  */
-const Tag = key => new TagImpl(key);
-const Context_TypeId = ContextTypeId;
+const Tag = makeTag;
+const mjs_Context_TypeId = Context_TypeId;
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const unsafeMake = makeContext;
 /**
  * Checks if the provided argument is a `Context`.
  *
@@ -22778,7 +22765,7 @@ const Context_isTag = isTag;
  * @since 1.0.0
  * @category constructors
  */
-const mjs_Context_empty = Context_empty;
+const mjs_Context_empty = internal_Context_empty;
 /**
  * Creates a new `Context` with a single service associated to the tag.
  *
@@ -22944,120 +22931,90 @@ const Context_pick = pick;
  */
 const Context_omit = omit;
 //# sourceMappingURL=Context.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Differ/ChunkPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Differ/ChunkPatch.mjs
 
 
 
 
 /** @internal */
-const ChunkPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/Differ/ChunkPatch");
+const ChunkPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/DifferChunkPatch");
 function variance(a) {
   return a;
 }
-class Empty {
-  constructor() {
-    this._tag = "Empty";
-    this._Value = variance;
-    this._Patch = variance;
-    this._id = ChunkPatchTypeId;
+const PatchProto = /*#__PURE__*/Object.setPrototypeOf({
+  [ChunkPatchTypeId]: {
+    _Value: variance,
+    _Patch: variance
   }
-  [symbol]() {
-    return string(`ChunkPatch(Empty)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id;
-  }
-}
-class AndThen {
-  constructor(first, second) {
-    this.first = first;
-    this.second = second;
-    this._tag = "AndThen";
-    this._Value = variance;
-    this._Patch = variance;
-    this._id = ChunkPatchTypeId;
-  }
-  [symbol]() {
-    return string(`ChunkPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.first, that.first) && equals(this.second, that.second);
-  }
-}
-class Append {
-  constructor(values) {
-    this.values = values;
-    this._tag = "Append";
-    this._Value = variance;
-    this._Patch = variance;
-    this._id = ChunkPatchTypeId;
-  }
-  [symbol]() {
-    return string(`ChunkPatch(Append)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.values, that.values);
-  }
-}
-class Slice {
-  constructor(from, until) {
-    this.from = from;
-    this.until = until;
-    this._tag = "Slice";
-    this._Value = variance;
-    this._Patch = variance;
-    this._id = ChunkPatchTypeId;
-  }
-  [symbol]() {
-    return string(`ChunkPatch(Slice)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.from, that.from) && equals(this.until, that.until);
-  }
-}
-class Update {
-  constructor(index, patch) {
-    this.index = index;
-    this.patch = patch;
-    this._tag = "Update";
-    this._Value = variance;
-    this._Patch = variance;
-    this._id = ChunkPatchTypeId;
-  }
-  [symbol]() {
-    return string(`ChunkPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.index, that.index) && equals(this.patch, that.patch);
-  }
-}
-/** @internal */
-const ChunkPatch_empty = () => new Empty();
+}, Structural.prototype);
+const EmptyProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Empty"
+}, PatchProto);
+const ChunkPatch_empty = /*#__PURE__*/Object.create(EmptyProto);
+/**
+ * @internal
+ */
+const Differ_ChunkPatch_empty = () => ChunkPatch_empty;
+const AndThenProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "AndThen"
+}, PatchProto);
+const makeAndThen = (first, second) => {
+  const o = Object.create(AndThenProto);
+  o.first = first;
+  o.second = second;
+  return o;
+};
+const AppendProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Append"
+}, PatchProto);
+const makeAppend = values => {
+  const o = Object.create(AppendProto);
+  o.values = values;
+  return o;
+};
+const SliceProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Slice"
+}, PatchProto);
+const makeSlice = (from, until) => {
+  const o = Object.create(SliceProto);
+  o.from = from;
+  o.until = until;
+  return o;
+};
+const UpdateProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Update"
+}, PatchProto);
+const makeUpdate = (index, patch) => {
+  const o = Object.create(UpdateProto);
+  o.index = index;
+  o.patch = patch;
+  return o;
+};
 /** @internal */
 const diff = options => {
   let i = 0;
-  let patch = ChunkPatch_empty();
+  let patch = Differ_ChunkPatch_empty();
   while (i < options.oldValue.length && i < options.newValue.length) {
     const oldElement = Chunk_unsafeGet(i)(options.oldValue);
     const newElement = Chunk_unsafeGet(i)(options.newValue);
     const valuePatch = options.differ.diff(oldElement, newElement);
     if (!equals(valuePatch, options.differ.empty)) {
-      patch = ChunkPatch_combine(new Update(i, valuePatch))(patch);
+      patch = ChunkPatch_combine(makeUpdate(i, valuePatch))(patch);
     }
     i = i + 1;
   }
   if (i < options.oldValue.length) {
-    patch = ChunkPatch_combine(new Slice(0, i))(patch);
+    patch = ChunkPatch_combine(makeSlice(0, i))(patch);
   }
   if (i < options.newValue.length) {
-    patch = ChunkPatch_combine(new Append(Chunk_drop(i)(options.newValue)))(patch);
+    patch = ChunkPatch_combine(makeAppend(Chunk_drop(i)(options.newValue)))(patch);
   }
   return patch;
 };
 /** @internal */
-const ChunkPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => new AndThen(self, that));
+const ChunkPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => makeAndThen(self, that));
 /** @internal */
-const patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ) => {
+const ChunkPatch_patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ) => {
   let chunk = oldValue;
   let patches = Chunk_of(self);
   while (isNonEmpty(patches)) {
@@ -23100,162 +23057,90 @@ const patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ) => {
   return chunk;
 });
 //# sourceMappingURL=ChunkPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Differ/ChunkPatch.mjs
-/**
- * @since 1.0.0
- */
-
-const ChunkPatch_TypeId = ChunkPatchTypeId;
-/**
- * Constructs an empty chunk patch.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_ChunkPatch_empty = ChunkPatch_empty;
-/**
- * Constructs a chunk patch from a new and old chunk of values and a differ
- * for the values.
- *
- * @since 1.0.0
- * @category constructors
- */
-const ChunkPatch_diff = diff;
-/**
- * Combines two chunk patches to produce a new chunk patch that describes
- * applying their changes sequentially.
- *
- * @since 1.0.0
- */
-const Differ_ChunkPatch_combine = ChunkPatch_combine;
-/**
- * Applies a chunk patch to a chunk of values to produce a new chunk of
- * values which represents the original chunk of values updated with the
- * changes described by this patch.
- *
- * @since 1.0.0
- * @category destructors
- */
-const ChunkPatch_patch = patch;
-//# sourceMappingURL=ChunkPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Differ/ContextPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Differ/ContextPatch.mjs
 
 
 
 
 
 /** @internal */
-const ContextPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/Differ/ContextPatch");
+const ContextPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/DifferContextPatch");
 function ContextPatch_variance(a) {
   return a;
 }
 /** @internal */
-class ContextPatch_Empty {
-  constructor() {
-    this._tag = "Empty";
-    this._Input = ContextPatch_variance;
-    this._Output = ContextPatch_variance;
-    this._id = ContextPatchTypeId;
+const ContextPatch_PatchProto = /*#__PURE__*/Object.setPrototypeOf({
+  [ContextPatchTypeId]: {
+    _Value: ContextPatch_variance,
+    _Patch: ContextPatch_variance
   }
-  [symbol]() {
-    return string(`ContextPatch(Empty)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id;
-  }
-}
-/** @internal */
-class ContextPatch_AndThen {
-  constructor(first, second) {
-    this.first = first;
-    this.second = second;
-    this._tag = "AndThen";
-    this._id = ContextPatchTypeId;
-    this._Input = ContextPatch_variance;
-    this._Output = ContextPatch_variance;
-  }
-  [symbol]() {
-    return string(`ContextPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.first, that.first) && equals(this.second, that.second);
-  }
-}
-/** @internal */
-class AddService {
-  constructor(tag, service) {
-    this.tag = tag;
-    this.service = service;
-    this._tag = "AddService";
-    this._id = ContextPatchTypeId;
-    this._Input = ContextPatch_variance;
-    this._Output = ContextPatch_variance;
-  }
-  [symbol]() {
-    return string(`ContextPatch(AddService)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.tag, that.tag) && equals(this.service, that.service);
-  }
-}
-/** @internal */
-class RemoveService {
-  constructor(tag) {
-    this.tag = tag;
-    this._tag = "RemoveService";
-    this._id = ContextPatchTypeId;
-    this._Input = ContextPatch_variance;
-    this._Output = ContextPatch_variance;
-  }
-  [symbol]() {
-    return string(`ContextPatch(RemoveService)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.tag, that.tag);
-  }
-}
-/** @internal */
-class UpdateService {
-  constructor(tag, update) {
-    this.tag = tag;
-    this.update = update;
-    this._tag = "UpdateService";
-    this._id = ContextPatchTypeId;
-    this._Input = ContextPatch_variance;
-    this._Output = ContextPatch_variance;
-  }
-  [symbol]() {
-    return string(`ContextPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.tag, that.tag) && equals(this.update, that.update);
-  }
-}
-/** @internal */
-const ContextPatch_empty = () => new ContextPatch_Empty();
+}, Structural.prototype);
+const ContextPatch_EmptyProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Empty"
+}, ContextPatch_PatchProto);
+const ContextPatch_empty = /*#__PURE__*/Object.create(ContextPatch_EmptyProto);
+/**
+ * @internal
+ */
+const Differ_ContextPatch_empty = () => ContextPatch_empty;
+const ContextPatch_AndThenProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "AndThen"
+}, ContextPatch_PatchProto);
+const ContextPatch_makeAndThen = (first, second) => {
+  const o = Object.create(ContextPatch_AndThenProto);
+  o.first = first;
+  o.second = second;
+  return o;
+};
+const AddServiceProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "AddService"
+}, ContextPatch_PatchProto);
+const makeAddService = (tag, service) => {
+  const o = Object.create(AddServiceProto);
+  o.tag = tag;
+  o.service = service;
+  return o;
+};
+const RemoveServiceProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "RemoveService"
+}, ContextPatch_PatchProto);
+const makeRemoveService = tag => {
+  const o = Object.create(RemoveServiceProto);
+  o.tag = tag;
+  return o;
+};
+const UpdateServiceProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "UpdateService"
+}, ContextPatch_PatchProto);
+const makeUpdateService = (tag, update) => {
+  const o = Object.create(UpdateServiceProto);
+  o.tag = tag;
+  o.update = update;
+  return o;
+};
 /** @internal */
 const ContextPatch_diff = (oldValue, newValue) => {
   const missingServices = new Map(oldValue.unsafeMap);
-  let patch = ContextPatch_empty();
+  let patch = Differ_ContextPatch_empty();
   for (const [tag, newService] of newValue.unsafeMap.entries()) {
     if (missingServices.has(tag)) {
       const old = missingServices.get(tag);
       missingServices.delete(tag);
       if (!equals(old, newService)) {
-        patch = ContextPatch_combine(new UpdateService(tag, () => newService))(patch);
+        patch = ContextPatch_combine(makeUpdateService(tag, () => newService))(patch);
       }
     } else {
       missingServices.delete(tag);
-      patch = ContextPatch_combine(new AddService(tag, newService))(patch);
+      patch = ContextPatch_combine(makeAddService(tag, newService))(patch);
     }
   }
   for (const [tag] of missingServices.entries()) {
-    patch = ContextPatch_combine(new RemoveService(tag))(patch);
+    patch = ContextPatch_combine(makeRemoveService(tag))(patch);
   }
   return patch;
 };
 /** @internal */
-const ContextPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => new ContextPatch_AndThen(self, that));
+const ContextPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => ContextPatch_makeAndThen(self, that));
 /** @internal */
 const ContextPatch_patch = /*#__PURE__*/Function_dual(2, (self, context) => {
   let wasServiceUpdated = false;
@@ -23297,7 +23182,7 @@ const ContextPatch_patch = /*#__PURE__*/Function_dual(2, (self, context) => {
     }
   }
   if (!wasServiceUpdated) {
-    return new ContextImpl(updatedContext);
+    return makeContext(updatedContext);
   }
   const map = new Map();
   for (const [tag] of context.unsafeMap) {
@@ -23309,44 +23194,10 @@ const ContextPatch_patch = /*#__PURE__*/Function_dual(2, (self, context) => {
   for (const [tag, s] of updatedContext) {
     map.set(tag, s);
   }
-  return new ContextImpl(map);
+  return makeContext(map);
 });
 //# sourceMappingURL=ContextPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Differ/ContextPatch.mjs
-/**
- * @since 1.0.0
- */
-
-const ContextPatch_TypeId = ContextPatchTypeId;
-/**
- * An empty patch which returns the environment unchanged.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_ContextPatch_empty = ContextPatch_empty;
-/**
- * @since 1.0.0
- * @category constructors
- */
-const Differ_ContextPatch_diff = ContextPatch_diff;
-/**
- * Combines two patches to produce a new patch that describes applying the
- * updates from this patch and then the updates from the specified patch.
- *
- * @since 1.0.0
- */
-const Differ_ContextPatch_combine = ContextPatch_combine;
-/**
- * Applies a `Patch` to the specified `Context` to produce a new patched
- * `Context`.
- *
- * @since 1.0.0
- * @category destructors
- */
-const Differ_ContextPatch_patch = ContextPatch_patch;
-//# sourceMappingURL=ContextPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashMap/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashMap/config.mjs
 /** @internal */
 const SIZE = 5;
 /** @internal */
@@ -23358,7 +23209,7 @@ const MAX_INDEX_NODE = BUCKET_SIZE / 2;
 /** @internal */
 const MIN_ARRAY_NODE = BUCKET_SIZE / 4;
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashMap/bitwise.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashMap/bitwise.mjs
 
 /**
  * Hamming weight.
@@ -23388,7 +23239,7 @@ function fromBitmap(bitmap, bit) {
   return popcount(bitmap & bit - 1);
 }
 //# sourceMappingURL=bitwise.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashMap/array.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashMap/array.mjs
 /** @internal */
 function arrayUpdate(mutate, at, v, arr) {
   let out = arr;
@@ -23438,7 +23289,7 @@ function arraySpliceIn(mutate, at, v, arr) {
   return out;
 }
 //# sourceMappingURL=array.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Stack.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Stack.mjs
 /** @internal */
 class Stack {
   constructor(value, previous) {
@@ -23447,7 +23298,7 @@ class Stack {
   }
 }
 //# sourceMappingURL=Stack.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashMap/node.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashMap/node.mjs
 
 
 
@@ -23696,7 +23547,8 @@ function mergeLeaves(edit, shift, h1, n1, h2, n2) {
   }
 }
 //# sourceMappingURL=node.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashMap.mjs
+
 
 
 
@@ -23709,25 +23561,18 @@ function mergeLeaves(edit, shift, h1, n1, h2, n2) {
 
 /** @internal */
 const HashMapTypeId = /*#__PURE__*/Symbol.for("@effect/data/HashMap");
-/** @internal */
-class HashMapImpl {
-  constructor(_editable, _edit, _root, _size) {
-    this._editable = _editable;
-    this._edit = _edit;
-    this._root = _root;
-    this._size = _size;
-    this._id = HashMapTypeId;
-  }
+const HashMapProto = {
+  [HashMapTypeId]: HashMapTypeId,
   [Symbol.iterator]() {
     return new HashMapIterator(this, (k, v) => [k, v]);
-  }
+  },
   [symbol]() {
     let hash = Hash_hash("HashMap");
     for (const item of this) {
       hash ^= combine(Hash_hash(item[0]))(Hash_hash(item[1]));
     }
     return hash;
-  }
+  },
   [Equal_symbol](that) {
     if (isHashMap(that)) {
       if (that._size !== this._size) {
@@ -23746,23 +23591,31 @@ class HashMapImpl {
       return true;
     }
     return false;
-  }
+  },
   toString() {
     return `HashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "HashMap",
       values: Array.from(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
+const makeImpl = (editable, edit, root, size) => {
+  const map = Object.create(HashMapProto);
+  map._editable = editable;
+  map._edit = edit;
+  map._root = root;
+  map._size = size;
+  return map;
+};
 class HashMapIterator {
   constructor(map, f) {
     this.map = map;
@@ -23822,20 +23675,21 @@ const visitLazyChildren = (len, children, i, f, cont) => {
   }
   return applyCont(cont);
 };
+const HashMap_empty = /*#__PURE__*/makeImpl(false, 0, /*#__PURE__*/new EmptyNode(), 0);
 /** @internal */
-const HashMap_empty = () => new HashMapImpl(false, 0, new EmptyNode(), 0);
+const internal_HashMap_empty = () => HashMap_empty;
 /** @internal */
 const HashMap_make = (...entries) => HashMap_fromIterable(entries);
 /** @internal */
 const HashMap_fromIterable = entries => {
-  const map = beginMutation(HashMap_empty());
+  const map = beginMutation(internal_HashMap_empty());
   for (const entry of entries) {
     set(entry[0], entry[1])(map);
   }
   return endMutation(map);
 };
 /** @internal */
-const isHashMap = u => Predicate_isObject(u) && "_id" in u && u["_id"] === HashMapTypeId;
+const isHashMap = u => Predicate_isObject(u) && HashMapTypeId in u;
 /** @internal */
 const HashMap_isEmpty = self => self && isEmptyNode(self._root);
 /** @internal */
@@ -23911,7 +23765,7 @@ const setTree = /*#__PURE__*/Function_dual(3, (self, newRoot, newSize) => {
     self._size = newSize;
     return self;
   }
-  return newRoot === self._root ? self : new HashMapImpl(self._editable, self._edit, newRoot, newSize);
+  return newRoot === self._root ? self : makeImpl(self._editable, self._edit, newRoot, newSize);
 });
 /** @internal */
 const keys = self => new HashMapIterator(self, key => key);
@@ -23920,7 +23774,7 @@ const values = self => new HashMapIterator(self, (_, value) => value);
 /** @internal */
 const HashMap_size = self => self._size;
 /** @internal */
-const beginMutation = self => new HashMapImpl(true, self._edit + 1, self._root, self._size);
+const beginMutation = self => makeImpl(true, self._edit + 1, self._root, self._size);
 /** @internal */
 const endMutation = self => {
   ;
@@ -23965,9 +23819,9 @@ const removeMany = /*#__PURE__*/Function_dual(2, (self, keys) => mutate(self, ma
  * @since 1.0.0
  * @category mapping
  */
-const HashMap_map = /*#__PURE__*/Function_dual(2, (self, f) => HashMap_reduce(self, HashMap_empty(), (map, value, key) => set(map, key, f(value, key))));
+const HashMap_map = /*#__PURE__*/Function_dual(2, (self, f) => HashMap_reduce(self, internal_HashMap_empty(), (map, value, key) => set(map, key, f(value, key))));
 /** @internal */
-const HashMap_flatMap = /*#__PURE__*/Function_dual(2, (self, f) => HashMap_reduce(self, HashMap_empty(), (zero, value, key) => mutate(zero, map => HashMap_forEach(f(value, key), (value, key) => set(map, key, value)))));
+const HashMap_flatMap = /*#__PURE__*/Function_dual(2, (self, f) => HashMap_reduce(self, internal_HashMap_empty(), (zero, value, key) => mutate(zero, map => HashMap_forEach(f(value, key), (value, key) => set(map, key, value)))));
 /** @internal */
 const HashMap_forEach = /*#__PURE__*/Function_dual(2, (self, f) => HashMap_reduce(self, void 0, (_, value, key) => f(value, key)));
 /** @internal */
@@ -23998,7 +23852,7 @@ const HashMap_reduce = /*#__PURE__*/Function_dual(3, (self, zero, f) => {
   return zero;
 });
 /** @internal */
-const HashMap_filter = /*#__PURE__*/Function_dual(2, (self, f) => mutate(HashMap_empty(), map => {
+const HashMap_filter = /*#__PURE__*/Function_dual(2, (self, f) => mutate(internal_HashMap_empty(), map => {
   for (const [k, a] of self) {
     if (f(a, k)) {
       set(map, k, a);
@@ -24008,7 +23862,7 @@ const HashMap_filter = /*#__PURE__*/Function_dual(2, (self, f) => mutate(HashMap
 /** @internal */
 const HashMap_compact = self => HashMap_filterMap(self, Function_identity);
 /** @internal */
-const HashMap_filterMap = /*#__PURE__*/Function_dual(2, (self, f) => mutate(HashMap_empty(), map => {
+const HashMap_filterMap = /*#__PURE__*/Function_dual(2, (self, f) => mutate(internal_HashMap_empty(), map => {
   for (const [k, a] of self) {
     const option = f(a, k);
     if (Option_isSome(option)) {
@@ -24026,7 +23880,8 @@ const HashMap_findFirst = /*#__PURE__*/Function_dual(2, (self, predicate) => {
   return Option_none();
 });
 //# sourceMappingURL=HashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashSet.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashSet.mjs
+
 
 
 
@@ -24035,47 +23890,50 @@ const HashMap_findFirst = /*#__PURE__*/Function_dual(2, (self, predicate) => {
 
 /** @internal */
 const HashSetTypeId = /*#__PURE__*/Symbol.for("@effect/data/HashSet");
-/** @internal */
-class HashSetImpl {
-  constructor(_keyMap) {
-    this._keyMap = _keyMap;
-    this._id = HashSetTypeId;
-  }
+const HashSetProto = {
+  [HashSetTypeId]: HashSetTypeId,
   [Symbol.iterator]() {
     return keys(this._keyMap);
-  }
+  },
   [symbol]() {
     return combine(Hash_hash(this._keyMap))(Hash_hash("HashSet"));
-  }
+  },
   [Equal_symbol](that) {
     if (isHashSet(that)) {
       return HashMap_size(this._keyMap) === HashMap_size(that._keyMap) && equals(this._keyMap, that._keyMap);
     }
     return false;
-  }
+  },
   toString() {
     return `HashSet(${Array.from(this).map(String).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "HashSet",
       values: Array.from(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
 /** @internal */
-const isHashSet = u => Predicate_isObject(u) && "_id" in u && u["_id"] === HashSetTypeId;
+const HashSet_makeImpl = keyMap => {
+  const set = Object.create(HashSetProto);
+  set._keyMap = keyMap;
+  return set;
+};
 /** @internal */
-const HashSet_empty = () => new HashSetImpl(HashMap_empty());
+const isHashSet = u => Predicate_isObject(u) && HashSetTypeId in u;
+const HashSet_empty = /*#__PURE__*/HashSet_makeImpl( /*#__PURE__*/internal_HashMap_empty());
+/** @internal */
+const internal_HashSet_empty = () => HashSet_empty;
 /** @internal */
 const HashSet_fromIterable = elements => {
-  const set = HashSet_beginMutation(HashSet_empty());
+  const set = HashSet_beginMutation(internal_HashSet_empty());
   for (const value of elements) {
     HashSet_add(set, value);
   }
@@ -24083,7 +23941,7 @@ const HashSet_fromIterable = elements => {
 };
 /** @internal */
 const HashSet_make = (...elements) => {
-  const set = HashSet_beginMutation(HashSet_empty());
+  const set = HashSet_beginMutation(internal_HashSet_empty());
   for (const value of elements) {
     HashSet_add(set, value);
   }
@@ -24111,7 +23969,7 @@ const HashSet_values = self => keys(self._keyMap);
 /** @internal */
 const HashSet_size = self => HashMap_size(self._keyMap);
 /** @internal */
-const HashSet_beginMutation = self => new HashSetImpl(beginMutation(self._keyMap));
+const HashSet_beginMutation = self => HashSet_makeImpl(beginMutation(self._keyMap));
 /** @internal */
 const HashSet_endMutation = self => {
   ;
@@ -24125,9 +23983,9 @@ const HashSet_mutate = /*#__PURE__*/Function_dual(2, (self, f) => {
   return HashSet_endMutation(transient);
 });
 /** @internal */
-const HashSet_add = /*#__PURE__*/Function_dual(2, (self, value) => self._keyMap._editable ? (set(value, true)(self._keyMap), self) : new HashSetImpl(set(value, true)(self._keyMap)));
+const HashSet_add = /*#__PURE__*/Function_dual(2, (self, value) => self._keyMap._editable ? (set(value, true)(self._keyMap), self) : HashSet_makeImpl(set(value, true)(self._keyMap)));
 /** @internal */
-const HashSet_remove = /*#__PURE__*/Function_dual(2, (self, value) => self._keyMap._editable ? (HashMap_remove(value)(self._keyMap), self) : new HashSetImpl(HashMap_remove(value)(self._keyMap)));
+const HashSet_remove = /*#__PURE__*/Function_dual(2, (self, value) => self._keyMap._editable ? (HashMap_remove(value)(self._keyMap), self) : HashSet_makeImpl(HashMap_remove(value)(self._keyMap)));
 /** @internal */
 const HashSet_difference = /*#__PURE__*/Function_dual(2, (self, that) => HashSet_mutate(self, set => {
   for (const value of that) {
@@ -24135,7 +23993,7 @@ const HashSet_difference = /*#__PURE__*/Function_dual(2, (self, that) => HashSet
   }
 }));
 /** @internal */
-const HashSet_intersection = /*#__PURE__*/Function_dual(2, (self, that) => HashSet_mutate(HashSet_empty(), set => {
+const HashSet_intersection = /*#__PURE__*/Function_dual(2, (self, that) => HashSet_mutate(internal_HashSet_empty(), set => {
   for (const value of that) {
     if (HashSet_has(value)(self)) {
       HashSet_add(value)(set);
@@ -24143,7 +24001,7 @@ const HashSet_intersection = /*#__PURE__*/Function_dual(2, (self, that) => HashS
   }
 }));
 /** @internal */
-const HashSet_union = /*#__PURE__*/Function_dual(2, (self, that) => HashSet_mutate(HashSet_empty(), set => {
+const HashSet_union = /*#__PURE__*/Function_dual(2, (self, that) => HashSet_mutate(internal_HashSet_empty(), set => {
   HashSet_forEach(self, value => HashSet_add(set, value));
   for (const value of that) {
     HashSet_add(set, value);
@@ -24152,7 +24010,7 @@ const HashSet_union = /*#__PURE__*/Function_dual(2, (self, that) => HashSet_muta
 /** @internal */
 const toggle = /*#__PURE__*/Function_dual(2, (self, value) => HashSet_has(self, value) ? HashSet_remove(self, value) : HashSet_add(self, value));
 /** @internal */
-const HashSet_map = /*#__PURE__*/Function_dual(2, (self, f) => HashSet_mutate(HashSet_empty(), set => {
+const HashSet_map = /*#__PURE__*/Function_dual(2, (self, f) => HashSet_mutate(internal_HashSet_empty(), set => {
   HashSet_forEach(self, a => {
     const b = f(a);
     if (!HashSet_has(set, b)) {
@@ -24161,7 +24019,7 @@ const HashSet_map = /*#__PURE__*/Function_dual(2, (self, f) => HashSet_mutate(Ha
   });
 }));
 /** @internal */
-const HashSet_flatMap = /*#__PURE__*/Function_dual(2, (self, f) => HashSet_mutate(HashSet_empty(), set => {
+const HashSet_flatMap = /*#__PURE__*/Function_dual(2, (self, f) => HashSet_mutate(internal_HashSet_empty(), set => {
   HashSet_forEach(self, a => {
     for (const b of f(a)) {
       if (!HashSet_has(set, b)) {
@@ -24176,7 +24034,7 @@ const HashSet_forEach = /*#__PURE__*/Function_dual(2, (self, f) => HashMap_forEa
 const HashSet_reduce = /*#__PURE__*/Function_dual(3, (self, zero, f) => HashMap_reduce(self._keyMap, zero, (z, _, a) => f(z, a)));
 /** @internal */
 const HashSet_filter = /*#__PURE__*/Function_dual(2, (self, f) => {
-  return HashSet_mutate(HashSet_empty(), set => {
+  return HashSet_mutate(internal_HashSet_empty(), set => {
     const iterator = HashSet_values(self);
     let next;
     while (!(next = iterator.next()).done) {
@@ -24191,8 +24049,8 @@ const HashSet_filter = /*#__PURE__*/Function_dual(2, (self, f) => {
 const HashSet_partition = /*#__PURE__*/Function_dual(2, (self, f) => {
   const iterator = HashSet_values(self);
   let next;
-  const right = HashSet_beginMutation(HashSet_empty());
-  const left = HashSet_beginMutation(HashSet_empty());
+  const right = HashSet_beginMutation(internal_HashSet_empty());
+  const left = HashSet_beginMutation(internal_HashSet_empty());
   while (!(next = iterator.next()).done) {
     const value = next.value;
     if (f(value)) {
@@ -24204,14 +24062,14 @@ const HashSet_partition = /*#__PURE__*/Function_dual(2, (self, f) => {
   return [HashSet_endMutation(left), HashSet_endMutation(right)];
 });
 //# sourceMappingURL=HashSet.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/HashMap/keySet.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/HashMap/keySet.mjs
 
 /** @internal */
 function keySet(self) {
-  return new HashSetImpl(self);
+  return HashSet_makeImpl(self);
 }
 //# sourceMappingURL=keySet.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/HashMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/HashMap.mjs
 /**
  * @since 1.0.0
  */
@@ -24229,7 +24087,7 @@ const HashMap_isHashMap = isHashMap;
  * @since 1.0.0
  * @category constructors
  */
-const mjs_HashMap_empty = HashMap_empty;
+const mjs_HashMap_empty = internal_HashMap_empty;
 /**
  * Constructs a new `HashMap` from an array of key/value pairs.
  *
@@ -24452,104 +24310,69 @@ const mjs_HashMap_filterMap = HashMap_filterMap;
  */
 const mjs_HashMap_findFirst = HashMap_findFirst;
 //# sourceMappingURL=HashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Differ/HashMapPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Differ/HashMapPatch.mjs
 
 
 
 
 
 /** @internal */
-const HashMapPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/Differ/HashMapPatch");
+const HashMapPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/DifferHashMapPatch");
 function HashMapPatch_variance(a) {
   return a;
 }
-class HashMapPatch_Empty {
-  constructor() {
-    this._tag = "Empty";
-    this._Key = HashMapPatch_variance;
-    this._Value = HashMapPatch_variance;
-    this._Patch = HashMapPatch_variance;
-    this._id = HashMapPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashMapPatch(Empty)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id;
-  }
-}
-class HashMapPatch_AndThen {
-  constructor(first, second) {
-    this.first = first;
-    this.second = second;
-    this._tag = "AndThen";
-    this._Key = HashMapPatch_variance;
-    this._Value = HashMapPatch_variance;
-    this._Patch = HashMapPatch_variance;
-    this._id = HashMapPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashMapPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.first, that.first) && equals(this.second, that.second);
-  }
-}
-class Add {
-  constructor(key, value) {
-    this.key = key;
-    this.value = value;
-    this._tag = "Add";
-    this._Key = HashMapPatch_variance;
-    this._Value = HashMapPatch_variance;
-    this._Patch = HashMapPatch_variance;
-    this._id = HashMapPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashMapPatch(Add)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.key, that.key) && equals(this.value, that.value);
-  }
-}
-class Remove {
-  constructor(key) {
-    this.key = key;
-    this._tag = "Remove";
-    this._Key = HashMapPatch_variance;
-    this._Value = HashMapPatch_variance;
-    this._Patch = HashMapPatch_variance;
-    this._id = HashMapPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashMapPatch(Remove)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.key, that.key);
-  }
-}
-class HashMapPatch_Update {
-  constructor(key, patch) {
-    this.key = key;
-    this.patch = patch;
-    this._tag = "Update";
-    this._Key = HashMapPatch_variance;
-    this._Value = HashMapPatch_variance;
-    this._Patch = HashMapPatch_variance;
-    this._id = HashMapPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashMapPatch(Update)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.key, that.key) && equals(this.patch, that.patch);
-  }
-}
 /** @internal */
-const HashMapPatch_empty = () => new HashMapPatch_Empty();
+const HashMapPatch_PatchProto = /*#__PURE__*/Object.setPrototypeOf({
+  [HashMapPatchTypeId]: {
+    _Value: HashMapPatch_variance,
+    _Key: HashMapPatch_variance,
+    _Patch: HashMapPatch_variance
+  }
+}, Structural.prototype);
+const HashMapPatch_EmptyProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Empty"
+}, HashMapPatch_PatchProto);
+const HashMapPatch_empty = /*#__PURE__*/Object.create(HashMapPatch_EmptyProto);
+/** @internal */
+const Differ_HashMapPatch_empty = () => HashMapPatch_empty;
+const HashMapPatch_AndThenProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "AndThen"
+}, HashMapPatch_PatchProto);
+const HashMapPatch_makeAndThen = (first, second) => {
+  const o = Object.create(HashMapPatch_AndThenProto);
+  o.first = first;
+  o.second = second;
+  return o;
+};
+const AddProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Add"
+}, HashMapPatch_PatchProto);
+const makeAdd = (key, value) => {
+  const o = Object.create(AddProto);
+  o.key = key;
+  o.value = value;
+  return o;
+};
+const RemoveProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Remove"
+}, HashMapPatch_PatchProto);
+const makeRemove = key => {
+  const o = Object.create(RemoveProto);
+  o.key = key;
+  return o;
+};
+const HashMapPatch_UpdateProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Update"
+}, HashMapPatch_PatchProto);
+const HashMapPatch_makeUpdate = (key, patch) => {
+  const o = Object.create(HashMapPatch_UpdateProto);
+  o.key = key;
+  o.patch = patch;
+  return o;
+};
 /** @internal */
 const HashMapPatch_diff = options => {
-  const [removed, patch] = mjs_HashMap_reduce([options.oldValue, HashMapPatch_empty()], ([map, patch], newValue, key) => {
+  const [removed, patch] = mjs_HashMap_reduce([options.oldValue, Differ_HashMapPatch_empty()], ([map, patch], newValue, key) => {
     const option = mjs_HashMap_get(key)(map);
     switch (option._tag) {
       case "Some":
@@ -24558,18 +24381,18 @@ const HashMapPatch_diff = options => {
           if (equals(valuePatch, options.differ.empty)) {
             return [mjs_HashMap_remove(key)(map), patch];
           }
-          return [mjs_HashMap_remove(key)(map), HashMapPatch_combine(new HashMapPatch_Update(key, valuePatch))(patch)];
+          return [mjs_HashMap_remove(key)(map), HashMapPatch_combine(HashMapPatch_makeUpdate(key, valuePatch))(patch)];
         }
       case "None":
         {
-          return [map, HashMapPatch_combine(new Add(key, newValue))(patch)];
+          return [map, HashMapPatch_combine(makeAdd(key, newValue))(patch)];
         }
     }
   })(options.newValue);
-  return mjs_HashMap_reduce(patch, (patch, _, key) => HashMapPatch_combine(new Remove(key))(patch))(removed);
+  return mjs_HashMap_reduce(patch, (patch, _, key) => HashMapPatch_combine(makeRemove(key))(patch))(removed);
 };
 /** @internal */
-const HashMapPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => new HashMapPatch_AndThen(self, that));
+const HashMapPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => HashMapPatch_makeAndThen(self, that));
 /** @internal */
 const HashMapPatch_patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ) => {
   let map = oldValue;
@@ -24614,45 +24437,7 @@ const HashMapPatch_patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ
   return map;
 });
 //# sourceMappingURL=HashMapPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Differ/HashMapPatch.mjs
-/**
- * @since 1.0.0
- */
-
-const HashMapPatch_TypeId = HashMapPatchTypeId;
-/**
- * Constructs an empty map patch.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_HashMapPatch_empty = HashMapPatch_empty;
-/**
- * Constructs a map patch from a new and old map of keys and values and a
- * differ for the values.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_HashMapPatch_diff = HashMapPatch_diff;
-/**
- * Combines two map patches to produce a new map patch that describes
- * applying their changes sequentially.
- *
- * @since 1.0.0
- */
-const Differ_HashMapPatch_combine = HashMapPatch_combine;
-/**
- * Applies a map patch to a map of keys and values to produce a new map of
- * keys and values values which represents the original map of keys and
- * values updated with the changes described by this patch.
- *
- * @since 1.0.0
- * @category destructors
- */
-const Differ_HashMapPatch_patch = HashMapPatch_patch;
-//# sourceMappingURL=HashMapPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/HashSet.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/HashSet.mjs
 /**
  * @since 1.0.0
  */
@@ -24669,7 +24454,7 @@ const HashSet_isHashSet = isHashSet;
  * @since 1.0.0
  * @category constructors
  */
-const mjs_HashSet_empty = HashSet_empty;
+const mjs_HashSet_empty = internal_HashSet_empty;
 /**
  * Construct a new `HashSet` from a `Collection` of values
  *
@@ -24844,87 +24629,70 @@ const mjs_HashSet_filter = HashSet_filter;
  */
 const mjs_HashSet_partition = HashSet_partition;
 //# sourceMappingURL=HashSet.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Differ/HashSetPatch.mjs
-
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Differ/HashSetPatch.mjs
 
 
 
 
 /** @internal */
-const HashSetPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/Differ/HashSetPatch");
+const HashSetPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/DifferHashSetPatch");
 function HashSetPatch_variance(a) {
   return a;
 }
-class HashSetPatch_Empty {
-  constructor() {
-    this._tag = "Empty";
-    this._Value = HashSetPatch_variance;
-    this._id = HashSetPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashSetPatch(Empty)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id;
-  }
-}
-class HashSetPatch_AndThen {
-  constructor(first, second) {
-    this.first = first;
-    this.second = second;
-    this._tag = "AndThen";
-    this._Value = HashSetPatch_variance;
-    this._id = HashSetPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashSetPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.first, that.first) && equals(this.second, that.second);
-  }
-}
-class HashSetPatch_Add {
-  constructor(value) {
-    this.value = value;
-    this._tag = "Add";
-    this._Value = HashSetPatch_variance;
-    this._id = HashSetPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashSetPatch(Add)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.value, that.value);
-  }
-}
-class HashSetPatch_Remove {
-  constructor(value) {
-    this.value = value;
-    this._tag = "Remove";
-    this._Value = HashSetPatch_variance;
-    this._id = HashSetPatchTypeId;
-  }
-  [symbol]() {
-    return string(`HashSetPatch(Remove)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.value, that.value);
-  }
-}
 /** @internal */
-const HashSetPatch_empty = () => new HashSetPatch_Empty();
+const HashSetPatch_PatchProto = /*#__PURE__*/Object.setPrototypeOf({
+  [HashSetPatchTypeId]: {
+    _Value: HashSetPatch_variance,
+    _Key: HashSetPatch_variance,
+    _Patch: HashSetPatch_variance
+  }
+}, Structural.prototype);
+const HashSetPatch_EmptyProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Empty"
+}, HashSetPatch_PatchProto);
+const HashSetPatch_empty = /*#__PURE__*/Object.create(HashSetPatch_EmptyProto);
+/** @internal */
+const Differ_HashSetPatch_empty = () => HashSetPatch_empty;
+const HashSetPatch_AndThenProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "AndThen"
+}, HashSetPatch_PatchProto);
+/** @internal */
+const HashSetPatch_makeAndThen = (first, second) => {
+  const o = Object.create(HashSetPatch_AndThenProto);
+  o.first = first;
+  o.second = second;
+  return o;
+};
+const HashSetPatch_AddProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Add"
+}, HashSetPatch_PatchProto);
+/** @internal */
+const HashSetPatch_makeAdd = value => {
+  const o = Object.create(HashSetPatch_AddProto);
+  o.value = value;
+  return o;
+};
+const HashSetPatch_RemoveProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Remove"
+}, HashSetPatch_PatchProto);
+/** @internal */
+const HashSetPatch_makeRemove = value => {
+  const o = Object.create(HashSetPatch_RemoveProto);
+  o.value = value;
+  return o;
+};
 /** @internal */
 const HashSetPatch_diff = (oldValue, newValue) => {
-  const [removed, patch] = mjs_HashSet_reduce([oldValue, HashSetPatch_empty()], ([set, patch], value) => {
+  const [removed, patch] = mjs_HashSet_reduce([oldValue, Differ_HashSetPatch_empty()], ([set, patch], value) => {
     if (mjs_HashSet_has(value)(set)) {
       return [mjs_HashSet_remove(value)(set), patch];
     }
-    return [set, HashSetPatch_combine(new HashSetPatch_Add(value))(patch)];
+    return [set, HashSetPatch_combine(HashSetPatch_makeAdd(value))(patch)];
   })(newValue);
-  return mjs_HashSet_reduce(patch, (patch, value) => HashSetPatch_combine(new HashSetPatch_Remove(value))(patch))(removed);
+  return mjs_HashSet_reduce(patch, (patch, value) => HashSetPatch_combine(HashSetPatch_makeRemove(value))(patch))(removed);
 };
 /** @internal */
-const HashSetPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => new HashSetPatch_AndThen(self, that));
+const HashSetPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => HashSetPatch_makeAndThen(self, that));
 /** @internal */
 const HashSetPatch_patch = /*#__PURE__*/Function_dual(2, (self, oldValue) => {
   let set = oldValue;
@@ -24959,164 +24727,77 @@ const HashSetPatch_patch = /*#__PURE__*/Function_dual(2, (self, oldValue) => {
   return set;
 });
 //# sourceMappingURL=HashSetPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Differ/HashSetPatch.mjs
-/**
- * @since 1.0.0
- */
-
-const HashSetPatch_TypeId = HashSetPatchTypeId;
-/**
- * Constructs an empty set patch.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_HashSetPatch_empty = HashSetPatch_empty;
-/**
- * Constructs a set patch from a new set of values.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_HashSetPatch_diff = HashSetPatch_diff;
-/**
- * Combines two set patches to produce a new set patch that describes
- * applying their changes sequentially.
- *
- * @since 1.0.0
- */
-const Differ_HashSetPatch_combine = HashSetPatch_combine;
-/**
- * Applies a set patch to a set of values to produce a new set of values
- * which represents the original set of values updated with the changes
- * described by this patch.
- *
- * @since 1.0.0
- * @category destructors
- */
-const Differ_HashSetPatch_patch = HashSetPatch_patch;
-//# sourceMappingURL=HashSetPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Differ/OrPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Differ/OrPatch.mjs
 
 
 
 
 
 /** @internal */
-const OrPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/Differ/OrPatch");
+const OrPatchTypeId = /*#__PURE__*/Symbol.for("@effect/data/DifferOrPatch");
 function OrPatch_variance(a) {
   return a;
 }
 /** @internal */
-class OrPatch_Empty {
-  constructor() {
-    this._tag = "Empty";
-    this._Value = OrPatch_variance;
-    this._Value2 = OrPatch_variance;
-    this._Patch = OrPatch_variance;
-    this._Patch2 = OrPatch_variance;
-    this._id = OrPatchTypeId;
+const OrPatch_PatchProto = /*#__PURE__*/Object.setPrototypeOf({
+  [OrPatchTypeId]: {
+    _Value: OrPatch_variance,
+    _Key: OrPatch_variance,
+    _Patch: OrPatch_variance
   }
-  [symbol]() {
-    return string(`OrPatch(Empty)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id;
-  }
-}
+}, Structural.prototype);
+const OrPatch_EmptyProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "Empty"
+}, OrPatch_PatchProto);
+const OrPatch_empty = /*#__PURE__*/Object.create(OrPatch_EmptyProto);
 /** @internal */
-class OrPatch_AndThen {
-  constructor(first, second) {
-    this.first = first;
-    this.second = second;
-    this._tag = "AndThen";
-    this._Value = OrPatch_variance;
-    this._Value2 = OrPatch_variance;
-    this._Patch = OrPatch_variance;
-    this._Patch2 = OrPatch_variance;
-    this._id = OrPatchTypeId;
-  }
-  [symbol]() {
-    return string(`OrPatch(AndThen)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.first, that.first) && equals(this.second, that.second);
-  }
-}
+const Differ_OrPatch_empty = () => OrPatch_empty;
+const OrPatch_AndThenProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "AndThen"
+}, OrPatch_PatchProto);
 /** @internal */
-class SetLeft {
-  constructor(value) {
-    this.value = value;
-    this._tag = "SetLeft";
-    this._Value = OrPatch_variance;
-    this._Value2 = OrPatch_variance;
-    this._Patch = OrPatch_variance;
-    this._Patch2 = OrPatch_variance;
-    this._id = OrPatchTypeId;
-  }
-  [symbol]() {
-    return string(`OrPatch(SetLeft)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.value, that.value);
-  }
-}
+const OrPatch_makeAndThen = (first, second) => {
+  const o = Object.create(OrPatch_AndThenProto);
+  o.first = first;
+  o.second = second;
+  return o;
+};
+const SetLeftProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "SetLeft"
+}, OrPatch_PatchProto);
 /** @internal */
-class SetRight {
-  constructor(value) {
-    this.value = value;
-    this._tag = "SetRight";
-    this._Value = OrPatch_variance;
-    this._Value2 = OrPatch_variance;
-    this._Patch = OrPatch_variance;
-    this._Patch2 = OrPatch_variance;
-    this._id = OrPatchTypeId;
-  }
-  [symbol]() {
-    return string(`OrPatch(SetRight)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.value, that.value);
-  }
-}
+const makeSetLeft = value => {
+  const o = Object.create(SetLeftProto);
+  o.value = value;
+  return o;
+};
+const SetRightProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "SetRight"
+}, OrPatch_PatchProto);
 /** @internal */
-class UpdateLeft {
-  constructor(patch) {
-    this.patch = patch;
-    this._tag = "UpdateLeft";
-    this._Value = OrPatch_variance;
-    this._Value2 = OrPatch_variance;
-    this._Patch = OrPatch_variance;
-    this._Patch2 = OrPatch_variance;
-    this._id = OrPatchTypeId;
-  }
-  [symbol]() {
-    return string(`OrPatch(UpdateLeft)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.patch, that.patch);
-  }
-}
+const makeSetRight = value => {
+  const o = Object.create(SetRightProto);
+  o.value = value;
+  return o;
+};
+const UpdateLeftProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "UpdateLeft"
+}, OrPatch_PatchProto);
 /** @internal */
-class UpdateRight {
-  constructor(patch) {
-    this.patch = patch;
-    this._tag = "UpdateRight";
-    this._Value = OrPatch_variance;
-    this._Value2 = OrPatch_variance;
-    this._Patch = OrPatch_variance;
-    this._Patch2 = OrPatch_variance;
-    this._id = OrPatchTypeId;
-  }
-  [symbol]() {
-    return string(`OrPatch(UpdateRight)`);
-  }
-  [Equal_symbol](that) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id && "_tag" in that && that["_tag"] === this._id && equals(this.patch, that.patch);
-  }
-}
+const makeUpdateLeft = patch => {
+  const o = Object.create(UpdateLeftProto);
+  o.patch = patch;
+  return o;
+};
+const UpdateRightProto = /*#__PURE__*/Object.setPrototypeOf({
+  _tag: "UpdateRight"
+}, OrPatch_PatchProto);
 /** @internal */
-const OrPatch_empty = () => new OrPatch_Empty();
+const makeUpdateRight = patch => {
+  const o = Object.create(UpdateRightProto);
+  o.patch = patch;
+  return o;
+};
 /** @internal */
 const OrPatch_diff = options => {
   switch (options.oldValue._tag) {
@@ -25127,13 +24808,13 @@ const OrPatch_diff = options => {
             {
               const valuePatch = options.left.diff(options.oldValue.left, options.newValue.left);
               if (equals(valuePatch, options.left.empty)) {
-                return new OrPatch_Empty();
+                return Differ_OrPatch_empty();
               }
-              return new UpdateLeft(valuePatch);
+              return makeUpdateLeft(valuePatch);
             }
           case "Right":
             {
-              return new SetRight(options.newValue.right);
+              return makeSetRight(options.newValue.right);
             }
         }
       }
@@ -25142,22 +24823,22 @@ const OrPatch_diff = options => {
         switch (options.newValue._tag) {
           case "Left":
             {
-              return new SetLeft(options.newValue.left);
+              return makeSetLeft(options.newValue.left);
             }
           case "Right":
             {
               const valuePatch = options.right.diff(options.oldValue.right, options.newValue.right);
               if (equals(valuePatch, options.right.empty)) {
-                return new OrPatch_Empty();
+                return Differ_OrPatch_empty();
               }
-              return new UpdateRight(valuePatch);
+              return makeUpdateRight(valuePatch);
             }
         }
       }
   }
 };
 /** @internal */
-const OrPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => new OrPatch_AndThen(self, that));
+const OrPatch_combine = /*#__PURE__*/Function_dual(2, (self, that) => OrPatch_makeAndThen(self, that));
 /** @internal */
 const OrPatch_patch = /*#__PURE__*/Function_dual(2, (self, {
   left,
@@ -25213,44 +24894,7 @@ const OrPatch_patch = /*#__PURE__*/Function_dual(2, (self, {
   return result;
 });
 //# sourceMappingURL=OrPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Differ/OrPatch.mjs
-/**
- * @since 1.0.0
- */
-
-const OrPatch_TypeId = OrPatchTypeId;
-/**
- * Constructs an empty `OrPatch`.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_OrPatch_empty = OrPatch_empty;
-/**
- * Constructs an `OrPatch` from a new and old value and a differ for the
- * values.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Differ_OrPatch_diff = OrPatch_diff;
-/**
- * Combines two or patches to produce a new or patch that describes applying
- * their changes sequentially.
- *
- * @since 1.0.0
- */
-const Differ_OrPatch_combine = OrPatch_combine;
-/**
- * Applies an `OrPatch` to a value to produce a new value which represents
- * the original value updated with the changes described by this patch.
- *
- * @since 1.0.0
- * @category destructors
- */
-const Differ_OrPatch_patch = OrPatch_patch;
-//# sourceMappingURL=OrPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/internal/Differ.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/internal/Differ.mjs
 
 
 
@@ -25262,31 +24906,33 @@ const Differ_OrPatch_patch = OrPatch_patch;
 /** @internal */
 const DifferTypeId = /*#__PURE__*/Symbol.for("@effect/data/Differ");
 /** @internal */
-class DifferImpl {
-  constructor(params) {
-    this._id = DifferTypeId;
-    this._P = Function_identity;
-    this._V = Function_identity;
-    this.empty = params.empty;
-    this.diff = params.diff;
-    this.combine = params.combine;
-    this.patch = params.patch;
+const DifferProto = {
+  [DifferTypeId]: {
+    _P: Function_identity,
+    _V: Function_identity
   }
-}
+};
 /** @internal */
-const Differ_make = params => new DifferImpl(params);
+const Differ_make = params => {
+  const differ = Object.create(DifferProto);
+  differ.empty = params.empty;
+  differ.diff = params.diff;
+  differ.combine = params.combine;
+  differ.patch = params.patch;
+  return differ;
+};
 /** @internal */
 const environment = () => Differ_make({
   empty: Differ_ContextPatch_empty(),
-  combine: (first, second) => Differ_ContextPatch_combine(second)(first),
-  diff: (oldValue, newValue) => Differ_ContextPatch_diff(oldValue, newValue),
-  patch: (patch, oldValue) => Differ_ContextPatch_patch(oldValue)(patch)
+  combine: (first, second) => ContextPatch_combine(second)(first),
+  diff: (oldValue, newValue) => ContextPatch_diff(oldValue, newValue),
+  patch: (patch, oldValue) => ContextPatch_patch(oldValue)(patch)
 });
 /** @internal */
 const chunk = differ => Differ_make({
   empty: Differ_ChunkPatch_empty(),
-  combine: (first, second) => Differ_ChunkPatch_combine(second)(first),
-  diff: (oldValue, newValue) => ChunkPatch_diff({
+  combine: (first, second) => ChunkPatch_combine(second)(first),
+  diff: (oldValue, newValue) => diff({
     oldValue,
     newValue,
     differ
@@ -25296,32 +24942,32 @@ const chunk = differ => Differ_make({
 /** @internal */
 const hashMap = differ => Differ_make({
   empty: Differ_HashMapPatch_empty(),
-  combine: (first, second) => Differ_HashMapPatch_combine(second)(first),
-  diff: (oldValue, newValue) => Differ_HashMapPatch_diff({
+  combine: (first, second) => HashMapPatch_combine(second)(first),
+  diff: (oldValue, newValue) => HashMapPatch_diff({
     oldValue,
     newValue,
     differ
   }),
-  patch: (patch, oldValue) => Differ_HashMapPatch_patch(oldValue, differ)(patch)
+  patch: (patch, oldValue) => HashMapPatch_patch(oldValue, differ)(patch)
 });
 /** @internal */
 const hashSet = () => Differ_make({
   empty: Differ_HashSetPatch_empty(),
-  combine: (first, second) => Differ_HashSetPatch_combine(second)(first),
-  diff: (oldValue, newValue) => Differ_HashSetPatch_diff(oldValue, newValue),
-  patch: (patch, oldValue) => Differ_HashSetPatch_patch(oldValue)(patch)
+  combine: (first, second) => HashSetPatch_combine(second)(first),
+  diff: (oldValue, newValue) => HashSetPatch_diff(oldValue, newValue),
+  patch: (patch, oldValue) => HashSetPatch_patch(oldValue)(patch)
 });
 /** @internal */
 const Differ_orElseEither = /*#__PURE__*/Function_dual(2, (self, that) => Differ_make({
   empty: Differ_OrPatch_empty(),
-  combine: (first, second) => Differ_OrPatch_combine(first, second),
-  diff: (oldValue, newValue) => Differ_OrPatch_diff({
+  combine: (first, second) => OrPatch_combine(first, second),
+  diff: (oldValue, newValue) => OrPatch_diff({
     oldValue,
     newValue,
     left: self,
     right: that
   }),
-  patch: (patch, oldValue) => Differ_OrPatch_patch(patch, {
+  patch: (patch, oldValue) => OrPatch_patch(patch, {
     oldValue,
     left: self,
     right: that
@@ -25367,10 +25013,24 @@ const Differ_zip = /*#__PURE__*/Function_dual(2, (self, that) => Differ_make({
   patch: (patch, oldValue) => [self.patch(patch[0], oldValue[0]), that.patch(patch[1], oldValue[1])]
 }));
 //# sourceMappingURL=Differ.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Differ.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Differ.mjs
 
 
+
+
+
+
+
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
 const Differ_TypeId = DifferTypeId;
+const Differ_ChunkPatchTypeId = ChunkPatchTypeId;
+const Differ_ContextPatchTypeId = ContextPatchTypeId;
+const Differ_HashMapPatchTypeId = HashMapPatchTypeId;
+const Differ_HashSetPatchTypeId = HashSetPatchTypeId;
+const Differ_OrPatchTypeId = OrPatchTypeId;
 /**
  * An empty patch that describes no changes.
  *
@@ -25382,7 +25042,7 @@ const Differ_empty = self => self.empty;
  * @since 1.0.0
  * @category patch
  */
-const Differ_diff = /*#__PURE__*/Function_dual(3, (self, oldValue, newValue) => self.diff(oldValue, newValue));
+const Differ_diff = /*#__PURE__*/(/* unused pure expression or super */ null && (Dual.dual(3, (self, oldValue, newValue) => self.diff(oldValue, newValue))));
 /**
  * Combines two patches to produce a new patch that describes the updates of
  * the first patch and then the updates of the second patch. The combine
@@ -25393,7 +25053,7 @@ const Differ_diff = /*#__PURE__*/Function_dual(3, (self, oldValue, newValue) => 
  * @since 1.0.0
  * @category patch
  */
-const Differ_combine = /*#__PURE__*/Function_dual(3, (self, first, second) => self.combine(first, second));
+const Differ_combine = /*#__PURE__*/(/* unused pure expression or super */ null && (Dual.dual(3, (self, first, second) => self.combine(first, second))));
 /**
  * Applies a patch to an old value to produce a new value that is equal to the
  * old value with the updates described by the patch.
@@ -25401,7 +25061,7 @@ const Differ_combine = /*#__PURE__*/Function_dual(3, (self, first, second) => se
  * @since 1.0.0
  * @category patch
  */
-const Differ_patch = /*#__PURE__*/Function_dual(3, (self, patch, oldValue) => self.patch(patch, oldValue));
+const patch = /*#__PURE__*/(/* unused pure expression or super */ null && (Dual.dual(3, (self, patch, oldValue) => self.patch(patch, oldValue))));
 /**
  * Constructs a new `Differ`.
  *
@@ -25477,7 +25137,7 @@ const Differ_updateWith = updateWith;
  */
 const mjs_Differ_zip = Differ_zip;
 //# sourceMappingURL=Differ.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/List.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/List.mjs
 /**
  * A data type for immutable linked lists representing ordered collections of elements of type `A`.
  *
@@ -25510,6 +25170,7 @@ const mjs_Differ_zip = Differ_zip;
 
 
 
+
 /**
  * @since 1.0.0
  * @category symbol
@@ -25528,31 +25189,27 @@ const List_toReadonlyArray = self => Array.from(self);
  */
 const List_getEquivalence = isEquivalent => Equivalence_mapInput(ReadonlyArray_getEquivalence(isEquivalent), List_toReadonlyArray);
 const List_equivalence = /*#__PURE__*/List_getEquivalence(equals);
-class ConsImpl {
-  constructor(head, tail) {
-    this.head = head;
-    this.tail = tail;
-    this._tag = "Cons";
-    this._id = List_TypeId;
-  }
+const ConsProto = {
+  [List_TypeId]: List_TypeId,
+  _tag: "Cons",
   toString() {
     return `List.Cons(${List_toReadonlyArray(this).map(String).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "List.Cons",
       values: List_toReadonlyArray(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   [Equal_symbol](that) {
     return isList(that) && this._tag === that._tag && List_equivalence(this, that);
-  }
+  },
   [symbol]() {
     return array(List_toReadonlyArray(this));
-  }
+  },
   [Symbol.iterator]() {
     let done = false;
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -25583,33 +25240,37 @@ class ConsImpl {
         };
       }
     };
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
-class NilImpl {
-  constructor() {
-    this._tag = "Nil";
-    this._id = List_TypeId;
-  }
+};
+const makeCons = (head, tail) => {
+  const cons = Object.create(ConsProto);
+  cons.head = head;
+  cons.tail = tail;
+  return cons;
+};
+const NilProto = {
+  [List_TypeId]: List_TypeId,
+  _tag: "Nil",
   toString() {
     return `List.Nil`;
-  }
+  },
   toJSON() {
     return {
       _tag: "List.Nil"
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   [symbol]() {
     return array(List_toReadonlyArray(this));
-  }
+  },
   [Equal_symbol](that) {
     return isList(that) && this._tag === that._tag;
-  }
+  },
   [Symbol.iterator]() {
     return {
       next() {
@@ -25619,18 +25280,19 @@ class NilImpl {
         };
       }
     };
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
+const _Nil = /*#__PURE__*/Object.create(NilProto);
 /**
  * Returns `true` if the specified value is a `List`, `false` otherwise.
  *
  * @since 1.0.0
  * @category refinements
  */
-const isList = u => Predicate_isObject(u) && "_id" in u && u["_id"] === List_TypeId;
+const isList = u => Predicate_isObject(u) && List_TypeId in u;
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
  *
@@ -25660,7 +25322,6 @@ const List_size = self => {
   }
   return len;
 };
-const _Nil = /*#__PURE__*/new NilImpl();
 /**
  * Constructs a new empty `List<A>`.
  *
@@ -25674,7 +25335,7 @@ const nil = () => _Nil;
  * @since 1.0.0
  * @category constructors
  */
-const cons = (head, tail) => new ConsImpl(head, tail);
+const cons = (head, tail) => makeCons(head, tail);
 /**
  * Constructs a new empty `List<A>`.
  *
@@ -25690,7 +25351,7 @@ const List_empty = nil;
  * @since 1.0.0
  * @category constructors
  */
-const List_of = value => new ConsImpl(value, _Nil);
+const List_of = value => makeCons(value, _Nil);
 /**
  * Constructs a new `List<A>` from the specified `Iterable<A>`.
  *
@@ -25701,10 +25362,10 @@ const List_fromIterable = prefix => {
   const iterator = prefix[Symbol.iterator]();
   let next;
   if ((next = iterator.next()) && !next.done) {
-    const result = new ConsImpl(next.value, _Nil);
+    const result = makeCons(next.value, _Nil);
     let curr = result;
     while ((next = iterator.next()) && !next.done) {
-      const temp = new ConsImpl(next.value, _Nil);
+      const temp = makeCons(next.value, _Nil);
       curr.tail = temp;
       curr = temp;
     }
@@ -25758,11 +25419,11 @@ const List_prependAll = /*#__PURE__*/Function_dual(2, (self, prefix) => {
   } else if (isNil(prefix)) {
     return self;
   } else {
-    const result = new ConsImpl(prefix.head, self);
+    const result = makeCons(prefix.head, self);
     let curr = result;
     let that = prefix.tail;
     while (!isNil(that)) {
-      const temp = new ConsImpl(that.head, self);
+      const temp = makeCons(that.head, self);
       curr.tail = temp;
       curr = temp;
       that = that.tail;
@@ -25786,7 +25447,7 @@ const prependAllReversed = /*#__PURE__*/(/* unused pure expression or super */ n
   let out = self;
   let pres = prefix;
   while (isCons(pres)) {
-    out = new ConsImpl(pres.head, out);
+    out = makeCons(pres.head, out);
     pres = pres.tail;
   }
   return out;
@@ -25882,12 +25543,12 @@ const allIn = (start, remaining, predicate, isFlipped) => {
 };
 // we have seen elements that should be included then one that should be excluded, start building
 const partialFill = (origStart, firstMiss, predicate, isFlipped) => {
-  const newHead = new ConsImpl(List_unsafeHead(origStart), _Nil);
+  const newHead = makeCons(List_unsafeHead(origStart), _Nil);
   let toProcess = unsafeTail(origStart);
   let currentLast = newHead;
   // we know that all elements are :: until at least firstMiss.tail
   while (!(toProcess === firstMiss)) {
-    const newElem = new ConsImpl(List_unsafeHead(toProcess), _Nil);
+    const newElem = makeCons(List_unsafeHead(toProcess), _Nil);
     currentLast.tail = newElem;
     currentLast = unsafeCoerce(newElem);
     toProcess = unsafeCoerce(toProcess.tail);
@@ -25905,7 +25566,7 @@ const partialFill = (origStart, firstMiss, predicate, isFlipped) => {
     } else {
       // its not a match - do we have outstanding elements?
       while (!(nextToCopy === next)) {
-        const newElem = new ConsImpl(List_unsafeHead(nextToCopy), _Nil);
+        const newElem = makeCons(List_unsafeHead(nextToCopy), _Nil);
         currentLast.tail = newElem;
         currentLast = newElem;
         nextToCopy = unsafeCoerce(nextToCopy.tail);
@@ -25975,7 +25636,7 @@ const List_flatMap = /*#__PURE__*/(/* unused pure expression or super */ null &&
   while (!isNil(rest)) {
     let bs = f(rest.head);
     while (!isNil(bs)) {
-      const next = new ConsImpl(bs.head, _Nil);
+      const next = makeCons(bs.head, _Nil);
       if (tail === undefined) {
         head = next;
       } else {
@@ -26035,11 +25696,11 @@ const List_map = /*#__PURE__*/(/* unused pure expression or super */ null && (du
   if (isNil(self)) {
     return self;
   } else {
-    const head = new ConsImpl(f(self.head), _Nil);
+    const head = makeCons(f(self.head), _Nil);
     let nextHead = head;
     let rest = self.tail;
     while (!isNil(rest)) {
-      const next = new ConsImpl(f(rest.head), _Nil);
+      const next = makeCons(f(rest.head), _Nil);
       nextHead.tail = next;
       nextHead = next;
       rest = rest.tail;
@@ -26166,7 +25827,7 @@ const List_take = /*#__PURE__*/(/* unused pure expression or super */ null && (d
   let these = List_make(List_unsafeHead(self));
   let current = unsafeTail(self);
   for (let i = 1; i < n; i++) {
-    these = new ConsImpl(List_unsafeHead(current), these);
+    these = makeCons(List_unsafeHead(current), these);
     current = unsafeTail(current);
   }
   return List_reverse(these);
@@ -26221,41 +25882,42 @@ const unsafeTail = self => {
   return self.tail;
 };
 //# sourceMappingURL=List.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/MutableRef.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/MutableRef.mjs
 /**
  * @since 1.0.0
  */
 
 
 
+
 const MutableRef_TypeId = /*#__PURE__*/Symbol.for("@effect/data/MutableRef");
-class MutableRefImpl {
-  constructor(current) {
-    this.current = current;
-    this._T = _ => _;
-    this._id = MutableRef_TypeId;
-  }
+const MutableRefProto = {
+  [MutableRef_TypeId]: MutableRef_TypeId,
   toString() {
     return `MutableRef(${String(this.current)})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "MutableRef",
       current: this.current
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
 /**
  * @since 1.0.0
  * @category constructors
  */
-const MutableRef_make = value => new MutableRefImpl(value);
+const MutableRef_make = value => {
+  const ref = Object.create(MutableRefProto);
+  ref.current = value;
+  return ref;
+};
 /**
  * @since 1.0.0
  * @category general
@@ -26348,8 +26010,8 @@ const updateAndGet = /*#__PURE__*/Function_dual(2, (self, f) => setAndGet(self, 
  */
 const MutableRef_toggle = self => MutableRef_update(self, _ => !_);
 //# sourceMappingURL=MutableRef.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberId.mjs
-var fiberId_a, fiberId_b, _c;
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberId.mjs
+var _a, _b, _c;
 
 
 
@@ -26358,7 +26020,7 @@ var fiberId_a, fiberId_b, _c;
 
 
 /** @internal */
-const FiberIdSymbolKey = "@effect/io/Fiber/Id";
+const FiberIdSymbolKey = "@effect/io/FiberId";
 /** @internal */
 const FiberIdTypeId = /*#__PURE__*/Symbol.for(FiberIdSymbolKey);
 /** @internal */
@@ -26368,12 +26030,12 @@ const OP_RUNTIME = "Runtime";
 /** @internal */
 const OP_COMPOSITE = "Composite";
 /** @internal */
-class fiberId_None {
+class None {
   constructor() {
-    this[fiberId_a] = FiberIdTypeId;
+    this[_a] = FiberIdTypeId;
     this._tag = OP_NONE;
   }
-  [(fiberId_a = FiberIdTypeId, symbol)]() {
+  [(_a = FiberIdTypeId, symbol)]() {
     return combine(Hash_hash(this._tag))(Hash_hash(FiberIdSymbolKey));
   }
   [Equal_symbol](that) {
@@ -26385,10 +26047,10 @@ class Runtime {
   constructor(id, startTimeMillis) {
     this.id = id;
     this.startTimeMillis = startTimeMillis;
-    this[fiberId_b] = FiberIdTypeId;
+    this[_b] = FiberIdTypeId;
     this._tag = OP_RUNTIME;
   }
-  [(fiberId_b = FiberIdTypeId, symbol)]() {
+  [(_b = FiberIdTypeId, symbol)]() {
     return combine(Hash_hash(this.startTimeMillis))(combine(Hash_hash(this.id))(combine(Hash_hash(this._tag))(Hash_hash(FiberIdSymbolKey))));
   }
   [Equal_symbol](that) {
@@ -26411,7 +26073,7 @@ class Composite {
   }
 }
 /** @internal */
-const fiberId_none = /*#__PURE__*/new fiberId_None();
+const fiberId_none = /*#__PURE__*/new None();
 /** @internal */
 const fiberId_runtime = (id, startTimeMillis) => {
   return new Runtime(id, startTimeMillis);
@@ -26517,34 +26179,34 @@ const toSet = self => {
   }
 };
 /** @internal */
-const unsafeMake = () => {
+const fiberId_unsafeMake = () => {
   const id = MutableRef_get(_fiberCounter);
   MutableRef_set(id + 1)(_fiberCounter);
   return new Runtime(id, new Date().getTime());
 };
 //# sourceMappingURL=fiberId.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Fiber/Id.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/FiberId.mjs
 
 /**
  * @since 1.0.0
  * @category symbols
  */
-const Id_FiberIdTypeId = FiberIdTypeId;
+const FiberId_FiberIdTypeId = FiberIdTypeId;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Id_none = fiberId_none;
+const FiberId_none = fiberId_none;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Id_runtime = fiberId_runtime;
+const FiberId_runtime = fiberId_runtime;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Id_composite = composite;
+const FiberId_composite = composite;
 /**
  * Returns `true` if the specified unknown value is a `FiberId`, `false`
  * otherwise.
@@ -26552,63 +26214,63 @@ const Id_composite = composite;
  * @since 1.0.0
  * @category refinements
  */
-const Id_isFiberId = isFiberId;
+const FiberId_isFiberId = isFiberId;
 /**
  * Returns `true` if the `FiberId` is a `None`, `false` otherwise.
  *
  * @since 1.0.0
  * @category refinements
  */
-const Id_isNone = fiberId_isNone;
+const FiberId_isNone = fiberId_isNone;
 /**
  * Returns `true` if the `FiberId` is a `Runtime`, `false` otherwise.
  *
  * @since 1.0.0
  * @category refinements
  */
-const Id_isRuntime = isRuntime;
+const FiberId_isRuntime = isRuntime;
 /**
  * Returns `true` if the `FiberId` is a `Composite`, `false` otherwise.
  *
  * @since 1.0.0
  * @category refinements
  */
-const Id_isComposite = isComposite;
+const FiberId_isComposite = isComposite;
 /**
  * Combine two `FiberId`s.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Id_combine = fiberId_combine;
+const FiberId_combine = fiberId_combine;
 /**
  * Combines a set of `FiberId`s into a single `FiberId`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Id_combineAll = fiberId_combineAll;
+const FiberId_combineAll = fiberId_combineAll;
 /**
  * Returns this `FiberId` if it is not `None`, otherwise returns that `FiberId`.
  *
  * @since 1.0.0
  * @category utils
  */
-const Id_getOrElse = fiberId_getOrElse;
+const FiberId_getOrElse = fiberId_getOrElse;
 /**
  * Get the set of identifiers for this `FiberId`.
  *
  * @since 1.0.0
  * @category destructors
  */
-const Id_ids = ids;
+const FiberId_ids = ids;
 /**
  * Creates a new `FiberId`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Id_make = fiberId_make;
+const FiberId_make = fiberId_make;
 /**
  * Creates a string representing the name of the current thread of execution
  * represented by the specified `FiberId`.
@@ -26616,30 +26278,30 @@ const Id_make = fiberId_make;
  * @since 1.0.0
  * @category destructors
  */
-const Id_threadName = threadName;
+const FiberId_threadName = threadName;
 /**
  * Convert a `FiberId` into an `Option<FiberId>`.
  *
  * @since 1.0.0
  * @category destructors
  */
-const Id_toOption = toOption;
+const FiberId_toOption = toOption;
 /**
  * Convert a `FiberId` into a `HashSet<FiberId>`.
  *
  * @since 1.0.0
  * @category destructors
  */
-const Id_toSet = toSet;
+const FiberId_toSet = toSet;
 /**
  * Unsafely creates a new `FiberId`.
  *
  * @since 1.0.0
  * @category unsafe
  */
-const Id_unsafeMake = unsafeMake;
-//# sourceMappingURL=Id.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/opCodes/cause.mjs
+const FiberId_unsafeMake = fiberId_unsafeMake;
+//# sourceMappingURL=FiberId.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/opCodes/cause.mjs
 /** @internal */
 const OP_DIE = "Die";
 /** @internal */
@@ -26655,7 +26317,7 @@ const OP_PARALLEL = "Parallel";
 /** @internal */
 const OP_SEQUENTIAL = "Sequential";
 //# sourceMappingURL=cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/cause.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/cause.mjs
 
 
 
@@ -27102,7 +26764,7 @@ const squashWith = /*#__PURE__*/Function_dual(2, (self, f) => {
       {
         return match({
           onNone: () => {
-            const interrupts = Array.from(interruptors(self)).flatMap(fiberId => Array.from(Id_ids(fiberId)).map(id => `#${id}`));
+            const interrupts = Array.from(interruptors(self)).flatMap(fiberId => Array.from(FiberId_ids(fiberId)).map(id => `#${id}`));
             return InterruptedException(interrupts ? `Interrupted by fibers: ${interrupts.join(", ")}` : void 0);
           },
           onSome: Function_identity
@@ -27674,7 +27336,7 @@ const prettyErrors = cause => reduceWithContext(cause, void 0, {
   })) : v
 });
 //# sourceMappingURL=cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Cause.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Cause.mjs
 
 /**
  * @since 1.0.0
@@ -28065,7 +27727,7 @@ const Cause_InterruptedException = InterruptedException;
 /**
  * Returns `true` if the specified value is an `InterruptedException`, `false`
  * otherwise.
-
+ *
  * @since 1.0.0
  * @category refinements
  */
@@ -28081,7 +27743,7 @@ const Cause_IllegalArgumentException = IllegalArgumentException;
 /**
  * Returns `true` if the specified value is an `IllegalArgumentException`, `false`
  * otherwise.
-
+ *
  * @since 1.0.0
  * @category refinements
  */
@@ -28095,12 +27757,12 @@ const Cause_isIllegalArgumentException = isIllegalArgumentException;
  */
 const Cause_NoSuchElementException = NoSuchElementException;
 /**
-  * Returns `true` if the specified value is an `IllegalArgumentException`, `false`
-  * otherwise.
-
-  * @since 1.0.0
-  * @category refinements
-  */
+ * Returns `true` if the specified value is an `NoSuchElementException`, `false`
+ * otherwise.
+ *
+ * @since 1.0.0
+ * @category refinements
+ */
 const Cause_isNoSuchElementException = isNoSuchElementException;
 /**
  * Represents a generic checked exception which occurs at runtime.
@@ -28110,12 +27772,12 @@ const Cause_isNoSuchElementException = isNoSuchElementException;
  */
 const Cause_RuntimeException = RuntimeException;
 /**
-  * Returns `true` if the specified value is an `RuntimeException`, `false`
-  * otherwise.
-
-  * @since 1.0.0
-  * @category refinements
-  */
+ * Returns `true` if the specified value is an `RuntimeException`, `false`
+ * otherwise.
+ *
+ * @since 1.0.0
+ * @category refinements
+ */
 const Cause_isRuntimeException = isRuntimeException;
 /**
  * Returns the specified `Cause` as a pretty-printed string.
@@ -28132,7 +27794,71 @@ const pretty = cause_pretty;
  */
 const Cause_unannotate = unannotate;
 //# sourceMappingURL=Cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/runtimeFlagsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/opCodes/deferred.mjs
+/** @internal */
+const OP_STATE_PENDING = "Pending";
+/** @internal */
+const OP_STATE_DONE = "Done";
+//# sourceMappingURL=deferred.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/deferred.mjs
+
+/** @internal */
+const DeferredSymbolKey = "@effect/io/Deferred";
+/** @internal */
+const DeferredTypeId = /*#__PURE__*/Symbol.for(DeferredSymbolKey);
+/** @internal */
+const deferredVariance = {
+  _E: _ => _,
+  _A: _ => _
+};
+/** @internal */
+const pending = joiners => {
+  return {
+    _tag: OP_STATE_PENDING,
+    joiners
+  };
+};
+/** @internal */
+const done = effect => {
+  return {
+    _tag: OP_STATE_DONE,
+    effect
+  };
+};
+//# sourceMappingURL=deferred.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/opCodes/effect.mjs
+/** @internal */
+const OP_ASYNC = "Async";
+/** @internal */
+const OP_COMMIT = "Commit";
+/** @internal */
+const OP_FAILURE = "Failure";
+/** @internal */
+const OP_FAILURE_WITH_ANNOTATION = "FailureWithAnnotation";
+/** @internal */
+const OP_ON_FAILURE = "OnFailure";
+/** @internal */
+const OP_ON_SUCCESS = "OnSuccess";
+/** @internal */
+const OP_ON_SUCCESS_AND_FAILURE = "OnSuccessAndFailure";
+/** @internal */
+const OP_SUCCESS = "Success";
+/** @internal */
+const OP_SYNC = "Sync";
+/** @internal */
+const OP_TAG = "Tag";
+/** @internal */
+const OP_UPDATE_RUNTIME_FLAGS = "UpdateRuntimeFlags";
+/** @internal */
+const OP_WHILE = "While";
+/** @internal */
+const OP_WITH_RUNTIME = "WithRuntime";
+/** @internal */
+const OP_YIELD = "Yield";
+/** @internal */
+const OP_REVERT_FLAGS = "RevertFlags";
+//# sourceMappingURL=effect.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/runtimeFlagsPatch.mjs
 
 /** @internal */
 const BIT_MASK = 0xff;
@@ -28171,7 +27897,7 @@ const inverse = patch => runtimeFlagsPatch_make(enabled(patch), invert(active(pa
 /** @internal */
 const invert = n => ~n >>> 0 & BIT_MASK;
 //# sourceMappingURL=runtimeFlagsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/runtimeFlags.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/runtimeFlags.mjs
 
 
 
@@ -28279,7 +28005,10 @@ const differ = /*#__PURE__*/mjs_Differ_make({
   patch: (_patch, oldValue) => runtimeFlags_patch(oldValue, _patch)
 });
 //# sourceMappingURL=runtimeFlags.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Fiber/Runtime/Flags/Patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/RuntimeFlagsPatch.mjs
+/**
+ * @since 1.0.0
+ */
 
 
 /**
@@ -28288,33 +28017,33 @@ const differ = /*#__PURE__*/mjs_Differ_make({
  * @since 1.0.0
  * @category constructors
  */
-const Patch_empty = runtimeFlagsPatch_empty;
+const RuntimeFlagsPatch_empty = runtimeFlagsPatch_empty;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Patch_make = runtimeFlagsPatch_make;
+const RuntimeFlagsPatch_make = runtimeFlagsPatch_make;
 /**
  * Creates a `RuntimeFlagsPatch` describing enabling the provided `RuntimeFlag`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Patch_enable = enable;
+const RuntimeFlagsPatch_enable = enable;
 /**
  * Creates a `RuntimeFlagsPatch` describing disabling the provided `RuntimeFlag`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Patch_disable = disable;
+const RuntimeFlagsPatch_disable = disable;
 /**
  * Returns `true` if the specified `RuntimeFlagsPatch` is empty.
  *
  * @since 1.0.0
  * @category getters
  */
-const Patch_isEmpty = runtimeFlagsPatch_isEmpty;
+const RuntimeFlagsPatch_isEmpty = runtimeFlagsPatch_isEmpty;
 /**
  * Returns `true` if the `RuntimeFlagsPatch` describes the specified
  * `RuntimeFlag` as active.
@@ -28322,7 +28051,7 @@ const Patch_isEmpty = runtimeFlagsPatch_isEmpty;
  * @since 1.0.0
  * @category elements
  */
-const Patch_isActive = isActive;
+const RuntimeFlagsPatch_isActive = isActive;
 /**
  * Returns `true` if the `RuntimeFlagsPatch` describes the specified
  * `RuntimeFlag` as enabled.
@@ -28330,7 +28059,7 @@ const Patch_isActive = isActive;
  * @since 1.0.0
  * @category elements
  */
-const Patch_isEnabled = isEnabled;
+const RuntimeFlagsPatch_isEnabled = isEnabled;
 /**
  * Returns `true` if the `RuntimeFlagsPatch` describes the specified
  * `RuntimeFlag` as disabled.
@@ -28338,7 +28067,7 @@ const Patch_isEnabled = isEnabled;
  * @since 1.0.0
  * @category elements
  */
-const Patch_isDisabled = isDisabled;
+const RuntimeFlagsPatch_isDisabled = isDisabled;
 /**
  * Returns `true` if the `RuntimeFlagsPatch` includes the specified
  * `RuntimeFlag`, `false` otherwise.
@@ -28354,7 +28083,7 @@ const includes = isActive;
  * @since 1.0.0
  * @category utils
  */
-const Patch_andThen = andThen;
+const RuntimeFlagsPatch_andThen = andThen;
 /**
  * Creates a `RuntimeFlagsPatch` describing application of both the `self` patch
  * and `that` patch.
@@ -28362,7 +28091,7 @@ const Patch_andThen = andThen;
  * @since 1.0.0
  * @category utils
  */
-const Patch_both = both;
+const RuntimeFlagsPatch_both = both;
 /**
  * Creates a `RuntimeFlagsPatch` describing application of either the `self`
  * patch or `that` patch.
@@ -28370,7 +28099,7 @@ const Patch_both = both;
  * @since 1.0.0
  * @category utils
  */
-const Patch_either = runtimeFlagsPatch_either;
+const RuntimeFlagsPatch_either = runtimeFlagsPatch_either;
 /**
  * Creates a `RuntimeFlagsPatch` which describes exclusion of the specified
  * `RuntimeFlag` from the set of `RuntimeFlags`.
@@ -28378,7 +28107,7 @@ const Patch_either = runtimeFlagsPatch_either;
  * @category utils
  * @since 1.0.0
  */
-const Patch_exclude = exclude;
+const RuntimeFlagsPatch_exclude = exclude;
 /**
  * Creates a `RuntimeFlagsPatch` which describes the inverse of the patch
  * specified by the provided `RuntimeFlagsPatch`.
@@ -28386,7 +28115,7 @@ const Patch_exclude = exclude;
  * @since 1.0.0
  * @category utils
  */
-const Patch_inverse = inverse;
+const RuntimeFlagsPatch_inverse = inverse;
 /**
  * Returns a `ReadonlySet<number>` containing the `RuntimeFlags` described as
  * enabled by the specified `RuntimeFlagsPatch`.
@@ -28394,7 +28123,7 @@ const Patch_inverse = inverse;
  * @since 1.0.0
  * @category destructors
  */
-const Patch_enabledSet = enabledSet;
+const RuntimeFlagsPatch_enabledSet = enabledSet;
 /**
  * Returns a `ReadonlySet<number>` containing the `RuntimeFlags` described as
  * disabled by the specified `RuntimeFlagsPatch`.
@@ -28402,78 +28131,16 @@ const Patch_enabledSet = enabledSet;
  * @since 1.0.0
  * @category destructors
  */
-const Patch_disabledSet = disabledSet;
+const RuntimeFlagsPatch_disabledSet = disabledSet;
 /**
  * Renders the provided `RuntimeFlagsPatch` to a string.
  *
  * @since 1.0.0
  * @category destructors
  */
-const Patch_render = renderPatch;
-//# sourceMappingURL=Patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/opCodes/deferred.mjs
-/** @internal */
-const OP_STATE_PENDING = "Pending";
-/** @internal */
-const OP_STATE_DONE = "Done";
-//# sourceMappingURL=deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/deferred.mjs
-
-/** @internal */
-const DeferredSymbolKey = "@effect/io/Deferred";
-/** @internal */
-const DeferredTypeId = /*#__PURE__*/Symbol.for(DeferredSymbolKey);
-/** @internal */
-const deferredVariance = {
-  _E: _ => _,
-  _A: _ => _
-};
-/** @internal */
-const pending = joiners => {
-  return {
-    _tag: OP_STATE_PENDING,
-    joiners
-  };
-};
-/** @internal */
-const done = effect => {
-  return {
-    _tag: OP_STATE_DONE,
-    effect
-  };
-};
-//# sourceMappingURL=deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/opCodes/effect.mjs
-/** @internal */
-const OP_ASYNC = "Async";
-/** @internal */
-const OP_COMMIT = "Commit";
-/** @internal */
-const OP_FAILURE = "Failure";
-/** @internal */
-const OP_ON_FAILURE = "OnFailure";
-/** @internal */
-const OP_ON_SUCCESS = "OnSuccess";
-/** @internal */
-const OP_ON_SUCCESS_AND_FAILURE = "OnSuccessAndFailure";
-/** @internal */
-const OP_SUCCESS = "Success";
-/** @internal */
-const OP_SYNC = "Sync";
-/** @internal */
-const OP_TAG = "Tag";
-/** @internal */
-const OP_UPDATE_RUNTIME_FLAGS = "UpdateRuntimeFlags";
-/** @internal */
-const OP_WHILE = "While";
-/** @internal */
-const OP_WITH_RUNTIME = "WithRuntime";
-/** @internal */
-const OP_YIELD = "Yield";
-/** @internal */
-const OP_REVERT_FLAGS = "RevertFlags";
-//# sourceMappingURL=effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Scheduler.mjs
+const RuntimeFlagsPatch_render = renderPatch;
+//# sourceMappingURL=RuntimeFlagsPatch.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Scheduler.mjs
 /**
  * @since 1.0.0
  */
@@ -28727,10 +28394,8 @@ const timer = ms => Scheduler_make(task => setTimeout(task, ms));
  */
 const timerBatched = ms => makeBatched(task => setTimeout(task, ms));
 //# sourceMappingURL=Scheduler.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/core.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/core.mjs
 var core_a, core_b, core_c, _d;
-
-
 
 
 
@@ -28760,7 +28425,7 @@ var core_a, core_b, core_c, _d;
 // Effect
 // -----------------------------------------------------------------------------
 /** @internal */
-const EffectErrorSymbolKey = "@effect/io/Effect/Error";
+const EffectErrorSymbolKey = "@effect/io/EffectError";
 /** @internal */
 const EffectErrorTypeId = /*#__PURE__*/Symbol.for(EffectErrorSymbolKey);
 /** @internal */
@@ -28903,27 +28568,34 @@ const withFiberRuntime = withRuntime => {
   return effect;
 };
 /* @internal */
-const acquireUseRelease = /*#__PURE__*/Function_dual(3, (acquire, use, release) => uninterruptibleMask(restore => core_flatMap(acquire, a => core_flatMap(core_exit(suspend(() => restore(use(a)))), exit => suspend(() => release(a, exit)).pipe(matchCauseEffect({
-  onFailure: cause => {
-    switch (exit._tag) {
-      case OP_FAILURE:
-        {
-          return failCause(parallel(exit.i0, cause));
-        }
-      case OP_SUCCESS:
-        {
-          return failCause(cause);
-        }
-    }
-  },
-  onSuccess: () => exit
-}))))));
+const acquireUseRelease = /*#__PURE__*/Function_dual(3, (acquire, use, release) => uninterruptibleMask(restore => core_flatMap(acquire, a => core_flatMap(core_exit(suspend(() => restore(step(use(a))))), exit => {
+  if (exit._tag === "Success" && exit.value._tag === "Blocked") {
+    const value = exit.value;
+    return core_blocked(value.i0, acquireUseRelease(succeed(a), () => value.i1, release));
+  }
+  const flat = exitFlatten(exit);
+  return suspend(() => release(a, flat)).pipe(matchCauseEffect({
+    onFailure: cause => {
+      switch (flat._tag) {
+        case OP_FAILURE:
+          {
+            return failCause(parallel(flat.i0, cause));
+          }
+        case OP_SUCCESS:
+          {
+            return failCause(cause);
+          }
+      }
+    },
+    onSuccess: () => flat
+  }));
+}))));
 /* @internal */
 const core_as = /*#__PURE__*/Function_dual(2, (self, value) => core_flatMap(self, () => succeed(value)));
 /* @internal */
 const core_asUnit = self => core_as(self, void 0);
 /* @internal */
-const core_async = (register, blockingOn = Id_none) => suspend(() => {
+const core_async = (register, blockingOn = FiberId_none) => suspend(() => {
   let cancelerRef = undefined;
   let controllerRef = undefined;
   const effect = new EffectPrimitive(OP_ASYNC);
@@ -28948,7 +28620,7 @@ const core_async = (register, blockingOn = Id_none) => suspend(() => {
   });
 });
 /* @internal */
-const asyncEither = (register, blockingOn = Id_none) => core_async(resume => {
+const asyncEither = (register, blockingOn = FiberId_none) => core_async(resume => {
   const result = register(resume);
   if (Either_isRight(result)) {
     resume(result.right);
@@ -28974,30 +28646,41 @@ const catchAll = /*#__PURE__*/Function_dual(2, (self, f) => matchEffect(self, {
  */
 const unified = f => (...args) => f(...args);
 /* @internal */
-const catchSome = /*#__PURE__*/Function_dual(2, (self, pf) => matchCauseEffect(self, {
-  onFailure: unified(cause => {
-    const either = failureOrCause(cause);
-    switch (either._tag) {
-      case "Left":
-        {
-          return getOrElse(() => failCause(cause))(pf(either.left));
-        }
-      case "Right":
-        {
-          return failCause(either.right);
-        }
-    }
-  }),
-  onSuccess: succeed
+const catchIf = /*#__PURE__*/Function_dual(3, (self, predicate, f) => catchAllCause(self, cause => {
+  const either = failureOrCause(cause);
+  switch (either._tag) {
+    case "Left":
+      {
+        return predicate(either.left) ? f(either.left) : failCause(cause);
+      }
+    case "Right":
+      {
+        return failCause(either.right);
+      }
+  }
+}));
+/* @internal */
+const catchSome = /*#__PURE__*/Function_dual(2, (self, pf) => catchAllCause(self, cause => {
+  const either = failureOrCause(cause);
+  switch (either._tag) {
+    case "Left":
+      {
+        return getOrElse(() => failCause(cause))(pf(either.left));
+      }
+    case "Right":
+      {
+        return failCause(either.right);
+      }
+  }
 }));
 /* @internal */
 const checkInterruptible = f => withFiberRuntime((_, status) => f(interruption(status.runtimeFlags)));
 /* @internal */
-const core_die = defect => failCause(die(defect));
+const core_die = defect => failCauseAnnotate(annotate => annotate(die(defect)));
 /* @internal */
 const dieMessage = message => failCauseSync(() => die(RuntimeException(message)));
 /* @internal */
-const dieSync = evaluate => failCauseSync(() => die(evaluate()));
+const dieSync = evaluate => core_flatMap(sync(evaluate), core_die);
 /* @internal */
 const core_either = self => matchEffect(self, {
   onFailure: e => succeed(Either_left(e)),
@@ -29013,9 +28696,9 @@ const core_exit = self => matchCause(self, {
   onSuccess: exitSucceed
 });
 /* @internal */
-const core_fail = error => failCause(fail(error));
+const core_fail = error => failCauseAnnotate(annotate => annotate(fail(error)));
 /* @internal */
-const failSync = evaluate => failCauseSync(() => fail(evaluate()));
+const failSync = evaluate => core_flatMap(sync(evaluate), core_fail);
 /* @internal */
 const failCause = cause => {
   const effect = new EffectPrimitiveFailure(OP_FAILURE);
@@ -29024,6 +28707,12 @@ const failCause = cause => {
 };
 /* @internal */
 const failCauseSync = evaluate => core_flatMap(sync(evaluate), failCause);
+/* @internal */
+const failCauseAnnotate = evaluate => {
+  const effect = new EffectPrimitive(OP_FAILURE_WITH_ANNOTATION);
+  effect.i0 = evaluate;
+  return effect;
+};
 /* @internal */
 const fiberId = /*#__PURE__*/withFiberRuntime(state => succeed(state.id()));
 /* @internal */
@@ -29130,7 +28819,7 @@ const interruptWith = fiberId => failCause(interrupt(fiberId));
 /* @internal */
 const core_interruptible = self => {
   const effect = new EffectPrimitive(OP_UPDATE_RUNTIME_FLAGS);
-  effect.i0 = Patch_enable(Interruption);
+  effect.i0 = RuntimeFlagsPatch_enable(Interruption);
   const _continue = orBlock => {
     if (orBlock._tag === "Blocked") {
       return core_blocked(orBlock.i0, core_interruptible(orBlock.i1));
@@ -29144,7 +28833,7 @@ const core_interruptible = self => {
 /* @internal */
 const interruptibleMask = f => {
   const effect = new EffectPrimitive(OP_UPDATE_RUNTIME_FLAGS);
-  effect.i0 = Patch_enable(Interruption);
+  effect.i0 = RuntimeFlagsPatch_enable(Interruption);
   const _continue = step => {
     if (step._tag === "Blocked") {
       return core_blocked(step.i0, core_interruptible(step.i1));
@@ -29271,7 +28960,7 @@ const attemptOrElse = /*#__PURE__*/Function_dual(3, (self, that, onSuccess) => m
 /* @internal */
 const uninterruptible = self => {
   const effect = new EffectPrimitive(OP_UPDATE_RUNTIME_FLAGS);
-  effect.i0 = Patch_disable(Interruption);
+  effect.i0 = RuntimeFlagsPatch_disable(Interruption);
   effect.i1 = () => flatMapStep(self, _continue);
   const _continue = orBlock => {
     if (orBlock._tag === "Blocked") {
@@ -29285,7 +28974,7 @@ const uninterruptible = self => {
 /* @internal */
 const uninterruptibleMask = f => {
   const effect = new EffectPrimitive(OP_UPDATE_RUNTIME_FLAGS);
-  effect.i0 = Patch_disable(Interruption);
+  effect.i0 = RuntimeFlagsPatch_disable(Interruption);
   const _continue = step => {
     if (step._tag === "Blocked") {
       return core_blocked(step.i0, uninterruptible(step.i1));
@@ -29557,22 +29246,28 @@ const fiberRefUnsafeMake = (initial, options) => fiberRefUnsafeMakePatch(initial
   join: options?.join
 });
 /** @internal */
-const fiberRefUnsafeMakeHashSet = initial => fiberRefUnsafeMakePatch(initial, {
-  differ: Differ_hashSet(),
-  fork: Differ_HashSetPatch_empty()
-});
+const fiberRefUnsafeMakeHashSet = initial => {
+  const differ = Differ_hashSet();
+  return fiberRefUnsafeMakePatch(initial, {
+    differ,
+    fork: differ.empty
+  });
+};
 /** @internal */
-const fiberRefUnsafeMakeContext = initial => fiberRefUnsafeMakePatch(initial, {
-  differ: Differ_environment(),
-  fork: Differ_ContextPatch_empty()
-});
+const fiberRefUnsafeMakeContext = initial => {
+  const differ = Differ_environment();
+  return fiberRefUnsafeMakePatch(initial, {
+    differ,
+    fork: differ.empty
+  });
+};
 /** @internal */
 const fiberRefUnsafeMakePatch = (initial, options) => ({
   [FiberRefTypeId]: fiberRefVariance,
   initial,
-  diff: (oldValue, newValue) => Differ_diff(oldValue, newValue)(options.differ),
-  combine: (first, second) => Differ_combine(first, second)(options.differ),
-  patch: patch => oldValue => Differ_patch(patch, oldValue)(options.differ),
+  diff: (oldValue, newValue) => options.differ.diff(oldValue, newValue),
+  combine: (first, second) => options.differ.combine(first, second),
+  patch: patch => oldValue => options.differ.patch(patch, oldValue),
   fork: options.fork,
   join: options.join ?? ((_, n) => n),
   pipe() {
@@ -29582,7 +29277,7 @@ const fiberRefUnsafeMakePatch = (initial, options) => ({
 /** @internal */
 const fiberRefUnsafeMakeRuntimeFlags = initial => fiberRefUnsafeMakePatch(initial, {
   differ: differ,
-  fork: Patch_empty
+  fork: differ.empty
 });
 /** @internal */
 const currentContext = /*#__PURE__*/fiberRefUnsafeMakeContext( /*#__PURE__*/mjs_Context_empty());
@@ -30160,10 +29855,11 @@ const deferredInterruptJoiner = (self, joiner) => sync(() => {
   }
 });
 //# sourceMappingURL=core.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Duration.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Duration.mjs
 /**
  * @since 1.0.0
  */
+
 
 
 
@@ -30220,40 +29916,14 @@ const zeroValue = {
 const infinityValue = {
   _tag: "Infinity"
 };
-class DurationImpl {
-  constructor(input) {
-    this._id = Duration_TypeId;
-    if (Predicate_isNumber(input)) {
-      if (isNaN(input) || input < 0) {
-        this.value = zeroValue;
-      } else if (!Number.isFinite(input)) {
-        this.value = infinityValue;
-      } else if (!Number.isInteger(input)) {
-        this.value = {
-          _tag: "Nanos",
-          nanos: BigInt(Math.round(input * 1000000))
-        };
-      } else {
-        this.value = {
-          _tag: "Millis",
-          millis: input
-        };
-      }
-    } else if (input < BigInt(0)) {
-      this.value = zeroValue;
-    } else {
-      this.value = {
-        _tag: "Nanos",
-        nanos: input
-      };
-    }
-  }
+const DurationProto = {
+  [Duration_TypeId]: Duration_TypeId,
   [symbol]() {
     return structure(this.value);
-  }
+  },
   [Equal_symbol](that) {
     return isDuration(that) && Duration_equals(this, that);
-  }
+  },
   toString() {
     switch (this.value._tag) {
       case "Millis":
@@ -30263,7 +29933,7 @@ class DurationImpl {
       case "Infinity":
         return "Duration(Infinity)";
     }
-  }
+  },
   toJSON() {
     if (this.value._tag === "Nanos") {
       return {
@@ -30278,69 +29948,97 @@ class DurationImpl {
       _tag: "Duration",
       value: this.value
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
+const Duration_make = input => {
+  const duration = Object.create(DurationProto);
+  if (Predicate_isNumber(input)) {
+    if (isNaN(input) || input < 0) {
+      duration.value = zeroValue;
+    } else if (!Number.isFinite(input)) {
+      duration.value = infinityValue;
+    } else if (!Number.isInteger(input)) {
+      duration.value = {
+        _tag: "Nanos",
+        nanos: BigInt(Math.round(input * 1000000))
+      };
+    } else {
+      duration.value = {
+        _tag: "Millis",
+        millis: input
+      };
+    }
+  } else if (input < BigInt(0)) {
+    duration.value = zeroValue;
+  } else {
+    duration.value = {
+      _tag: "Nanos",
+      nanos: input
+    };
+  }
+  return duration;
+};
 /**
  * @since 1.0.0
  * @category guards
  */
-const isDuration = u => Predicate_isObject(u) && "_id" in u && u["_id"] === Duration_TypeId;
+const isDuration = u => typeof u === "object" && u !== null && Duration_TypeId in u;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const zero = /*#__PURE__*/new DurationImpl(0);
+const zero = /*#__PURE__*/Duration_make(0);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const infinity = /*#__PURE__*/new DurationImpl(Infinity);
+const infinity = /*#__PURE__*/Duration_make(Infinity);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Duration_nanos = nanos => new DurationImpl(nanos);
+const Duration_nanos = nanos => Duration_make(nanos);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const micros = micros => new DurationImpl(micros * bigint1e3);
+const micros = micros => Duration_make(micros * bigint1e3);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const millis = millis => new DurationImpl(millis);
+const millis = millis => Duration_make(millis);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const seconds = seconds => new DurationImpl(seconds * 1000);
+const seconds = seconds => Duration_make(seconds * 1000);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const minutes = minutes => new DurationImpl(minutes * 60000);
+const minutes = minutes => Duration_make(minutes * 60000);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const hours = hours => new DurationImpl(hours * 3600000);
+const hours = hours => Duration_make(hours * 3600000);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const days = days => new DurationImpl(days * 86400000);
+const days = days => Duration_make(days * 86400000);
 /**
  * @since 1.0.0
  * @category constructors
  */
-const weeks = weeks => new DurationImpl(weeks * 604800000);
+const weeks = weeks => Duration_make(weeks * 604800000);
 /**
  * @since 1.0.0
  * @category getters
@@ -30483,16 +30181,16 @@ const Duration_clamp = /*#__PURE__*/(/* unused pure expression or super */ null 
  * @category math
  */
 const times = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, times) => Duration_match(self, {
-  onMillis: millis => new DurationImpl(millis * times),
-  onNanos: nanos => new DurationImpl(nanos * BigInt(times))
+  onMillis: millis => Duration_make(millis * times),
+  onNanos: nanos => Duration_make(nanos * BigInt(times))
 }))));
 /**
  * @since 1.0.0
  * @category math
  */
 const Duration_sum = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, that) => matchWith(self, that, {
-  onMillis: (self, that) => new DurationImpl(self + that),
-  onNanos: (self, that) => new DurationImpl(self + that)
+  onMillis: (self, that) => Duration_make(self + that),
+  onNanos: (self, that) => Duration_make(self + that)
 }))));
 /**
  * @since 1.0.0
@@ -30532,7 +30230,7 @@ const Duration_greaterThanOrEqualTo = /*#__PURE__*/Function_dual(2, (self, that)
  */
 const Duration_equals = /*#__PURE__*/Function_dual(2, (self, that) => Duration_Equivalence(decode(self), decode(that)));
 //# sourceMappingURL=Duration.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/clock.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/clock.mjs
 var clock_a;
 
 
@@ -30610,7 +30308,7 @@ clock_a = ClockTypeId;
 /** @internal */
 const clock_make = () => new ClockImpl();
 //# sourceMappingURL=clock.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/opCodes/configError.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/opCodes/configError.mjs
 /** @internal */
 const OP_AND = "And";
 /** @internal */
@@ -30624,13 +30322,13 @@ const OP_SOURCE_UNAVAILABLE = "SourceUnavailable";
 /** @internal */
 const OP_UNSUPPORTED = "Unsupported";
 //# sourceMappingURL=configError.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/configError.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/configError.mjs
 
 
 
 
 /** @internal */
-const ConfigErrorSymbolKey = "@effect/io/Config/Error";
+const ConfigErrorSymbolKey = "@effect/io/ConfigError";
 /** @internal */
 const ConfigErrorTypeId = /*#__PURE__*/Symbol.for(ConfigErrorSymbolKey);
 /** @internal */
@@ -30874,7 +30572,7 @@ const configError_reduceWithContext = /*#__PURE__*/(/* unused pure expression or
 /** @internal */
 const isMissingDataOnly = self => configError_reduceWithContext(self, void 0, IsMissingDataOnlyReducer);
 //# sourceMappingURL=configError.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/config.mjs
 
 
 
@@ -31185,7 +30883,7 @@ const config_zipWith = /*#__PURE__*/(/* unused pure expression or super */ null 
   return zipWith;
 })));
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/configProvider/pathPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/configProvider/pathPatch.mjs
 
 
 
@@ -31262,7 +30960,7 @@ const pathPatch_patch = /*#__PURE__*/Function_dual(2, (path, patch) => {
   return Either_right(output);
 });
 //# sourceMappingURL=pathPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/opCodes/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/opCodes/config.mjs
 /** @internal */
 const OP_CONSTANT = "Constant";
 /** @internal */
@@ -31286,7 +30984,7 @@ const OP_HASHMAP = "HashMap";
 /** @internal */
 const OP_ZIP_WITH = "ZipWith";
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/configProvider.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/configProvider.mjs
 
 
 
@@ -31304,13 +31002,13 @@ const OP_ZIP_WITH = "ZipWith";
 
 const concat = (l, r) => [...l, ...r];
 /** @internal */
-const ConfigProviderSymbolKey = "@effect/io/Config/Provider";
+const ConfigProviderSymbolKey = "@effect/io/ConfigProvider";
 /** @internal */
 const ConfigProviderTypeId = /*#__PURE__*/Symbol.for(ConfigProviderSymbolKey);
 /** @internal */
 const configProviderTag = /*#__PURE__*/Tag(ConfigProviderTypeId);
 /** @internal */
-const FlatConfigProviderSymbolKey = "@effect/io/Config/Provider/Flat";
+const FlatConfigProviderSymbolKey = "@effect/io/ConfigProviderFlat";
 /** @internal */
 const FlatConfigProviderTypeId = /*#__PURE__*/Symbol.for(FlatConfigProviderSymbolKey);
 /** @internal */
@@ -31381,7 +31079,7 @@ const fromMap = (map, config = {}) => {
   const {
     pathDelim,
     seqDelim
-  } = Object.assign({}, {
+  } = Object.assign({
     seqDelim: ",",
     pathDelim: "."
   }, config);
@@ -31630,7 +31328,7 @@ const parseInteger = str => {
   return Number.isNaN(parsedIndex) ? Option_none() : mjs_Option_some(parsedIndex);
 };
 //# sourceMappingURL=configProvider.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/defaultServices/console.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/defaultServices/console.mjs
 
 
 /** @internal */
@@ -31720,15 +31418,10 @@ const defaultConsole = {
       console.warn(...args);
     });
   },
-  withGroup(self, options) {
-    return acquireUseRelease(options?.collapsed ? sync(() => console.groupCollapsed(options?.label)) : sync(() => console.group(options?.label)), () => self, () => sync(() => console.groupEnd()));
-  },
-  withTime(self, label) {
-    return acquireUseRelease(sync(() => console.time(label)), () => self, () => sync(() => console.timeEnd(label)));
-  }
+  unsafe: console
 };
 //# sourceMappingURL=console.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/random.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/random.mjs
 var random_a;
 
 
@@ -31784,7 +31477,7 @@ const swap = (buffer, index1, index2) => {
 };
 const random_make = seed => new RandomImpl(seed);
 //# sourceMappingURL=random.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/tracer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/tracer.mjs
 /**
  * @since 1.0.0
  */
@@ -31836,10 +31529,11 @@ class NativeSpan {
 }
 /** @internal */
 const nativeTracer = /*#__PURE__*/tracer_make({
-  span: (name, parent, context, links, startTime) => new NativeSpan(name, parent, context, links, startTime)
+  span: (name, parent, context, links, startTime) => new NativeSpan(name, parent, context, links, startTime),
+  context: f => f()
 });
 //# sourceMappingURL=tracer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/defaultServices.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/defaultServices.mjs
 
 
 
@@ -31902,7 +31596,7 @@ const tracerWith = f => fiberRefGetWith(currentServices, services => f(mjs_Conte
 /** @internal */
 const withTracer = /*#__PURE__*/Function_dual(2, (effect, value) => fiberRefLocallyWith(currentServices, Context_add(tracerTag, value))(effect));
 //# sourceMappingURL=defaultServices.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Clock.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Clock.mjs
 
 
 /**
@@ -31941,7 +31635,7 @@ const Clock_clockWith = clockWith;
  */
 const Clock_Clock = clock_clockTag;
 //# sourceMappingURL=Clock.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberRefs.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberRefs.mjs
 var fiberRefs_a;
 
 
@@ -32095,7 +31789,7 @@ const updatedAs = /*#__PURE__*/Function_dual(2, (self, {
   return new FiberRefsImpl(locals.set(fiberRef, newStack));
 });
 //# sourceMappingURL=fiberRefs.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/FiberRefs.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/FiberRefs.mjs
 
 /**
  * @since 1.0.0
@@ -32167,7 +31861,7 @@ const FiberRefs_updatedAs = updatedAs;
  */
 const FiberRefs_unsafeMake = fiberRefs_unsafeMake;
 //# sourceMappingURL=FiberRefs.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberRefs/patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberRefs/patch.mjs
 
 
 
@@ -32275,13 +31969,13 @@ const patch_patch = /*#__PURE__*/Function_dual(3, (self, fiberId, oldValue) => {
   return fiberRefs;
 });
 //# sourceMappingURL=patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/label.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/label.mjs
 var label_a;
 
 
 
 /** @internal */
-const MetricLabelSymbolKey = "@effect/io/Metric/Label";
+const MetricLabelSymbolKey = "@effect/io/MetricLabel";
 /** @internal */
 const MetricLabelTypeId = /*#__PURE__*/Symbol.for(MetricLabelSymbolKey);
 /** @internal */
@@ -32310,7 +32004,7 @@ const isMetricLabel = u => {
   return typeof u === "object" && u != null && MetricLabelTypeId in u;
 };
 //# sourceMappingURL=label.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/singleShotGen.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/singleShotGen.mjs
 /** @internal */
 class SingleShotGen {
   constructor(self) {
@@ -32340,7 +32034,7 @@ class SingleShotGen {
   }
 }
 //# sourceMappingURL=singleShotGen.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Logger/Level.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/LogLevel.mjs
 /**
  * @since 1.0.0
  */
@@ -32362,7 +32056,7 @@ const Fatal = logLevelFatal;
  * @since 1.0.0
  * @category constructors
  */
-const Level_Error = logLevelError;
+const LogLevel_Error = logLevelError;
 /**
  * @since 1.0.0
  * @category constructors
@@ -32387,7 +32081,7 @@ const Trace = logLevelTrace;
  * @since 1.0.0
  * @category constructors
  */
-const Level_None = logLevelNone;
+const LogLevel_None = logLevelNone;
 /**
  * @since 1.0.0
  * @category constructors
@@ -32405,27 +32099,27 @@ const locally = /*#__PURE__*/(/* unused pure expression or super */ null && (dua
  * @since 1.0.0
  * @category instances
  */
-const Level_Order = /*#__PURE__*/Order_mapInput(level => level.ordinal)(Number_Order);
+const LogLevel_Order = /*#__PURE__*/Order_mapInput(level => level.ordinal)(Number_Order);
 /**
  * @since 1.0.0
  * @category ordering
  */
-const Level_lessThan = /*#__PURE__*/(/* unused pure expression or super */ null && (order.lessThan(Level_Order)));
+const LogLevel_lessThan = /*#__PURE__*/(/* unused pure expression or super */ null && (order.lessThan(LogLevel_Order)));
 /**
  * @since 1.0.0
  * @category ordering
  */
-const lessThanEqual = /*#__PURE__*/(/* unused pure expression or super */ null && (order.lessThanOrEqualTo(Level_Order)));
+const lessThanEqual = /*#__PURE__*/(/* unused pure expression or super */ null && (order.lessThanOrEqualTo(LogLevel_Order)));
 /**
  * @since 1.0.0
  * @category ordering
  */
-const Level_greaterThan = /*#__PURE__*/greaterThan(Level_Order);
+const LogLevel_greaterThan = /*#__PURE__*/greaterThan(LogLevel_Order);
 /**
  * @since 1.0.0
  * @category ordering
  */
-const greaterThanEqual = /*#__PURE__*/(/* unused pure expression or super */ null && (order.greaterThanOrEqualTo(Level_Order)));
+const greaterThanEqual = /*#__PURE__*/(/* unused pure expression or super */ null && (order.greaterThanOrEqualTo(LogLevel_Order)));
 /**
  * @since 1.0.0
  * @category conversions
@@ -32442,7 +32136,7 @@ const fromLiteral = _ => {
       }
     case "Error":
       {
-        return Level_Error;
+        return LogLevel_Error;
       }
     case "Fatal":
       {
@@ -32458,7 +32152,7 @@ const fromLiteral = _ => {
       }
     case "None":
       {
-        return Level_None;
+        return LogLevel_None;
       }
     case "Warning":
       {
@@ -32466,8 +32160,8 @@ const fromLiteral = _ => {
       }
   }
 };
-//# sourceMappingURL=Level.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/logSpan.mjs
+//# sourceMappingURL=LogLevel.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/logSpan.mjs
 /** @internal */
 const logSpan_make = (label, startTime) => ({
   label,
@@ -32481,7 +32175,7 @@ const logSpan_render = now => {
   };
 };
 //# sourceMappingURL=logSpan.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Logger/Span.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/LogSpan.mjs
 /**
  * @since 1.0.0
  */
@@ -32490,14 +32184,14 @@ const logSpan_render = now => {
  * @since 1.0.0
  * @category constructors
  */
-const Span_make = logSpan_make;
+const LogSpan_make = logSpan_make;
 /**
  * @since 1.0.0
  * @category destructors
  */
-const Span_render = logSpan_render;
-//# sourceMappingURL=Span.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/ref.mjs
+const LogSpan_render = logSpan_render;
+//# sourceMappingURL=LogSpan.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/ref.mjs
 var ref_a;
 
 
@@ -32603,7 +32297,7 @@ const updateSomeAndGet = /*#__PURE__*/Function_dual(2, (self, pf) => self.modify
 /** @internal */
 const ref_unsafeGet = self => MutableRef.get(self.ref);
 //# sourceMappingURL=ref.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Ref.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Ref.mjs
 
 /**
  * @since 1.0.0
@@ -32681,7 +32375,7 @@ const Ref_updateSomeAndGet = updateSomeAndGet;
  */
 const Ref_unsafeMake = ref_unsafeMake;
 //# sourceMappingURL=Ref.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Tracer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Tracer.mjs
 
 
 /**
@@ -32704,7 +32398,8 @@ const Tracer_make = tracer_make;
  */
 const Tracer_tracerWith = tracerWith;
 //# sourceMappingURL=Tracer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/effect.mjs
+
 
 
 
@@ -32739,7 +32434,7 @@ const asSome = self => core_map(self, mjs_Option_some);
 /* @internal */
 const asSomeError = self => mapError(self, mjs_Option_some);
 /* @internal */
-const asyncOption = (register, blockingOn = Id_none) => asyncEither(cb => {
+const asyncOption = (register, blockingOn = FiberId_none) => asyncEither(cb => {
   const option = register(cb);
   switch (option._tag) {
     case "None":
@@ -32826,20 +32521,15 @@ const catchSomeDefect = /*#__PURE__*/Function_dual(2, (self, pf) => catchAllCaus
   }
 })));
 /* @internal */
-const catchTag = /*#__PURE__*/Function_dual(3, (self, k, f) => catchAll(self, e => {
-  if (Predicate_isObject(e) && "_tag" in e && e["_tag"] === k) {
-    return f(e);
-  }
-  return core_fail(e);
-}));
+const catchTag = /*#__PURE__*/Function_dual(3, (self, k, f) => catchIf(self, isTagged(k), f));
 /** @internal */
-const catchTags = /*#__PURE__*/Function_dual(2, (self, cases) => catchAll(self, e => {
-  const keys = Object.keys(cases);
-  if (Predicate_isObject(e) && "_tag" in e && keys.includes(e["_tag"])) {
-    return cases[e["_tag"]](e);
-  }
-  return core_fail(e);
-}));
+const catchTags = /*#__PURE__*/Function_dual(2, (self, cases) => {
+  let keys;
+  return catchIf(self, e => {
+    keys ??= Object.keys(cases);
+    return Predicate_isObject(e) && "_tag" in e && keys.includes(e["_tag"]);
+  }, e => cases[e["_tag"]](e));
+});
 /* @internal */
 const cause = self => matchCause(self, {
   onFailure: Function_identity,
@@ -32862,7 +32552,9 @@ const allowInterrupt = /*#__PURE__*/descriptorWith(descriptor => mjs_HashSet_siz
 /* @internal */
 const descriptor = /*#__PURE__*/descriptorWith(succeed);
 /* @internal */
-const diffFiberRefs = self => summarized(self, getFiberRefs, patch_diff);
+const diffFiberRefs = self => summarized(self, effect_fiberRefs, patch_diff);
+/* @internal */
+const diffFiberRefsAndRuntimeFlags = self => summarized(self, core_zip(effect_fiberRefs, runtimeFlags), ([refs, flags], [refsNew, flagsNew]) => [patch_diff(refs, refsNew), runtimeFlags_diff(flags, flagsNew)]);
 /* @internal */
 const effect_Do = /*#__PURE__*/succeed({});
 /* @internal */
@@ -32925,7 +32617,7 @@ const eventually = self => core_orElse(self, () => core_flatMap(yieldNow(), () =
 /* @internal */
 const effect_filterMap = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (elements, pf) => core.map(core.forEachSequential(elements, identity), ReadonlyArray.filterMap(pf)))));
 /* @internal */
-const filterOrDie = /*#__PURE__*/Function_dual(3, (self, filter, orDieWith) => filterOrElse(self, filter, () => dieSync(orDieWith)));
+const filterOrDie = /*#__PURE__*/Function_dual(3, (self, filter, orDieWith) => filterOrElse(self, filter, a => dieSync(() => orDieWith(a))));
 /* @internal */
 const filterOrDieMessage = /*#__PURE__*/Function_dual(3, (self, filter, message) => filterOrElse(self, filter, () => dieMessage(message)));
 /* @internal */
@@ -33006,7 +32698,7 @@ const effect_gen = f => suspend(() => {
   return run(state);
 });
 /* @internal */
-const getFiberRefs = /*#__PURE__*/withFiberRuntime(state => succeed(state.unsafeGetFiberRefs()));
+const effect_fiberRefs = /*#__PURE__*/withFiberRuntime(state => succeed(state.unsafeGetFiberRefs()));
 /* @internal */
 const effect_head = self => matchEffect(self, {
   onFailure: e => core_fail(mjs_Option_some(e)),
@@ -33075,11 +32767,11 @@ const logInfo = /*#__PURE__*/logWithLevel(Info);
 /** @internal */
 const logWarning = /*#__PURE__*/logWithLevel(Warning);
 /** @internal */
-const logError = /*#__PURE__*/logWithLevel(Level_Error);
+const logError = /*#__PURE__*/logWithLevel(LogLevel_Error);
 /** @internal */
 const logFatal = /*#__PURE__*/logWithLevel(Fatal);
 /* @internal */
-const withLogSpan = /*#__PURE__*/Function_dual(2, (effect, label) => core_flatMap(Clock_currentTimeMillis, now => fiberRefLocallyWith(effect, currentLogSpan, List_prepend(Span_make(label, now)))));
+const withLogSpan = /*#__PURE__*/Function_dual(2, (effect, label) => core_flatMap(Clock_currentTimeMillis, now => fiberRefLocallyWith(effect, currentLogSpan, List_prepend(LogSpan_make(label, now)))));
 /* @internal */
 const logAnnotations = /*#__PURE__*/fiberRefGet(currentLogAnnotations);
 /* @internal */
@@ -33109,7 +32801,7 @@ const mapErrorCause = /*#__PURE__*/Function_dual(2, (self, f) => matchCauseEffec
   onSuccess: succeed
 }));
 /* @internal */
-const memoize = self => core_flatMap(deferred => core_map(complete => core_zipRight(complete, core_flatMap(([patch, a]) => core_as(patchFiberRefs(patch), a))(deferredAwait(deferred))))(once(intoDeferred(deferred)(diffFiberRefs(self)))))(deferredMake());
+const memoize = self => core_flatMap(deferred => core_map(complete => core_zipRight(complete, core_flatMap(([patch, a]) => core_as(core_zip(patchFiberRefs(patch[0]), updateRuntimeFlags(patch[1])), a))(deferredAwait(deferred))))(once(intoDeferred(deferred)(diffFiberRefsAndRuntimeFlags(self)))))(deferredMake());
 /* @internal */
 const effect_merge = self => matchEffect(self, {
   onFailure: e => succeed(e),
@@ -33193,22 +32885,6 @@ const sandbox = self => matchCauseEffect(self, {
 const setFiberRefs = fiberRefs => suspend(() => FiberRefs_setAll(fiberRefs));
 /* @internal */
 const effect_sleep = Clock_sleep;
-/* @internal */
-const effect_some = self => matchEffect(self, {
-  onFailure: e => core_fail(mjs_Option_some(e)),
-  onSuccess: option => {
-    switch (option._tag) {
-      case "None":
-        {
-          return core_fail(Option_none());
-        }
-      case "Some":
-        {
-          return succeed(option.value);
-        }
-    }
-  }
-});
 /* @internal */
 const succeedNone = /*#__PURE__*/succeed( /*#__PURE__*/Option_none());
 /* @internal */
@@ -33304,7 +32980,7 @@ const tapError = /*#__PURE__*/Function_dual(2, (self, f) => matchCauseEffect(sel
 }));
 /* @internal */
 const tapErrorTag = /*#__PURE__*/Function_dual(3, (self, k, f) => tapError(self, e => {
-  if (Predicate_isObject(e) && "_tag" in e && e["_tag"] === k) {
+  if (isTagged(e, k)) {
     return f(e);
   }
   return core_unit;
@@ -33457,56 +33133,52 @@ const withSpan = /*#__PURE__*/Function_dual(args => typeof args[0] !== "string",
 // optionality
 // -------------------------------------------------------------------------------------
 /* @internal */
-const effect_fromNullable = evaluate => suspend(() => {
-  const a = evaluate();
-  if (a === null || a === undefined) {
-    return core_fail(NoSuchElementException());
-  }
-  return succeed(a);
-});
+const effect_fromNullable = value => value == null ? core_fail(NoSuchElementException()) : succeed(value);
 /* @internal */
 const optionFromOptional = self => catchAll(core_map(self, mjs_Option_some), error => isNoSuchElementException(error) ? succeedNone : core_fail(error));
 //# sourceMappingURL=effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/MutableHashMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/MutableHashMap.mjs
 /**
  * @since 1.0.0
  */
+
 
 
 
 
 
 const MutableHashMap_TypeId = /*#__PURE__*/Symbol.for("@effect/data/MutableHashMap");
-/** @internal */
-class MutableHashMapImpl {
-  constructor() {
-    this._id = MutableHashMap_TypeId;
-    this.backingMap = MutableRef_make(mjs_HashMap_empty());
-  }
+const MutableHashMapProto = {
+  [MutableHashMap_TypeId]: MutableHashMap_TypeId,
   [Symbol.iterator]() {
     return this.backingMap.current[Symbol.iterator]();
-  }
+  },
   toString() {
     return `MutableHashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "MutableHashMap",
       values: Array.from(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
+const fromHashMap = backingMap => {
+  const map = Object.create(MutableHashMapProto);
+  map.backingMap = MutableRef_make(backingMap);
+  return map;
+};
 /**
  * @since 1.0.0
  * @category constructors
  */
-const MutableHashMap_empty = () => new MutableHashMapImpl();
+const MutableHashMap_empty = () => fromHashMap(mjs_HashMap_empty());
 /**
  * @since 1.0.0
  * @category constructors
@@ -33516,13 +33188,7 @@ const MutableHashMap_make = (...entries) => MutableHashMap_fromIterable(entries)
  * @since 1.0.0
  * @category conversions
  */
-const MutableHashMap_fromIterable = entries => {
-  const map = MutableHashMap_empty();
-  for (const entry of entries) {
-    MutableHashMap_set(map, entry[0], entry[1]);
-  }
-  return map;
-};
+const MutableHashMap_fromIterable = entries => fromHashMap(HashMap.fromIterable(entries));
 /**
  * @since 1.0.0
  * @category elements
@@ -33577,7 +33243,7 @@ const MutableHashMap_set = /*#__PURE__*/Function_dual(3, (self, key, value) => {
  */
 const MutableHashMap_size = self => mjs_HashMap_size(MutableRef_get(self.backingMap));
 //# sourceMappingURL=MutableHashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Exit.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Exit.mjs
 
 /**
  * Returns `true` if the specified value is an `Exit`, `false` otherwise.
@@ -33840,7 +33506,7 @@ const zipParRight = exitZipParRight;
  */
 const Exit_zipWith = exitZipWith;
 //# sourceMappingURL=Exit.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/executionStrategy.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/executionStrategy.mjs
 
 /** @internal */
 const executionStrategy_OP_SEQUENTIAL = "Sequential";
@@ -33885,11 +33551,11 @@ const executionStrategy_match = /*#__PURE__*/(/* unused pure expression or super
   }
 })));
 //# sourceMappingURL=executionStrategy.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberStatus.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberStatus.mjs
 var fiberStatus_a, fiberStatus_b, fiberStatus_c;
 
 
-const FiberStatusSymbolKey = "@effect/io/Fiber/Status";
+const FiberStatusSymbolKey = "@effect/io/FiberStatus";
 /** @internal */
 const FiberStatusTypeId = /*#__PURE__*/Symbol.for(FiberStatusSymbolKey);
 /** @internal */
@@ -33955,42 +33621,42 @@ const isRunning = self => self._tag === OP_RUNNING;
 /** @internal */
 const isSuspended = self => self._tag === OP_SUSPENDED;
 //# sourceMappingURL=fiberStatus.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Fiber/Status.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/FiberStatus.mjs
 
 /**
  * @since 1.0.0
  * @category symbols
  */
-const Status_FiberStatusTypeId = FiberStatusTypeId;
+const FiberStatus_FiberStatusTypeId = FiberStatusTypeId;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Status_done = fiberStatus_done;
+const FiberStatus_done = fiberStatus_done;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Status_running = running;
+const FiberStatus_running = running;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Status_suspended = suspended;
+const FiberStatus_suspended = suspended;
 /**
  * Returns `true` if the specified value is a `FiberStatus`, `false` otherwise.
  *
  * @since 1.0.0
  * @category refinements
  */
-const Status_isFiberStatus = isFiberStatus;
+const FiberStatus_isFiberStatus = isFiberStatus;
 /**
  * Returns `true` if the specified `FiberStatus` is `Done`, `false` otherwise.
  *
  * @since 1.0.0
  * @category refinements
  */
-const Status_isDone = isDone;
+const FiberStatus_isDone = isDone;
 /**
  * Returns `true` if the specified `FiberStatus` is `Running`, `false`
  * otherwise.
@@ -33998,7 +33664,7 @@ const Status_isDone = isDone;
  * @since 1.0.0
  * @category refinements
  */
-const Status_isRunning = isRunning;
+const FiberStatus_isRunning = isRunning;
 /**
  * Returns `true` if the specified `FiberStatus` is `Suspended`, `false`
  * otherwise.
@@ -34006,9 +33672,9 @@ const Status_isRunning = isRunning;
  * @since 1.0.0
  * @category refinements
  */
-const Status_isSuspended = isSuspended;
-//# sourceMappingURL=Status.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberMessage.mjs
+const FiberStatus_isSuspended = isSuspended;
+//# sourceMappingURL=FiberStatus.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberMessage.mjs
 /** @internal */
 const OP_INTERRUPT_SIGNAL = "InterruptSignal";
 /** @internal */
@@ -34037,20 +33703,20 @@ const fiberMessage_yieldNow = () => ({
   _tag: OP_YIELD_NOW
 });
 //# sourceMappingURL=fiberMessage.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberScope.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberScope.mjs
 var fiberScope_a, fiberScope_b;
 
 
 
 /** @internal */
-const FiberScopeSymbolKey = "@effect/io/Fiber/Scope";
+const FiberScopeSymbolKey = "@effect/io/FiberScope";
 /** @internal */
 const FiberScopeTypeId = /*#__PURE__*/Symbol.for(FiberScopeSymbolKey);
 /** @internal */
 class Global {
   constructor() {
     this[fiberScope_a] = FiberScopeTypeId;
-    this.fiberId = Id_none;
+    this.fiberId = FiberId_none;
     this.roots = new Set();
   }
   add(_runtimeFlags, child) {
@@ -34085,7 +33751,7 @@ const fiberScope_unsafeMake = fiber => {
 /** @internal */
 const globalScope = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberScope/Global"), () => new Global());
 //# sourceMappingURL=fiberScope.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiber.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiber.mjs
 
 
 
@@ -34133,7 +33799,7 @@ const children = self => self.children();
 /** @internal */
 const fiber_done = exit => ({
   ...fiberProto,
-  id: () => Id_none,
+  id: () => FiberId_none,
   await: () => succeed(exit),
   children: () => succeed([]),
   inheritAll: () => core_unit,
@@ -34208,7 +33874,7 @@ const fiber_match = /*#__PURE__*/Function_dual(2, (self, {
 /** @internal */
 const fiber_never = {
   ...fiberProto,
-  id: () => Id_none,
+  id: () => FiberId_none,
   await: () => never,
   children: () => succeed([]),
   inheritAll: () => never,
@@ -34218,7 +33884,7 @@ const fiber_never = {
 /** @internal */
 const fiber_orElse = /*#__PURE__*/Function_dual(2, (self, that) => ({
   ...fiberProto,
-  id: () => Id_getOrElse(self.id(), that.id()),
+  id: () => FiberId_getOrElse(self.id(), that.id()),
   await: () => core_zipWith(self.await(), that.await(), (exit1, exit2) => Exit_isSuccess(exit1) ? exit1 : exit2),
   children: () => self.children(),
   inheritAll: () => core_zipRight(that.inheritAll(), self.inheritAll()),
@@ -34258,10 +33924,10 @@ const parseMs = milliseconds => {
 };
 /** @internal */
 const renderStatus = status => {
-  if (Status_isDone(status)) {
+  if (FiberStatus_isDone(status)) {
     return "Done";
   }
-  if (Status_isRunning(status)) {
+  if (FiberStatus_isRunning(status)) {
     return "Running";
   }
   const isInterruptible = interruptible(status.runtimeFlags) ? "interruptible" : "uninterruptible";
@@ -34278,8 +33944,8 @@ const fiber_pretty = self => core_flatMap(Clock_currentTimeMillis, now => core_m
     seconds
   } = parseMs(time);
   const lifeMsg = (days === 0 ? "" : `${days}d`) + (days === 0 && hours === 0 ? "" : `${hours}h`) + (days === 0 && hours === 0 && minutes === 0 ? "" : `${minutes}m`) + (days === 0 && hours === 0 && minutes === 0 && seconds === 0 ? "" : `${seconds}s`) + `${milliseconds}ms`;
-  const waitMsg = Status_isSuspended(dump.status) ? (() => {
-    const ids = Id_ids(dump.status.blockingOn);
+  const waitMsg = FiberStatus_isSuspended(dump.status) ? (() => {
+    const ids = FiberId_ids(dump.status.blockingOn);
     return mjs_HashSet_size(ids) > 0 ? `waiting on ` + Array.from(ids).map(id => `${id}`).join(", ") : "";
   })() : "";
   const statusMsg = renderStatus(dump.status);
@@ -34296,11 +33962,11 @@ const fiber_succeed = value => fiber_done(Exit_succeed(value));
 /** @internal */
 const fiber_unit = /*#__PURE__*/fiber_succeed(void 0);
 /** @internal */
-const currentFiberURI = "@effect/io/Fiber/Current";
+const currentFiberURI = "@effect/io/FiberCurrent";
 /** @internal */
 const getCurrentFiber = () => fromNullable(globalThis[currentFiberURI]);
 //# sourceMappingURL=fiber.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Boolean.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Boolean.mjs
 /**
  * This module provides utility functions and type class instances for working with the `boolean` type in TypeScript.
  * It includes functions for basic boolean operations, as well as type class instances for
@@ -34515,7 +34181,7 @@ const Boolean_some = collection => {
   return false;
 };
 //# sourceMappingURL=Boolean.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Deferred.mjs
 
 
 /**
@@ -34677,13 +34343,13 @@ const Deferred_unsafeMake = deferredUnsafeMake;
  */
 const unsafeDone = deferredUnsafeDone;
 //# sourceMappingURL=Deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/FiberRefs/Patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/FiberRefsPatch.mjs
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-const FiberRefs_Patch_empty = patch_empty;
+const FiberRefsPatch_empty = patch_empty;
 /**
  * Constructs a patch that describes the changes between the specified
  * collections of `FiberRef`
@@ -34691,7 +34357,7 @@ const FiberRefs_Patch_empty = patch_empty;
  * @since 1.0.0
  * @category constructors
  */
-const Patch_diff = patch_diff;
+const FiberRefsPatch_diff = patch_diff;
 /**
  * Combines this patch and the specified patch to create a new patch that
  * describes applying the changes from this patch and the specified patch
@@ -34700,7 +34366,7 @@ const Patch_diff = patch_diff;
  * @since 1.0.0
  * @category constructors
  */
-const Patch_combine = patch_combine;
+const FiberRefsPatch_combine = patch_combine;
 /**
  * Applies the changes described by this patch to the specified collection
  * of `FiberRef` values.
@@ -34708,9 +34374,9 @@ const Patch_combine = patch_combine;
  * @since 1.0.0
  * @category destructors
  */
-const Patch_patch = patch_patch;
-//# sourceMappingURL=Patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/blockedRequests.mjs
+const FiberRefsPatch_patch = patch_patch;
+//# sourceMappingURL=FiberRefsPatch.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/blockedRequests.mjs
 var blockedRequests_a, blockedRequests_b, blockedRequests_c;
 
 
@@ -35043,13 +34709,13 @@ const sequentialCollectionKeys = self => Array.from(HashMap_keys(self.map));
 /** @internal */
 const sequentialCollectionToChunk = self => Array.from(self.map);
 //# sourceMappingURL=blockedRequests.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/completedRequestMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/completedRequestMap.mjs
 
 
 /** @internal */
 const completedRequestMap_currentRequestMap = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentRequestMap"), () => fiberRefUnsafeMake(new Map()));
 //# sourceMappingURL=completedRequestMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/concurrency.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/concurrency.mjs
 
 /** @internal */
 const concurrency_match = (options, sequential, unbounded, bounded) => {
@@ -35094,7 +34760,7 @@ const matchSimple = (options, sequential, concurrent) => {
   }
 };
 //# sourceMappingURL=concurrency.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/logger.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/logger.mjs
 
 
 
@@ -35192,7 +34858,7 @@ const stringLogger = /*#__PURE__*/makeLogger(({
       } else {
         output = output + " ";
       }
-      output = output + Span_render(nowMillis)(span);
+      output = output + LogSpan_render(nowMillis)(span);
     }
   }
   if (mjs_HashMap_size(annotations) > 0) {
@@ -35285,34 +34951,34 @@ const renderLogSpanLogfmt = now => self => {
   return `${label}=${now - self.startTime}ms`;
 };
 //# sourceMappingURL=logger.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/keyType.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/keyType.mjs
 var keyType_a, keyType_b, keyType_c, keyType_d, _e, _f, _g, _h, _j, _k;
 
 
 
 
 /** @internal */
-const MetricKeyTypeSymbolKey = "@effect/io/Metric/KeyType";
+const MetricKeyTypeSymbolKey = "@effect/io/MetricKeyType";
 /** @internal */
 const MetricKeyTypeTypeId = /*#__PURE__*/Symbol.for(MetricKeyTypeSymbolKey);
 /** @internal */
-const CounterKeyTypeSymbolKey = "effect/io/Metric/KeyType/Counter";
+const CounterKeyTypeSymbolKey = "effect/io/MetricKeyTypeCounter";
 /** @internal */
 const CounterKeyTypeTypeId = /*#__PURE__*/Symbol.for(CounterKeyTypeSymbolKey);
 /** @internal */
-const FrequencyKeyTypeSymbolKey = "effect/io/Metric/KeyType/Frequency";
+const FrequencyKeyTypeSymbolKey = "effect/io/MetricKeyTypeFrequency";
 /** @internal */
 const FrequencyKeyTypeTypeId = /*#__PURE__*/Symbol.for(FrequencyKeyTypeSymbolKey);
 /** @internal */
-const GaugeKeyTypeSymbolKey = "effect/io/Metric/KeyType/Gauge";
+const GaugeKeyTypeSymbolKey = "effect/io/MetricKeyTypeGauge";
 /** @internal */
 const GaugeKeyTypeTypeId = /*#__PURE__*/Symbol.for(GaugeKeyTypeSymbolKey);
 /** @internal */
-const HistogramKeyTypeSymbolKey = "effect/io/Metric/KeyType/Histogram";
+const HistogramKeyTypeSymbolKey = "effect/io/MetricKeyTypeHistogram";
 /** @internal */
 const HistogramKeyTypeTypeId = /*#__PURE__*/Symbol.for(HistogramKeyTypeSymbolKey);
 /** @internal */
-const SummaryKeyTypeSymbolKey = "effect/io/Metric/KeyType/Summary";
+const SummaryKeyTypeSymbolKey = "effect/io/MetricKeyTypeSummary";
 /** @internal */
 const SummaryKeyTypeTypeId = /*#__PURE__*/Symbol.for(SummaryKeyTypeSymbolKey);
 /** @internal */
@@ -35480,7 +35146,7 @@ const isSummaryKey = u => {
   return typeof u === "object" && u != null && SummaryKeyTypeTypeId in u;
 };
 //# sourceMappingURL=keyType.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/key.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/key.mjs
 var key_a;
 
 
@@ -35491,7 +35157,7 @@ var key_a;
 
 
 /** @internal */
-const MetricKeySymbolKey = "@effect/io/Metric/Key";
+const MetricKeySymbolKey = "@effect/io/MetricKey";
 /** @internal */
 const MetricKeyTypeId = /*#__PURE__*/Symbol.for(MetricKeySymbolKey);
 /** @internal */
@@ -35536,33 +35202,33 @@ const taggedWithLabels = /*#__PURE__*/(/* unused pure expression or super */ nul
 /** @internal */
 const taggedWithLabelSet = /*#__PURE__*/Function_dual(2, (self, extraTags) => mjs_HashSet_size(extraTags) === 0 ? self : new MetricKeyImpl(self.name, self.keyType, self.description, mjs_HashSet_union(extraTags)(self.tags)));
 //# sourceMappingURL=key.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/state.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/state.mjs
 var state_a, state_b, state_c, state_d, state_e, state_f, state_g, state_h, state_j, state_k;
 
 
 
 /** @internal */
-const MetricStateSymbolKey = "@effect/io/Metric/State";
+const MetricStateSymbolKey = "@effect/io/MetricState";
 /** @internal */
 const MetricStateTypeId = /*#__PURE__*/Symbol.for(MetricStateSymbolKey);
 /** @internal */
-const CounterStateSymbolKey = "effect/io/Metric/State/Counter";
+const CounterStateSymbolKey = "effect/io/MetricStateCounter";
 /** @internal */
 const CounterStateTypeId = /*#__PURE__*/Symbol.for(CounterStateSymbolKey);
 /** @internal */
-const FrequencyStateSymbolKey = "effect/io/Metric/State/Frequency";
+const FrequencyStateSymbolKey = "effect/io/MetricStateFrequency";
 /** @internal */
 const FrequencyStateTypeId = /*#__PURE__*/Symbol.for(FrequencyStateSymbolKey);
 /** @internal */
-const GaugeStateSymbolKey = "effect/io/Metric/State/Gauge";
+const GaugeStateSymbolKey = "effect/io/MetricStateGauge";
 /** @internal */
 const GaugeStateTypeId = /*#__PURE__*/Symbol.for(GaugeStateSymbolKey);
 /** @internal */
-const HistogramStateSymbolKey = "effect/io/Metric/State/Histogram";
+const HistogramStateSymbolKey = "effect/io/MetricStateHistogram";
 /** @internal */
 const HistogramStateTypeId = /*#__PURE__*/Symbol.for(HistogramStateSymbolKey);
 /** @internal */
-const SummaryStateSymbolKey = "effect/io/Metric/State/Summary";
+const SummaryStateSymbolKey = "effect/io/MetricStateSummary";
 /** @internal */
 const SummaryStateTypeId = /*#__PURE__*/Symbol.for(SummaryStateSymbolKey);
 /** @internal */
@@ -35716,7 +35382,7 @@ const isSummaryState = u => {
   return typeof u === "object" && u != null && SummaryStateTypeId in u;
 };
 //# sourceMappingURL=state.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/hook.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/hook.mjs
 
 
 
@@ -35727,7 +35393,7 @@ const isSummaryState = u => {
 
 
 /** @internal */
-const MetricHookSymbolKey = "@effect/io/Metric/Hook";
+const MetricHookSymbolKey = "@effect/io/MetricHook";
 /** @internal */
 const MetricHookTypeId = /*#__PURE__*/Symbol.for(MetricHookSymbolKey);
 /** @internal */
@@ -36064,10 +35730,10 @@ const resolveQuantile = (error, sampleCount, current, consumed, quantile, rest) 
   throw new Error("BUG: MetricHook.resolveQuantiles - please report an issue at https://github.com/Effect-TS/io/issues");
 };
 //# sourceMappingURL=hook.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/pair.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/pair.mjs
 
 /** @internal */
-const MetricPairSymbolKey = "@effect/io/Metric/Pair";
+const MetricPairSymbolKey = "@effect/io/MetricPair";
 /** @internal */
 const MetricPairTypeId = /*#__PURE__*/Symbol.for(MetricPairSymbolKey);
 /** @internal */
@@ -36097,7 +35763,7 @@ const pair_unsafeMake = (metricKey, metricState) => {
   };
 };
 //# sourceMappingURL=pair.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/registry.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/registry.mjs
 var registry_a;
 
 
@@ -36106,7 +35772,7 @@ var registry_a;
 
 
 /** @internal */
-const MetricRegistrySymbolKey = "@effect/io/Metric/Registry";
+const MetricRegistrySymbolKey = "@effect/io/MetricRegistry";
 /** @internal */
 const MetricRegistryTypeId = /*#__PURE__*/Symbol.for(MetricRegistrySymbolKey);
 /** @internal */
@@ -36207,7 +35873,7 @@ const registry_make = () => {
   return new MetricRegistryImpl();
 };
 //# sourceMappingURL=registry.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric.mjs
 
 
 
@@ -36286,14 +35952,14 @@ const metric_summary = options => withNow(summaryTimestamp(options));
 /** @internal */
 const summaryTimestamp = options => fromMetricKey(metricKey.summary(options));
 /** @internal */
-const metric_tagged = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(3, (self, key, value) => metric_taggedWithLabels(self, HashSet.make(metricLabel.make(key, value))))));
+const metric_tagged = /*#__PURE__*/Function_dual(3, (self, key, value) => metric_taggedWithLabels(self, mjs_HashSet_make(label_make(key, value))));
 /** @internal */
 const taggedWithLabelsInput = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, f) => metric_map(metric_make(self.keyType, (input, extraTags) => self.unsafeUpdate(input, HashSet.union(HashSet.fromIterable(f(input)), extraTags)), self.unsafeValue), constVoid))));
 /** @internal */
-const metric_taggedWithLabels = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, extraTagsIterable) => {
-  const extraTags = HashSet.isHashSet(extraTagsIterable) ? extraTagsIterable : HashSet.fromIterable(extraTagsIterable);
-  return metric_make(self.keyType, (input, extraTags1) => self.unsafeUpdate(input, HashSet.union(extraTags1)(extraTags)), extraTags1 => self.unsafeValue(HashSet.union(extraTags1)(extraTags)));
-})));
+const metric_taggedWithLabels = /*#__PURE__*/Function_dual(2, (self, extraTagsIterable) => {
+  const extraTags = HashSet_isHashSet(extraTagsIterable) ? extraTagsIterable : mjs_HashSet_fromIterable(extraTagsIterable);
+  return metric_make(self.keyType, (input, extraTags1) => self.unsafeUpdate(input, mjs_HashSet_union(extraTags1)(extraTags)), extraTags1 => self.unsafeValue(mjs_HashSet_union(extraTags1)(extraTags)));
+});
 /** @internal */
 const metric_timer = name => {
   const boundaries = metricBoundaries.exponential({
@@ -36370,7 +36036,7 @@ const unsafeSnapshot = () => globalMetricRegistry.snapshot();
 /** @internal */
 const snapshot = /*#__PURE__*/(/* unused pure expression or super */ null && (core.sync(unsafeSnapshot)));
 //# sourceMappingURL=metric.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/metric/boundaries.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/metric/boundaries.mjs
 var boundaries_a;
 
 
@@ -36378,7 +36044,7 @@ var boundaries_a;
 
 
 /** @internal */
-const MetricBoundariesSymbolKey = "@effect/io/Metric/Boundaries";
+const MetricBoundariesSymbolKey = "@effect/io/MetricBoundaries";
 /** @internal */
 const MetricBoundariesTypeId = /*#__PURE__*/Symbol.for(MetricBoundariesSymbolKey);
 /** @internal */
@@ -36411,7 +36077,7 @@ const linear = options => fromChunk(Chunk.unsafeFromArray(ReadonlyArray.makeBy(o
 /** @internal */
 const exponential = options => fromChunk(unsafeFromArray(makeBy(options.count - 1, i => options.start * Math.pow(options.factor, i))));
 //# sourceMappingURL=boundaries.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/request.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/request.mjs
 
 
 
@@ -36487,7 +36153,7 @@ class Listeners {
  */
 const filterOutCompleted = requests => core.fiberRefGetWith(completedRequestMap.currentRequestMap, map => core.succeed(requests.filter(request => !(map.get(request)?.state.completed === true))));
 //# sourceMappingURL=request.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/supervisor.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/supervisor.mjs
 var supervisor_a, supervisor_b, supervisor_c, supervisor_d, supervisor_e;
 
 
@@ -36531,9 +36197,6 @@ class ProxySupervisor {
   zip(right) {
     return new Zip(this, right);
   }
-  onRun(execution, fiber) {
-    return this.underlying.onRun(execution, fiber);
-  }
 }
 supervisor_a = SupervisorTypeId;
 /** @internal */
@@ -36571,9 +36234,6 @@ class Zip {
   }
   zip(right) {
     return new Zip(this, right);
-  }
-  onRun(execution, fiber) {
-    return this.right.onRun(() => this.left.onRun(execution, fiber), fiber);
   }
 }
 supervisor_b = SupervisorTypeId;
@@ -36694,7 +36354,7 @@ const supervisor_none = /*#__PURE__*/supervisor_fromEffect(core_unit);
 /** @internal */
 const fibersIn = ref => core.sync(() => new FibersIn(ref));
 //# sourceMappingURL=supervisor.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/supervisor/patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/supervisor/patch.mjs
 
 
 
@@ -36819,8 +36479,10 @@ const patch_differ = /*#__PURE__*/mjs_Differ_make({
   diff: supervisor_patch_diff
 });
 //# sourceMappingURL=patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/fiberRuntime.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/fiberRuntime.mjs
 var fiberRuntime_a, fiberRuntime_b;
+
+
 
 
 
@@ -36873,11 +36535,11 @@ const fiberSuccesses = /*#__PURE__*/metric_counter("effect_fiber_successes");
 /** @internal */
 const fiberFailures = /*#__PURE__*/metric_counter("effect_fiber_failures");
 /** @internal */
-const fiberLifetimes = /*#__PURE__*/metric_histogram("effect_fiber_lifetimes", /*#__PURE__*/exponential({
+const fiberLifetimes = /*#__PURE__*/metric_tagged( /*#__PURE__*/metric_histogram("effect_fiber_lifetimes", /*#__PURE__*/exponential({
   start: 1.0,
-  factor: 2.0,
+  factor: 1.3,
   count: 100
-}));
+})), "time_unit", "milliseconds");
 /** @internal */
 const EvaluationSignalContinue = "Continue";
 /** @internal */
@@ -36929,7 +36591,7 @@ const drainQueueWhileRunningTable = {
     throw new Error("It is illegal to have multiple concurrent run loops in a single fiber");
   },
   [OP_STATEFUL]: (self, runtimeFlags, cur, message) => {
-    message.onFiber(self, Status_running(runtimeFlags));
+    message.onFiber(self, FiberStatus_running(runtimeFlags));
     return cur;
   },
   [OP_YIELD_NOW]: (_self, _runtimeFlags, cur, _message) => {
@@ -36977,6 +36639,7 @@ class FiberRuntime {
       fiberStarted.unsafeUpdate(1, tags);
       fiberActive.unsafeUpdate(1, tags);
     }
+    this._tracer = mjs_Context_get(this.getFiberRef(currentServices), tracerTag);
   }
   /**
    * The identity of the fiber.
@@ -37003,7 +36666,7 @@ class FiberRuntime {
    */
   runtimeFlags() {
     return this.ask((state, status) => {
-      if (Status_isDone(status)) {
+      if (FiberStatus_isDone(status)) {
         return state._runtimeFlags;
       }
       return status.runtimeFlags;
@@ -37097,9 +36760,9 @@ class FiberRuntime {
       const updatedFiberRefs = joinAs(parentFiberRefs, parentFiberId, childFiberRefs);
       parentFiber.setFiberRefs(updatedFiberRefs);
       const updatedRuntimeFlags = parentFiber.getFiberRef(currentRuntimeFlags);
-      const patch = Patch_exclude(WindDown)(
+      const patch = RuntimeFlagsPatch_exclude(WindDown)(
       // Do not inherit WindDown or Interruption!
-      Patch_exclude(Interruption)(runtimeFlags_diff(parentRuntimeFlags, updatedRuntimeFlags)));
+      RuntimeFlagsPatch_exclude(Interruption)(runtimeFlags_diff(parentRuntimeFlags, updatedRuntimeFlags)));
       return updateRuntimeFlags(patch);
     });
   }
@@ -37187,11 +36850,11 @@ class FiberRuntime {
       fiberRef,
       value
     });
-    // @ts-expect-error
-    if (fiberRef === currentSupervisor) {
-      // @ts-expect-error
-      this._supervisor = value;
-    }
+    this.refreshRefCache();
+  }
+  refreshRefCache() {
+    this._tracer = mjs_Context_get(this.getFiberRef(currentServices), tracerTag);
+    this._supervisor = this.getFiberRef(currentSupervisor);
   }
   /**
    * Wholesale replaces all fiber refs of this fiber.
@@ -37200,7 +36863,7 @@ class FiberRuntime {
    */
   setFiberRefs(fiberRefs) {
     this._fiberRefs = fiberRefs;
-    this._supervisor = this.getFiberRef(currentSupervisor);
+    this.refreshRefCache();
   }
   /**
    * Adds a reference to the specified fiber inside the children set.
@@ -37392,7 +37055,7 @@ class FiberRuntime {
       const tags = this.getFiberRef(currentMetricLabels);
       const startTimeMillis = this.id().startTimeMillis;
       const endTimeMillis = new Date().getTime();
-      fiberLifetimes.unsafeUpdate((endTimeMillis - startTimeMillis) / 1000.0, tags);
+      fiberLifetimes.unsafeUpdate(endTimeMillis - startTimeMillis, tags);
     }
     this.reportExitValue(exit);
     for (let i = this._observers.length - 1; i >= 0; i--) {
@@ -37405,7 +37068,7 @@ class FiberRuntime {
   log(message, cause, overrideLogLevel) {
     const logLevel = Option_isSome(overrideLogLevel) ? overrideLogLevel.value : this.getFiberRef(currentLogLevel);
     const minimumLogLevel = this.getFiberRef(currentMinimumLogLevel);
-    if (Level_greaterThan(minimumLogLevel, logLevel)) {
+    if (LogLevel_greaterThan(minimumLogLevel, logLevel)) {
       return;
     }
     const spans = this.getFiberRef(currentLogSpan);
@@ -37460,7 +37123,7 @@ class FiberRuntime {
         }
       case OP_STATEFUL:
         {
-          message.onFiber(this, this._exitValue !== null ? Status_done : Status_suspended(this._runtimeFlags, this._asyncBlockingOn));
+          message.onFiber(this, this._exitValue !== null ? FiberStatus_done : FiberStatus_suspended(this._runtimeFlags, this._asyncBlockingOn));
           return EvaluationSignalContinue;
         }
       default:
@@ -37645,16 +37308,16 @@ class FiberRuntime {
     });
   }
   ["Left"](op) {
-    return exitFail(op.i0);
+    return exitFail(op.left);
   }
   ["None"](_) {
     return exitFail(NoSuchElementException());
   }
   ["Right"](op) {
-    return exitSucceed(op.i0);
+    return exitSucceed(op.right);
   }
   ["Some"](op) {
-    return exitSucceed(op.i0);
+    return exitSucceed(op.value);
   }
   [OP_SYNC](op) {
     const value = op.i0();
@@ -37684,9 +37347,15 @@ class FiberRuntime {
       throw oldCur;
     }
   }
-  [OP_FAILURE](op) {
+  [OP_FAILURE_WITH_ANNOTATION](op) {
     const span = this.getFiberRef(currentTracerSpan);
-    const cause = isNil(span) || span.head._tag === "ExternalSpan" ? op.i0 : annotated(op.i0, makeSpanAnnotation(span.head));
+    const cause = isNil(span) || span.head._tag === "ExternalSpan" ? op.i0(Function_identity) :
+    // @ts-expect-error
+    op.i0(c => annotated(c, makeSpanAnnotation(span.head)));
+    return exitFailCause(cause);
+  }
+  [OP_FAILURE](op) {
+    const cause = op.i0;
     const cont = this.getNextFailCont();
     if (cont !== undefined) {
       switch (cont._tag) {
@@ -37726,7 +37395,7 @@ class FiberRuntime {
     }
   }
   [OP_WITH_RUNTIME](op) {
-    return op.i0(this, Status_running(this._runtimeFlags));
+    return op.i0(this, FiberStatus_running(this._runtimeFlags));
   }
   ["Blocked"](op) {
     if (this._steps[this._steps.length - 1]) {
@@ -37870,7 +37539,7 @@ class FiberRuntime {
           fiberRuntime_absurd(cur);
         }
         // @ts-expect-error
-        cur = this._supervisor.onRun(
+        cur = this._tracer.context(
         // @ts-expect-error
         () => this[cur._tag](cur), this);
       } catch (e) {
@@ -37885,7 +37554,7 @@ class FiberRuntime {
           if (isEffectError(e)) {
             cur = exitFailCause(e.cause);
           } else if (isInterruptedException(e)) {
-            cur = exitFailCause(sequential(die(e), interrupt(Id_none)));
+            cur = exitFailCause(sequential(die(e), interrupt(FiberId_none)));
           } else {
             cur = exitFailCause(die(e));
           }
@@ -37898,19 +37567,25 @@ class FiberRuntime {
 /** @internal */
 const currentMinimumLogLevel = /*#__PURE__*/fiberRefUnsafeMake( /*#__PURE__*/fromLiteral("Info"));
 /** @internal */
+const getConsole = refs => {
+  const defaultServicesValue = FiberRefs_getOrDefault(refs, currentServices);
+  const cnsl = mjs_Context_get(defaultServicesValue, consoleTag);
+  return cnsl.unsafe;
+};
+/** @internal */
 const defaultLogger = /*#__PURE__*/makeLogger(options => {
   const formatted = stringLogger.log(options);
-  globalThis.console.log(formatted);
+  getConsole(options.context).log(formatted);
 });
 /** @internal */
 const filterMinimumLogLevel = /*#__PURE__*/(/* unused pure expression or super */ null && (internalLogger.makeLogger(options => {
   const formatted = internalLogger.stringLogger.log(options);
-  globalThis.console.log(formatted);
+  getConsole(options.context).log(formatted);
 })));
 /** @internal */
 const logFmtLogger = /*#__PURE__*/(/* unused pure expression or super */ null && (internalLogger.makeLogger(options => {
   const formatted = internalLogger.logfmtLogger.log(options);
-  globalThis.console.log(formatted);
+  getConsole(options.context).log(formatted);
 })));
 /** @internal */
 const tracerLogger = /*#__PURE__*/makeLogger(({
@@ -37927,7 +37602,7 @@ const tracerLogger = /*#__PURE__*/makeLogger(({
     return;
   }
   const attributes = Object.fromEntries(annotations);
-  attributes["effect.fiberId"] = Id_threadName(fiberId);
+  attributes["effect.fiberId"] = FiberId_threadName(fiberId);
   attributes["effect.logLevel"] = logLevel.label;
   if (cause !== null && cause !== cause_empty) {
     attributes["effect.cause"] = cause_pretty(cause);
@@ -37950,11 +37625,11 @@ const addFinalizer = finalizer => withFiberRuntime(runtime => {
   const acquireRefs = runtime.unsafeGetFiberRefs();
   return core_flatMap(scope, scope => scopeAddFinalizerExit(scope, exit => withFiberRuntime(runtimeFinalizer => {
     const pre = runtimeFinalizer.unsafeGetFiberRefs();
-    const patch = Patch_diff(pre, acquireRefs);
-    const inverse = Patch_diff(acquireRefs, pre);
-    runtimeFinalizer.setFiberRefs(Patch_patch(patch, runtimeFinalizer.id(), acquireRefs));
+    const patch = FiberRefsPatch_diff(pre, acquireRefs);
+    const inverse = FiberRefsPatch_diff(acquireRefs, pre);
+    runtimeFinalizer.setFiberRefs(FiberRefsPatch_patch(patch, runtimeFinalizer.id(), acquireRefs));
     return ensuring(finalizer(exit), sync(() => {
-      runtimeFinalizer.setFiberRefs(Patch_patch(inverse, runtimeFinalizer.id(), runtimeFinalizer.unsafeGetFiberRefs()));
+      runtimeFinalizer.setFiberRefs(FiberRefsPatch_patch(inverse, runtimeFinalizer.id(), runtimeFinalizer.unsafeGetFiberRefs()));
     }));
   })));
 });
@@ -38129,7 +37804,7 @@ const forEachParUnboundedDiscard = (self, f, batching) => suspend(() => {
     return core_asUnit(f(as[0], 0));
   }
   return uninterruptibleMask(restore => {
-    const deferred = deferredUnsafeMake(Id_none);
+    const deferred = deferredUnsafeMake(FiberId_none);
     let ref = 0;
     const residual = [];
     const joinOrder = [];
@@ -38259,7 +37934,7 @@ const unsafeFork = (effect, parentFiber, parentRuntimeFlags, overrideScope = nul
 };
 /** @internal */
 const unsafeMakeChildFiber = (effect, parentFiber, parentRuntimeFlags, overrideScope = null) => {
-  const childId = Id_unsafeMake();
+  const childId = FiberId_unsafeMake();
   const parentFiberRefs = parentFiber.unsafeGetFiberRefs();
   const childFiberRefs = forkAs(parentFiberRefs, childId);
   const childFiber = new FiberRuntime(childId, childFiberRefs, parentRuntimeFlags);
@@ -38338,22 +38013,6 @@ const labelMetricsScoped = labels => labelMetricsScopedSet(mjs_HashSet_fromItera
 const labelMetricsScopedSet = labels => fiberRefLocallyScopedWith(currentMetricLabels, set => mjs_HashSet_union(labels)(set));
 /* @internal */
 const using = /*#__PURE__*/Function_dual(2, (self, use) => acquireUseRelease(scopeMake(), scope => core_flatMap(scopeExtend(self, scope), use), (scope, exit) => scopeClose(scope, exit)));
-/* @internal */
-const unsome = self => matchEffect(self, {
-  onFailure: option => {
-    switch (option._tag) {
-      case "None":
-        {
-          return succeed(Option_none());
-        }
-      case "Some":
-        {
-          return core_fail(option.value);
-        }
-    }
-  },
-  onSuccess: a => succeed(mjs_Option_some(a))
-});
 /** @internal */
 const fiberRuntime_validate = /*#__PURE__*/Function_dual(args => isEffect(args[1]), (self, that, options) => validateWith(self, that, (a, b) => [a, b], options));
 /** @internal */
@@ -38386,7 +38045,7 @@ const zipWithOptions = /*#__PURE__*/Function_dual(args => isEffect(args[1]), (se
 }), ([a, a2]) => f(a, a2)));
 /* @internal */
 const withRuntimeFlagsScoped = update => {
-  if (update === Patch_empty) {
+  if (update === RuntimeFlagsPatch_empty) {
     return core_unit;
   }
   return uninterruptible(core_flatMap(runtimeFlags => {
@@ -38473,7 +38132,7 @@ const fiberAwaitAll = fibers => core_asUnit(_await(fiberAll(fibers)));
 /** @internal */
 const fiberAll = fibers => ({
   [FiberTypeId]: fiberVariance,
-  id: () => ReadonlyArray_fromIterable(fibers).reduce((id, fiber) => Id_combine(id, fiber.id()), Id_none),
+  id: () => ReadonlyArray_fromIterable(fibers).reduce((id, fiber) => FiberId_combine(id, fiber.id()), FiberId_none),
   await: () => core_exit(forEachParUnbounded(fibers, fiber => core_flatten(fiber.await()), false)),
   children: () => core_map(forEachParUnbounded(fibers, fiber => fiber.children(), false), ReadonlyArray_flatten),
   inheritAll: () => forEachSequentialDiscard(fibers, fiber => fiber.inheritAll()),
@@ -38566,7 +38225,7 @@ const raceFibersWith = /*#__PURE__*/Function_dual(3, (self, other, options) => w
     rightFiber.unsafeAddObserver(() => completeRace(rightFiber, leftFiber, options.onOtherWin, raceIndicator, cb));
     leftFiber.startFork(self);
     rightFiber.startFork(other);
-  }, Id_combine(leftFiber.id(), rightFiber.id()));
+  }, FiberId_combine(leftFiber.id(), rightFiber.id()));
 }));
 const completeRace = (winner, loser, cont, ab, cb) => {
   if (compareAndSet(true, false)(ab)) {
@@ -38630,12 +38289,12 @@ const withTracerScoped = value => fiberRefLocallyScopedWith(currentServices, Con
 /* @internal */
 const withParentSpanScoped = span => fiberRefLocallyScopedWith(currentTracerSpan, List_prepend(span));
 //# sourceMappingURL=fiberRuntime.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/schedule/interval.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/schedule/interval.mjs
 
 
 
 /** @internal */
-const IntervalSymbolKey = "@effect/io/Schedule/Interval";
+const IntervalSymbolKey = "@effect/io/ScheduleInterval";
 /** @internal */
 const IntervalTypeId = /*#__PURE__*/Symbol.for(IntervalSymbolKey);
 /** @internal */
@@ -38701,13 +38360,13 @@ const before = endMilliseconds => {
   return interval_make(Number.NEGATIVE_INFINITY, endMilliseconds);
 };
 //# sourceMappingURL=interval.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Schedule/Interval.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/ScheduleInterval.mjs
 
 /**
  * @since 1.0.0
  * @category symbols
  */
-const Interval_IntervalTypeId = IntervalTypeId;
+const ScheduleInterval_IntervalTypeId = IntervalTypeId;
 /**
  * Constructs a new interval from the two specified endpoints. If the start
  * endpoint greater than the end endpoint, then a zero size interval will be
@@ -38716,14 +38375,14 @@ const Interval_IntervalTypeId = IntervalTypeId;
  * @since 1.0.0
  * @category constructors
  */
-const Interval_make = interval_make;
+const ScheduleInterval_make = interval_make;
 /**
  * An `Interval` of zero-width.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Interval_empty = interval_empty;
+const ScheduleInterval_empty = interval_empty;
 /**
  * Returns `true` if this `Interval` is less than `that` interval, `false`
  * otherwise.
@@ -38731,35 +38390,35 @@ const Interval_empty = interval_empty;
  * @since 1.0.0
  * @category ordering
  */
-const Interval_lessThan = interval_lessThan;
+const ScheduleInterval_lessThan = interval_lessThan;
 /**
  * Returns the minimum of two `Interval`s.
  *
  * @since 1.0.0
  * @category ordering
  */
-const Interval_min = interval_min;
+const ScheduleInterval_min = interval_min;
 /**
  * Returns the maximum of two `Interval`s.
  *
  * @since 1.0.0
  * @category ordering
  */
-const Interval_max = interval_max;
+const ScheduleInterval_max = interval_max;
 /**
  * Returns `true` if the specified `Interval` is empty, `false` otherwise.
  *
  * @since 1.0.0
  * @category ordering
  */
-const Interval_isEmpty = interval_isEmpty;
+const ScheduleInterval_isEmpty = interval_isEmpty;
 /**
  * Returns `true` if the specified `Interval` is non-empty, `false` otherwise.
  *
  * @since 1.0.0
  * @category ordering
  */
-const Interval_isNonEmpty = interval_isNonEmpty;
+const ScheduleInterval_isNonEmpty = interval_isNonEmpty;
 /**
  * Computes a new `Interval` which is the intersection of this `Interval` and
  * that `Interval`.
@@ -38767,7 +38426,7 @@ const Interval_isNonEmpty = interval_isNonEmpty;
  * @since 1.0.0
  * @category ordering
  */
-const Interval_intersect = intersect;
+const ScheduleInterval_intersect = intersect;
 /**
  * Calculates the size of the `Interval` as the `Duration` from the start of the
  * interval to the end of the interval.
@@ -38775,7 +38434,7 @@ const Interval_intersect = intersect;
  * @since 1.0.0
  * @category getters
  */
-const Interval_size = interval_size;
+const ScheduleInterval_size = interval_size;
 /**
  * Computes a new `Interval` which is the union of this `Interval` and that
  * `Interval` as a `Some`, otherwise returns `None` if the two intervals cannot
@@ -38784,7 +38443,7 @@ const Interval_size = interval_size;
  * @since 1.0.0
  * @category utils
  */
-const Interval_union = interval_union;
+const ScheduleInterval_union = interval_union;
 /**
  * Construct an `Interval` that includes all time equal to and after the
  * specified start time.
@@ -38792,7 +38451,7 @@ const Interval_union = interval_union;
  * @since 1.0.0
  * @category constructors
  */
-const Interval_after = after;
+const ScheduleInterval_after = after;
 /**
  * Construct an `Interval` that includes all time equal to and before the
  * specified end time.
@@ -38800,15 +38459,15 @@ const Interval_after = after;
  * @category constructors
  * @since 1.0.0
  */
-const Interval_before = before;
-//# sourceMappingURL=Interval.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/schedule/intervals.mjs
+const ScheduleInterval_before = before;
+//# sourceMappingURL=ScheduleInterval.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/schedule/intervals.mjs
 
 
 
 
 /** @internal */
-const IntervalsSymbolKey = "@effect/io/Schedule/Intervals";
+const IntervalsSymbolKey = "@effect/io/ScheduleIntervals";
 /** @internal */
 const IntervalsTypeId = /*#__PURE__*/Symbol.for(IntervalsSymbolKey);
 /** @internal */
@@ -38849,7 +38508,7 @@ const unionLoop = (_self, _that, _interval, _acc) => {
         that = Chunk_tailNonEmpty(that);
         self = Chunk_empty();
       } else {
-        interval = Interval_make(interval.startMillis, Chunk_headNonEmpty(that).endMillis);
+        interval = ScheduleInterval_make(interval.startMillis, Chunk_headNonEmpty(that).endMillis);
         that = Chunk_tailNonEmpty(that);
         self = Chunk_empty();
       }
@@ -38860,7 +38519,7 @@ const unionLoop = (_self, _that, _interval, _acc) => {
         that = Chunk_empty();
         self = Chunk_tailNonEmpty(self);
       } else {
-        interval = Interval_make(interval.startMillis, Chunk_headNonEmpty(self).endMillis);
+        interval = ScheduleInterval_make(interval.startMillis, Chunk_headNonEmpty(self).endMillis);
         that = Chunk_empty();
         self = Chunk_tailNonEmpty(self);
       }
@@ -38871,7 +38530,7 @@ const unionLoop = (_self, _that, _interval, _acc) => {
           interval = Chunk_headNonEmpty(self);
           self = Chunk_tailNonEmpty(self);
         } else {
-          interval = Interval_make(interval.startMillis, Chunk_headNonEmpty(self).endMillis);
+          interval = ScheduleInterval_make(interval.startMillis, Chunk_headNonEmpty(self).endMillis);
           self = Chunk_tailNonEmpty(self);
         }
       } else if (interval.endMillis < Chunk_headNonEmpty(that).startMillis) {
@@ -38879,7 +38538,7 @@ const unionLoop = (_self, _that, _interval, _acc) => {
         interval = Chunk_headNonEmpty(that);
         that = Chunk_tailNonEmpty(that);
       } else {
-        interval = Interval_make(interval.startMillis, Chunk_headNonEmpty(that).endMillis);
+        interval = ScheduleInterval_make(interval.startMillis, Chunk_headNonEmpty(that).endMillis);
         that = Chunk_tailNonEmpty(that);
       }
     } else {
@@ -38896,9 +38555,9 @@ const intersectLoop = (_left, _right, _acc) => {
   let right = _right;
   let acc = _acc;
   while (isNonEmpty(left) && isNonEmpty(right)) {
-    const interval = Interval_intersect(Chunk_headNonEmpty(right))(Chunk_headNonEmpty(left));
-    const intervals = Interval_isEmpty(interval) ? acc : Chunk_prepend(interval)(acc);
-    if (Interval_lessThan(Chunk_headNonEmpty(right))(Chunk_headNonEmpty(left))) {
+    const interval = ScheduleInterval_intersect(Chunk_headNonEmpty(right))(Chunk_headNonEmpty(left));
+    const intervals = ScheduleInterval_isEmpty(interval) ? acc : Chunk_prepend(interval)(acc);
+    if (ScheduleInterval_lessThan(Chunk_headNonEmpty(right))(Chunk_headNonEmpty(left))) {
       left = Chunk_tailNonEmpty(left);
     } else {
       right = Chunk_tailNonEmpty(right);
@@ -38909,11 +38568,11 @@ const intersectLoop = (_left, _right, _acc) => {
 };
 /** @internal */
 const start = self => {
-  return getOrElse(() => Interval_empty)(Chunk_head(self.intervals)).startMillis;
+  return getOrElse(() => ScheduleInterval_empty)(Chunk_head(self.intervals)).startMillis;
 };
 /** @internal */
 const end = self => {
-  return getOrElse(() => Interval_empty)(Chunk_head(self.intervals)).endMillis;
+  return getOrElse(() => ScheduleInterval_empty)(Chunk_head(self.intervals)).endMillis;
 };
 /** @internal */
 const intervals_lessThan = /*#__PURE__*/Function_dual(2, (self, that) => start(self) < start(that));
@@ -38924,62 +38583,62 @@ const intervals_isNonEmpty = self => {
 /** @internal */
 const intervals_max = /*#__PURE__*/Function_dual(2, (self, that) => intervals_lessThan(self, that) ? that : self);
 //# sourceMappingURL=intervals.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Schedule/Intervals.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/ScheduleIntervals.mjs
 
 /**
  * @since 1.0.0
  * @category symbols
  */
-const Intervals_IntervalsTypeId = IntervalsTypeId;
+const ScheduleIntervals_IntervalsTypeId = IntervalsTypeId;
 /**
  * Creates a new `Intervals` from a `List` of `Interval`s.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Intervals_make = intervals_make;
+const ScheduleIntervals_make = intervals_make;
 /**
  * Constructs an empty list of `Interval`s.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Intervals_empty = intervals_empty;
+const ScheduleIntervals_empty = intervals_empty;
 /**
  * Constructs `Intervals` from the specified `Iterable<Interval>`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const Intervals_fromIterable = intervals_fromIterable;
+const ScheduleIntervals_fromIterable = intervals_fromIterable;
 /**
  * Computes the union of this `Intervals` and  that `Intervals`
  *
  * @since 1.0.0
  * @category utils
  */
-const Intervals_union = intervals_union;
+const ScheduleIntervals_union = intervals_union;
 /**
  * Produces the intersection of this `Intervals` and that `Intervals`.
  *
  * @since 1.0.0
  * @category utils
  */
-const Intervals_intersect = intervals_intersect;
+const ScheduleIntervals_intersect = intervals_intersect;
 /**
  * The start of the earliest interval in the specified `Intervals`.
  *
  * @since 1.0.0
  * @category getters
  */
-const Intervals_start = start;
+const ScheduleIntervals_start = start;
 /**
  * The end of the latest interval in the specified `Intervals`.
  *
  * @since 1.0.0
  * @category getters
  */
-const Intervals_end = end;
+const ScheduleIntervals_end = end;
 /**
  * Returns `true` if the start of this `Intervals` is before the start of that
  * `Intervals`, `false` otherwise.
@@ -38987,23 +38646,23 @@ const Intervals_end = end;
  * @since 1.0.0
  * @category ordering
  */
-const Intervals_lessThan = intervals_lessThan;
+const ScheduleIntervals_lessThan = intervals_lessThan;
 /**
  * Returns `true` if this `Intervals` is non-empty, `false` otherwise.
  *
  * @since 1.0.0
  * @category getters
  */
-const Intervals_isNonEmpty = intervals_isNonEmpty;
+const ScheduleIntervals_isNonEmpty = intervals_isNonEmpty;
 /**
  * Returns the maximum of the two `Intervals` (i.e. which has the latest start).
  *
  * @since 1.0.0
  * @category ordering
  */
-const Intervals_max = intervals_max;
-//# sourceMappingURL=Intervals.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/schedule/decision.mjs
+const ScheduleIntervals_max = intervals_max;
+//# sourceMappingURL=ScheduleIntervals.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/schedule/decision.mjs
 
 
 /** @internal */
@@ -39021,7 +38680,7 @@ const _continue = intervals => {
 const continueWith = interval => {
   return {
     _tag: OP_CONTINUE,
-    intervals: Intervals_make(Chunk_of(interval))
+    intervals: ScheduleIntervals_make(Chunk_of(interval))
   };
 };
 /** @internal */
@@ -39037,35 +38696,35 @@ const decision_isDone = self => {
   return self._tag === decision_OP_DONE;
 };
 //# sourceMappingURL=decision.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Schedule/Decision.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/ScheduleDecision.mjs
 /**
  * @since 1.0.0
  */
 
-const Decision_continue = _continue;
+const ScheduleDecision_continue = _continue;
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Decision_continueWith = continueWith;
+const ScheduleDecision_continueWith = continueWith;
 /**
  * @since 1.0.0
  * @category constructors
  */
-const Decision_done = decision_done;
+const ScheduleDecision_done = decision_done;
 /**
  * @since 1.0.0
  * @category refinements
  */
-const Decision_isContinue = isContinue;
+const ScheduleDecision_isContinue = isContinue;
 /**
  * @since 1.0.0
  * @category refinements
  */
-const Decision_isDone = decision_isDone;
-//# sourceMappingURL=Decision.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/schedule.mjs
+const ScheduleDecision_isDone = decision_isDone;
+//# sourceMappingURL=ScheduleDecision.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/schedule.mjs
 var schedule_a, schedule_b;
 
 
@@ -39089,7 +38748,7 @@ const ScheduleSymbolKey = "@effect/io/Schedule";
 /** @internal */
 const ScheduleTypeId = /*#__PURE__*/Symbol.for(ScheduleSymbolKey);
 /** @internal */
-const ScheduleDriverSymbolKey = "@effect/io/Schedule/Driver";
+const ScheduleDriverSymbolKey = "@effect/io/ScheduleDriver";
 /** @internal */
 const ScheduleDriverTypeId = /*#__PURE__*/Symbol.for(ScheduleDriverSymbolKey);
 /** @internal */
@@ -39143,7 +38802,7 @@ class ScheduleDriverImpl {
     return ref_set(this.ref, [Option_none(), this.schedule.initial]);
   }
   next(input) {
-    return core_flatMap(state => core_flatMap(now => core_flatMap(([state, out, decision]) => Decision_isDone(decision) ? core_zipRight(core_fail(Option_none()))(ref_set(this.ref, [mjs_Option_some(out), state])) : core_as(out)(core_zipRight(effect_sleep(millis(Intervals_start(decision.intervals) - now)))(ref_set(this.ref, [mjs_Option_some(out), state]))))(suspend(() => this.schedule.step(now, input, state))))(Clock_currentTimeMillis))(core_map(ref_get(this.ref), tuple => tuple[1]));
+    return core_flatMap(state => core_flatMap(now => core_flatMap(([state, out, decision]) => ScheduleDecision_isDone(decision) ? core_zipRight(core_fail(Option_none()))(ref_set(this.ref, [mjs_Option_some(out), state])) : core_as(out)(core_zipRight(effect_sleep(millis(ScheduleIntervals_start(decision.intervals) - now)))(ref_set(this.ref, [mjs_Option_some(out), state]))))(suspend(() => this.schedule.step(now, input, state))))(Clock_currentTimeMillis))(core_map(ref_get(this.ref), tuple => tuple[1]));
   }
 }
 schedule_b = ScheduleDriverTypeId;
@@ -39776,7 +39435,7 @@ const schedule_once = /*#__PURE__*/(/* unused pure expression or super */ null &
 /** @internal */
 const stop = /*#__PURE__*/(/* unused pure expression or super */ null && (schedule_asUnit( /*#__PURE__*/recurs(0))));
 //# sourceMappingURL=schedule.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/effect/circular.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/effect/circular.mjs
 var circular_a, circular_b, circular_c;
 
 
@@ -39980,7 +39639,7 @@ const timeoutTo = /*#__PURE__*/Function_dual(2, (self, {
 })));
 // circular with Synchronized
 /** @internal */
-const SynchronizedSymbolKey = "@effect/io/Ref/Synchronized";
+const SynchronizedSymbolKey = "@effect/io/Ref/SynchronizedRef";
 /** @internal */
 const SynchronizedTypeId = /*#__PURE__*/Symbol.for(SynchronizedSymbolKey);
 /** @internal */
@@ -40038,7 +39697,7 @@ const zipRightFiber = /*#__PURE__*/Function_dual(2, (self, that) => zipWithFiber
 /** @internal */
 const zipWithFiber = /*#__PURE__*/Function_dual(3, (self, that, f) => ({
   [FiberTypeId]: fiberVariance,
-  id: () => Id_getOrElse(that.id())(self.id()),
+  id: () => FiberId_getOrElse(that.id())(self.id()),
   await: () => core_exit(zipWithOptions(core_flatten(that.await()), f, {
     concurrent: true
   })(core_flatten(self.await()))),
@@ -40054,7 +39713,7 @@ const zipWithFiber = /*#__PURE__*/Function_dual(3, (self, that, f) => ({
   }
 }));
 //# sourceMappingURL=circular.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/opCodes/layer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/opCodes/layer.mjs
 /** @internal */
 const OP_EXTEND_SCOPE = "ExtendScope";
 /** @internal */
@@ -40074,7 +39733,7 @@ const layer_OP_ZIP_WITH = "ZipWith";
 /** @internal */
 const OP_ZIP_WITH_PAR = "ZipWithPar";
 //# sourceMappingURL=layer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/synchronizedRef.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/synchronizedRef.mjs
 
 
 
@@ -40119,7 +39778,7 @@ const updateSomeEffect = /*#__PURE__*/(/* unused pure expression or super */ nul
   }
 }))));
 //# sourceMappingURL=synchronizedRef.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/layer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/layer.mjs
 
 
 
@@ -40567,7 +40226,7 @@ const provideLayer = /*#__PURE__*/Function_dual(2, (self, layer) => acquireUseRe
 /** @internal */
 const provideSomeLayer = /*#__PURE__*/Function_dual(2, (self, layer) => provideLayer(self, layer_merge(layer_context(), layer)));
 //# sourceMappingURL=layer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/layer/circular.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/layer/circular.mjs
 
 
 
@@ -40627,21 +40286,16 @@ const setSpan = (name, options) => scopedDiscard(withSpanScoped(name, options));
 /** @internal */
 const setTracer = tracer => scopedDiscard(withTracerScoped(tracer));
 //# sourceMappingURL=circular.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/MutableList.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/MutableList.mjs
 /**
  * @since 1.0.0
  */
 
 
+
 const MutableList_TypeId = /*#__PURE__*/Symbol.for("@effect/data/MutableList");
-/** @internal */
-class MutableListImpl {
-  constructor() {
-    this._id = MutableList_TypeId;
-    this.head = undefined;
-    this.tail = undefined;
-    this._length = 0;
-  }
+const MutableListProto = {
+  [MutableList_TypeId]: MutableList_TypeId,
   [Symbol.iterator]() {
     let done = false;
     let head = this.head;
@@ -40671,23 +40325,23 @@ class MutableListImpl {
         };
       }
     };
-  }
+  },
   toString() {
     return `MutableList(${Array.from(this).map(String).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "MutableList",
       values: Array.from(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
 /** @internal */
 class LinkedListNode {
   constructor(value) {
@@ -40703,7 +40357,13 @@ class LinkedListNode {
  * @since 1.0.0
  * @category constructors
  */
-const MutableList_empty = () => new MutableListImpl();
+const MutableList_empty = () => {
+  const list = Object.create(MutableListProto);
+  list.head = undefined;
+  list.tail = undefined;
+  list._length = 0;
+  return list;
+};
 /**
  * Creates a new `MutableList` from an `Iterable`.
  *
@@ -40711,7 +40371,7 @@ const MutableList_empty = () => new MutableListImpl();
  * @category constructors
  */
 const MutableList_fromIterable = iterable => {
-  const list = new MutableListImpl();
+  const list = MutableList_empty();
   for (const element of iterable) {
     MutableList_append(list, element);
   }
@@ -40869,10 +40529,11 @@ const MutableList_remove = (self, node) => {
   }
 };
 //# sourceMappingURL=MutableList.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/MutableQueue.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/MutableQueue.mjs
 /**
  * @since 1.0.0
  */
+
 
 
 
@@ -40883,47 +40544,47 @@ const MutableQueue_TypeId = /*#__PURE__*/Symbol.for("@effect/data/MutableQueue")
  * @category symbol
  */
 const EmptyMutableQueue = /*#__PURE__*/Symbol.for("@effect/data/mutable/MutableQueue/Empty");
-/** @internal */
-class MutableQueueImpl {
-  constructor(capacity = undefined) {
-    this.capacity = capacity;
-    this._tag = "Bounded";
-    this._id = MutableQueue_TypeId;
-    this.queue = MutableList_empty();
-  }
+const MutableQueueProto = {
+  [MutableQueue_TypeId]: MutableQueue_TypeId,
   [Symbol.iterator]() {
     return Array.from(this.queue)[Symbol.iterator]();
-  }
+  },
   toString() {
     return `MutableQueue(${Array.from(this).map(String).join(", ")})`;
-  }
+  },
   toJSON() {
     return {
       _tag: "MutableQueue",
       values: Array.from(this)
     };
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON();
-  }
+  },
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
-}
+};
+const MutableQueue_make = capacity => {
+  const queue = Object.create(MutableQueueProto);
+  queue.queue = MutableList_empty();
+  queue.capacity = capacity;
+  return queue;
+};
 /**
  * Creates a new bounded `MutableQueue`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const bounded = capacity => new MutableQueueImpl(capacity);
+const bounded = capacity => MutableQueue_make(capacity);
 /**
  * Creates a new unbounded `MutableQueue`.
  *
  * @since 1.0.0
  * @category constructors
  */
-const unbounded = () => new MutableQueueImpl();
+const unbounded = () => MutableQueue_make(undefined);
 /**
  * Returns the current number of elements in the queue.
  *
@@ -41028,7 +40689,7 @@ const pollUpTo = /*#__PURE__*/(/* unused pure expression or super */ null && (Du
   return Chunk.reverse(result);
 })));
 //# sourceMappingURL=MutableQueue.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/cache.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/cache.mjs
 var cache_a, cache_b;
 
 
@@ -41488,7 +41149,7 @@ const makeWith = options => core.map(fiberRuntime.all([core.context(), core.fibe
 /** @internal */
 const unsafeMakeWith = (capacity, lookup, timeToLive) => new CacheImpl(capacity, mjs_Context_empty(), fiberId_none, lookup, exit => decode(timeToLive(exit)));
 //# sourceMappingURL=cache.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/query.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/query.mjs
 
 
 
@@ -41582,7 +41243,7 @@ const withRequestCache = /*#__PURE__*/Function_dual(2,
 // @ts-expect-error
 (self, cache) => fiberRefLocally(self, currentCache, cache));
 //# sourceMappingURL=query.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Fiber.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Fiber.mjs
 
 
 
@@ -41923,7 +41584,8 @@ const Fiber_zipRight = zipRightFiber;
  */
 const Fiber_zipWith = zipWithFiber;
 //# sourceMappingURL=Fiber.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/internal/runtime.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/internal/runtime.mjs
+
 
 
 
@@ -41942,7 +41604,7 @@ const Fiber_zipWith = zipWithFiber;
 
 /** @internal */
 const runtime_unsafeFork = runtime => (self, options) => {
-  const fiberId = Id_unsafeMake();
+  const fiberId = FiberId_unsafeMake();
   const effect = self;
   let fiberRefs = FiberRefs_updatedAs(runtime.fiberRefs, {
     fiberId,
@@ -41977,7 +41639,7 @@ const unsafeRunCallback = runtime => (effect, onExit) => {
       onExit(exit);
     });
   }
-  return (id, onExitInterrupt) => unsafeRunCallback(runtime)(interruptAs(id ?? Id_none)(fiberRuntime), onExitInterrupt ? exit => onExitInterrupt(Exit_flatten(exit)) : void 0);
+  return (id, onExitInterrupt) => unsafeRunCallback(runtime)(interruptAs(id ?? FiberId_none)(fiberRuntime), onExitInterrupt ? exit => onExitInterrupt(Exit_flatten(exit)) : void 0);
 };
 /** @internal */
 const unsafeRunSync = runtime => effect => {
@@ -42020,7 +41682,7 @@ const asyncFiberException = fiber => {
   return error;
 };
 /** @internal */
-const isAsyncFiberException = u => typeof u === "object" && u !== null && "_tag" in u && u._tag === "AsyncFiberException" && "fiber" in u;
+const isAsyncFiberException = u => Predicate.isTagged(u, "AsyncFiberException") && "fiber" in u;
 /** @internal */
 const FiberFailureId = /*#__PURE__*/Symbol.for("@effect/io/Runtime/FiberFailure");
 /** @internal */
@@ -42158,7 +41820,7 @@ const unsafeRunSyncExitEffect = /*#__PURE__*/unsafeRunSyncExit(defaultRuntime);
 /** @internal */
 const asyncEffect = register => core_flatMap(deferredMake(), deferred => core_flatMap(runtime_runtime(), runtime => uninterruptibleMask(restore => core_zipRight(fork(restore(catchAllCause(register(cb => unsafeRunCallback(runtime)(intoDeferred(cb, deferred))), cause => deferredFailCause(deferred, cause)))), restore(deferredAwait(deferred))))));
 //# sourceMappingURL=runtime.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.38.2_@effect+data@0.17.6/node_modules/@effect/io/mjs/Effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.3/node_modules/@effect/io/mjs/Effect.mjs
 
 
 
@@ -42548,6 +42210,11 @@ const Effect_failCauseSync = failCauseSync;
  * @since 1.0.0
  * @category constructors
  */
+const Effect_failCauseAnnotate = failCauseAnnotate;
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
 const Effect_die = core_die;
 /**
  * Returns an effect that dies with a `RuntimeException` having the specified
@@ -42670,6 +42337,13 @@ const Effect_catchAllCause = catchAllCause;
  * @category error handling
  */
 const Effect_catchAllDefect = catchAllDefect;
+/**
+ * Recovers from errors that match the given predicate.
+ *
+ * @since 1.0.0
+ * @category error handling
+ */
+const Effect_catchIf = catchIf;
 /**
  * Recovers from some or all of the error cases.
  *
@@ -43089,7 +42763,6 @@ const Effect_negate = negate;
  *
  * @param acquire - The `Effect` value that acquires the resource.
  * @param release - The `Effect` value that releases the resource.
- * @param interruptible - Whether the `acquire` Effect can be interrupted
  *
  * @returns A new `Effect` value that represents the scoped resource.
  *
@@ -43679,7 +43352,7 @@ const provideSomeRuntime = /*#__PURE__*/(/* unused pure expression or super */ n
   const inversePatchFlags = RuntimeFlags.diff(runtime.runtimeFlags, _runtime.defaultRuntime.runtimeFlags);
   const patchRefs = FiberRefsPatch.diff(_runtime.defaultRuntime.fiberRefs, runtime.fiberRefs);
   const inversePatchRefs = FiberRefsPatch.diff(runtime.fiberRefs, _runtime.defaultRuntime.fiberRefs);
-  return Effect_acquireUseRelease(core.flatMap(Effect_updateRuntimeFlags(patchFlags), () => Effect_patchFiberRefs(patchRefs)), () => Effect_provideSomeContext(self, runtime.context), () => core.flatMap(Effect_updateRuntimeFlags(inversePatchFlags), () => Effect_patchFiberRefs(inversePatchRefs)));
+  return Effect_acquireUseRelease(core.flatMap(patchRuntimeFlags(patchFlags), () => Effect_patchFiberRefs(patchRefs)), () => Effect_provideSomeContext(self, runtime.context), () => core.flatMap(patchRuntimeFlags(inversePatchFlags), () => Effect_patchFiberRefs(inversePatchRefs)));
 })));
 /**
  * Provides a layer to the effect, which translates it to another level.
@@ -43806,20 +43479,6 @@ const Effect_intoDeferred = intoDeferred;
  * @category conversions
  */
 const Effect_option = effect_option;
-/**
- * Converts an option on values into an option on errors.
- *
- * @since 1.0.0
- * @category conversions
- */
-const Effect_some = effect_some;
-/**
- * Converts an option on errors into an option on values.
- *
- * @since 1.0.0
- * @category conversions
- */
-const Effect_unsome = unsome;
 // -------------------------------------------------------------------------------------
 // filtering & conditionals
 // -------------------------------------------------------------------------------------
@@ -44168,7 +43827,7 @@ const Effect_whileLoop = whileLoop;
  * @since 1.0.0
  * @category fiber refs
  */
-const Effect_getFiberRefs = getFiberRefs;
+const getFiberRefs = effect_fiberRefs;
 /**
  * Inherits values from all `FiberRef` instances into current fiber.
  *
@@ -44217,7 +43876,7 @@ const Effect_setFiberRefs = setFiberRefs;
  * specified function.
  *
  * @since 1.0.0
- * @category constructors
+ * @category fiber refs
  */
 const Effect_updateFiberRefs = updateFiberRefs;
 // -------------------------------------------------------------------------------------
@@ -44428,22 +44087,22 @@ const Effect_runtime = runtime_runtime;
  * @since 1.0.0
  * @category runtime
  */
-const Effect_runtimeFlags = runtimeFlags;
+const getRuntimeFlags = runtimeFlags;
 /**
  * @since 1.0.0
  * @category runtime
  */
-const Effect_updateRuntimeFlags = updateRuntimeFlags;
+const patchRuntimeFlags = updateRuntimeFlags;
 /**
  * @since 1.0.0
  * @category runtime
  */
-const Effect_withRuntimeFlags = withRuntimeFlags;
+const withRuntimeFlagsPatch = withRuntimeFlags;
 /**
  * @since 1.0.0
  * @category runtime
  */
-const Effect_withRuntimeFlagsScoped = withRuntimeFlagsScoped;
+const withRuntimeFlagsPatchScoped = withRuntimeFlagsScoped;
 // -------------------------------------------------------------------------------------
 // metrics
 // -------------------------------------------------------------------------------------
@@ -44855,7 +44514,7 @@ const Effect_optionFromOptional = optionFromOptional;
 const utils_logInfo = (message) => Effect_sync(() => lib_core.info(message));
 const utils_logDebug = (message) => Effect_sync(() => lib_core.debug(`-- ${message}`));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.17.6/node_modules/@effect/data/mjs/Brand.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.3/node_modules/@effect/data/mjs/Brand.mjs
 /**
  * This module provides types and utility functions to create and work with branded types,
  * which are TypeScript types with an added type tag to prevent accidental usage of a value in the wrong context.
@@ -44943,7 +44602,7 @@ const refined = (refinement, onFailure) => {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: args => Option.getRight(either(args)),
     either,
-    refine: args => Either.isRight(either(args))
+    is: args => Either.isRight(either(args))
   });
 };
 /**
@@ -44970,7 +44629,7 @@ const nominal = () => {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: args => Option.some(args),
     either: args => Either.right(args),
-    refine: _args => true
+    is: _args => true
   });
 };
 /**
@@ -45022,11 +44681,11 @@ const Brand_all = (...brands) => {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: args => Option.getRight(either(args)),
     either,
-    refine: args => Either.isRight(either(args))
+    is: args => Either.isRight(either(args))
   });
 };
 //# sourceMappingURL=Brand.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.17.6_@effect+io@0.38.2/node_modules/@effect/schema/mjs/internal/common.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/internal/common.mjs
 /**
  * @since 1.0.0
  */
@@ -45071,7 +44730,7 @@ const memoizeThunk = f => {
   };
 };
 //# sourceMappingURL=common.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.17.6_@effect+io@0.38.2/node_modules/@effect/schema/mjs/ParseResult.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/ParseResult.mjs
 /**
  * @since 1.0.0
  */
@@ -45197,7 +44856,7 @@ const ParseResult_map = (self, f) => {
   return Effect_map(self, f);
 };
 //# sourceMappingURL=ParseResult.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.17.6_@effect+io@0.38.2/node_modules/@effect/schema/mjs/AST.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/AST.mjs
 /**
  * @since 1.0.0
  */
@@ -46086,7 +45745,7 @@ const _keyof = ast => {
   }
 };
 //# sourceMappingURL=AST.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.17.6_@effect+io@0.38.2/node_modules/@effect/schema/mjs/TreeFormatter.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/TreeFormatter.mjs
 /**
  * @since 1.0.0
  */
@@ -46212,7 +45871,7 @@ const go = e => {
   }
 };
 //# sourceMappingURL=TreeFormatter.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.17.6_@effect+io@0.38.2/node_modules/@effect/schema/mjs/Parser.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Parser.mjs
 /**
  * @since 1.0.0
  */
@@ -47104,7 +46763,7 @@ const Parser_reverse = ast => {
   return ast;
 };
 //# sourceMappingURL=Parser.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.17.6_@effect+io@0.38.2/node_modules/@effect/schema/mjs/Schema.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Schema.mjs
 /**
  * @since 1.0.0
  */
