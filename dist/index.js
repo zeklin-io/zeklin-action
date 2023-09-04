@@ -48643,26 +48643,26 @@ const GITHUB_SERVER_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_SERVER_UR
 const WORKFLOW_URL = HttpsUrl.unsafeFromString(`${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`);
 const REF = Ref_.unsafeMake(GITHUB_REF_TYPE, GITHUB_REF_NAME);
 const debugVariables = () => {
-    utils_logDebug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
-    utils_logDebug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
-    utils_logDebug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`);
-    utils_logDebug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`);
-    utils_logDebug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`);
-    utils_logDebug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
-    utils_logDebug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`);
-    utils_logDebug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`);
-    utils_logDebug(`GITHUB_SHA: ${GITHUB_SHA}`);
-    utils_logDebug(`GITHUB_REF_NAME: ${GITHUB_REF_NAME}`);
-    utils_logDebug(`GITHUB_REF_TYPE: ${GITHUB_REF_TYPE}`);
-    utils_logDebug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`);
-    utils_logDebug(`RUNNER_OS: ${RUNNER_OS}`);
-    utils_logDebug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
-    utils_logDebug(`GITHUB_API_URL: ${GITHUB_API_URL}`);
-    utils_logDebug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
-    utils_logDebug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
-    utils_logDebug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`);
-    utils_logDebug(`WORKFLOW_URL: ${WORKFLOW_URL}`);
-    utils_logDebug(`REF: ${REF}`);
+    lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
+    lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
+    lib_core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`);
+    lib_core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`);
+    lib_core.debug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`);
+    lib_core.debug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
+    lib_core.debug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`);
+    lib_core.debug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`);
+    lib_core.debug(`GITHUB_SHA: ${GITHUB_SHA}`);
+    lib_core.debug(`GITHUB_REF_NAME: ${GITHUB_REF_NAME}`);
+    lib_core.debug(`GITHUB_REF_TYPE: ${GITHUB_REF_TYPE}`);
+    lib_core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`);
+    lib_core.debug(`RUNNER_OS: ${RUNNER_OS}`);
+    lib_core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
+    lib_core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`);
+    lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
+    lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
+    lib_core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`);
+    lib_core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`);
+    lib_core.debug(`REF: ${REF}`);
 };
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
