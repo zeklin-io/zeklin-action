@@ -50811,7 +50811,8 @@ class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
             actorId: GITHUB_ACTOR_ID,
             pr: PullRequest.unsafeFrom(context),
             data: data,
-            computedAt: computedAt
+            computedAt: computedAt,
+            context: context
         });
         lib_core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`);
         return r;
