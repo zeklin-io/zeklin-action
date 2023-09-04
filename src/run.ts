@@ -11,9 +11,7 @@ import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars.js"
 import * as path from "path"
 import fetch from "node-fetch"
 
-import github from "@actions/github"
-
-const context = github.context
+import { context } from "@actions/github"
 
 core.debug(`-- context: ${JSON.stringify(context, null, 2)}`)
 
