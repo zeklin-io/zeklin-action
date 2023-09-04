@@ -1,4 +1,4 @@
-import { Data, Option, pipe } from "effect"
+import { Option, pipe } from "effect"
 import * as S from "@effect/schema/Schema"
 import * as core from "@actions/core"
 
@@ -9,28 +9,6 @@ export const NES = {
   unsafe: (s: string): NES => s as NES,
   fromString: (s: string): Option.Option<NES> => S.parseOption(NESSchema)(s),
   unsafeFromString: (s: string): NES => S.parseSync(NESSchema)(s),
-}
-
-const HttpsUrlBrand = Symbol.for("HttpsUrl")
-const HttpsUrlSchema = pipe(S.string, S.trim, S.startsWith("https://"), S.brand(HttpsUrlBrand))
-export type HttpsUrl = S.To<typeof HttpsUrlSchema>
-const HttpsUrl = {
-  unsafeFromString: (s: string): HttpsUrl => S.parseSync(HttpsUrlSchema)(s),
-}
-
-export type Ref = Data.TaggedEnum<{ Branch: { value: NES }; Tag: { value: NES } }>
-export const Ref = Data.taggedEnum<Ref>()
-export const Ref_ = {
-  unsafeMake(refType: NES, value: NES): Ref {
-    switch (refType.toLowerCase()) {
-      case "branch":
-        return Ref("Branch")({ value: value })
-      case "tag":
-        return Ref("Tag")({ value: value })
-      default:
-        throw new Error(`Invalid ref type: ${refType}`)
-    }
-  },
 }
 
 export type RunnerOs = "linux" | "windows" | "macos"
@@ -102,12 +80,6 @@ export const RUNNER_NAME: NES = NES.unsafeFromString(process.env.RUNNER_NAME!)
 export const GITHUB_RUN_ATTEMPT: number = Number(process.env.GITHUB_RUN_ATTEMPT!)
 
 /**
- * The owner and repository name.
- * For example, octocat/Hello-World.
- */
-export const GITHUB_REPOSITORY: NES = NES.unsafeFromString(process.env.GITHUB_REPOSITORY!)
-
-/**
  * The ID of the repository.
  * For example, 123456789.
  * Note that this is different from the repository name.
@@ -120,28 +92,6 @@ export const GITHUB_REPOSITORY_ID: number = Number(process.env.GITHUB_REPOSITORY
  * Note that this is different from the owner's name.
  */
 export const GITHUB_REPOSITORY_OWNER_ID: number = Number(process.env.GITHUB_REPOSITORY_OWNER_ID!)
-
-/**
- * The commit SHA that triggered the workflow.
- * The value of this commit SHA depends on the event that triggered the workflow.
- * For more information, see [Events that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
- * For example, ffac537e6cbbf934b08745a378932722df287a53.
- */
-export const GITHUB_SHA: NES = NES.unsafeFromString(process.env.GITHUB_SHA!)
-
-/**
- * The short ref name of the branch or tag that triggered the workflow run.
- * This value matches the branch or tag name shown on GitHub.
- * For example, feature-branch-1.
- */
-export const GITHUB_REF_NAME: NES = NES.unsafeFromString(process.env.GITHUB_REF_NAME!)
-
-/**
- * The type of ref that triggered the workflow run.
- * Valid values are "branch" or "tag".
- */
-export const GITHUB_REF_TYPE: NES = NES.unsafeFromString(process.env.GITHUB_REF_TYPE!)
-
 /**
  * [Not documented]
  *
@@ -164,12 +114,6 @@ export const RUNNER_OS: RunnerOs = RunnerOs.unsafeFromString(process.env.RUNNER_
 export const RUNNER_ARCH: RunnerArch = RunnerArch.unsafeFromString(process.env.RUNNER_ARCH!)
 
 /**
- * Returns the API URL.
- * For example: https://api.github.com.
- */
-export const GITHUB_API_URL: HttpsUrl = HttpsUrl.unsafeFromString(process.env.GITHUB_API_URL!)
-
-/**
  * The name of the person or app that initiated the workflow.
  * For example, octocat.
  */
@@ -181,38 +125,17 @@ export const GITHUB_ACTOR: NES = NES.unsafeFromString(process.env.GITHUB_ACTOR!)
  */
 export const GITHUB_ACTOR_ID: number = Number(process.env.GITHUB_ACTOR_ID!)
 
-/**
- * The URL of the GitHub server.
- * For example: https://github.com.
- */
-export const GITHUB_SERVER_URL: HttpsUrl = HttpsUrl.unsafeFromString(process.env.GITHUB_SERVER_URL!)
-
-/**
- * Comes from https://docs.github.com/en/actions/learn-github-actions/variables
- */
-export const WORKFLOW_URL: HttpsUrl = HttpsUrl.unsafeFromString(`${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`)
-
-export const REF: Ref = Ref_.unsafeMake(GITHUB_REF_TYPE, GITHUB_REF_NAME)
-
 export const debugVariables = () => {
   core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
   core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
   core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`)
   core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`)
   core.debug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`)
-  core.debug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`)
   core.debug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`)
   core.debug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`)
-  core.debug(`GITHUB_SHA: ${GITHUB_SHA}`)
-  core.debug(`GITHUB_REF_NAME: ${GITHUB_REF_NAME}`)
-  core.debug(`GITHUB_REF_TYPE: ${GITHUB_REF_TYPE}`)
   core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`)
   core.debug(`RUNNER_OS: ${RUNNER_OS}`)
   core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`)
-  core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`)
   core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
   core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
-  core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`)
-  core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`)
-  core.debug(`REF: ${REF}`)
 }

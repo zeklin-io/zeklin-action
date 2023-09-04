@@ -48488,24 +48488,6 @@ const NES = {
     fromString: (s) => parseOption(NESSchema)(s),
     unsafeFromString: (s) => parseSync(NESSchema)(s),
 };
-const HttpsUrlBrand = Symbol.for("HttpsUrl");
-const HttpsUrlSchema = Function_pipe(Schema_string, trim, startsWith("https://"), brand(HttpsUrlBrand));
-const HttpsUrl = {
-    unsafeFromString: (s) => parseSync(HttpsUrlSchema)(s),
-};
-const Ref = taggedEnum();
-const Ref_ = {
-    unsafeMake(refType, value) {
-        switch (refType.toLowerCase()) {
-            case "branch":
-                return Ref("Branch")({ value: value });
-            case "tag":
-                return Ref("Tag")({ value: value });
-            default:
-                throw new Error(`Invalid ref type: ${refType}`);
-        }
-    },
-};
 const RunnerOs = {
     unsafeFromString: (s) => {
         switch (s.toLowerCase()) {
@@ -48565,11 +48547,6 @@ const RUNNER_NAME = NES.unsafeFromString(process.env.RUNNER_NAME);
  */
 const GITHUB_RUN_ATTEMPT = Number(process.env.GITHUB_RUN_ATTEMPT);
 /**
- * The owner and repository name.
- * For example, octocat/Hello-World.
- */
-const GITHUB_REPOSITORY = NES.unsafeFromString(process.env.GITHUB_REPOSITORY);
-/**
  * The ID of the repository.
  * For example, 123456789.
  * Note that this is different from the repository name.
@@ -48581,24 +48558,6 @@ const GITHUB_REPOSITORY_ID = Number(process.env.GITHUB_REPOSITORY_ID);
  * Note that this is different from the owner's name.
  */
 const GITHUB_REPOSITORY_OWNER_ID = Number(process.env.GITHUB_REPOSITORY_OWNER_ID);
-/**
- * The commit SHA that triggered the workflow.
- * The value of this commit SHA depends on the event that triggered the workflow.
- * For more information, see [Events that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
- * For example, ffac537e6cbbf934b08745a378932722df287a53.
- */
-const GITHUB_SHA = NES.unsafeFromString(process.env.GITHUB_SHA);
-/**
- * The short ref name of the branch or tag that triggered the workflow run.
- * This value matches the branch or tag name shown on GitHub.
- * For example, feature-branch-1.
- */
-const GITHUB_REF_NAME = NES.unsafeFromString(process.env.GITHUB_REF_NAME);
-/**
- * The type of ref that triggered the workflow run.
- * Valid values are "branch" or "tag".
- */
-const GITHUB_REF_TYPE = NES.unsafeFromString(process.env.GITHUB_REF_TYPE);
 /**
  * [Not documented]
  *
@@ -48618,11 +48577,6 @@ const RUNNER_OS = RunnerOs.unsafeFromString(process.env.RUNNER_OS);
  */
 const RUNNER_ARCH = RunnerArch.unsafeFromString(process.env.RUNNER_ARCH);
 /**
- * Returns the API URL.
- * For example: https://api.github.com.
- */
-const GITHUB_API_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_API_URL);
-/**
  * The name of the person or app that initiated the workflow.
  * For example, octocat.
  */
@@ -48632,37 +48586,19 @@ const GITHUB_ACTOR = NES.unsafeFromString(process.env.GITHUB_ACTOR);
  * For example, 1234567. Note that this is different from the actor username.
  */
 const GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
-/**
- * The URL of the GitHub server.
- * For example: https://github.com.
- */
-const GITHUB_SERVER_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_SERVER_URL);
-/**
- * Comes from https://docs.github.com/en/actions/learn-github-actions/variables
- */
-const WORKFLOW_URL = HttpsUrl.unsafeFromString(`${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`);
-const REF = Ref_.unsafeMake(GITHUB_REF_TYPE, GITHUB_REF_NAME);
 const debugVariables = () => {
     lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
     lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
     lib_core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`);
     lib_core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`);
     lib_core.debug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`);
-    lib_core.debug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
     lib_core.debug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`);
     lib_core.debug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`);
-    lib_core.debug(`GITHUB_SHA: ${GITHUB_SHA}`);
-    lib_core.debug(`GITHUB_REF_NAME: ${GITHUB_REF_NAME}`);
-    lib_core.debug(`GITHUB_REF_TYPE: ${GITHUB_REF_TYPE}`);
     lib_core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`);
     lib_core.debug(`RUNNER_OS: ${RUNNER_OS}`);
     lib_core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
-    lib_core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`);
     lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
-    lib_core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`);
-    lib_core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`);
-    lib_core.debug(`REF: ${REF}`);
 };
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
@@ -50830,29 +50766,55 @@ var github = __nccwpck_require__(3695);
 
 
 
-const run_context = github.context;
-lib_core.debug(`-- context: ${JSON.stringify(run_context, null, 2)}`);
+
+const isPullRequest = (context) => context.payload.pull_request !== undefined;
+lib_core.debug(`-- context: ${JSON.stringify(github.context, null, 2)}`);
+lib_core.debug(`-- isPullRequest : ${isPullRequest(github.context)}`);
+class PullRequest extends TaggedClass("PullRequest") {
+    static unsafeFrom(context) {
+        if (isPullRequest(context)) {
+            const pr = context.payload.pull_request;
+            return new PullRequest({
+                prId: Number(pr.id),
+                prNumber: Number(pr.number),
+                prTitle: NES.unsafeFromString(pr.title),
+                baseLabel: NES.unsafeFromString(pr.base.label),
+                baseRef: NES.unsafeFromString(pr.base.ref),
+                baseSha: NES.unsafeFromString(pr.base.sha),
+                headLabel: NES.unsafeFromString(pr.head.label),
+                headRef: NES.unsafeFromString(pr.head.ref),
+                headSha: NES.unsafeFromString(pr.head.sha),
+                userId: Number(pr.user.id),
+            });
+        }
+        else {
+            return undefined;
+        }
+    }
+}
 // prettier-ignore
 class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
-    static from(data, computedAt) {
-        return new PostJmhResultBody({
+    static unsafeFrom(context, data, computedAt) {
+        const r = new PostJmhResultBody({
             workflowRunId: GITHUB_RUN_ID,
             workflowRunNumber: GITHUB_RUN_NUMBER,
             workflowRunnerName: RUNNER_NAME,
             workflowRunAttempt: GITHUB_RUN_ATTEMPT,
-            workflowUrl: WORKFLOW_URL,
             runnerEnvironment: RUNNER_ENVIRONMENT,
             runnerOs: RUNNER_OS,
             runnerArch: RUNNER_ARCH,
             orgId: GITHUB_REPOSITORY_OWNER_ID,
             projectId: GITHUB_REPOSITORY_ID,
-            ref: REF,
-            commitHash: GITHUB_SHA,
+            commitHash: NES.unsafeFromString(context.payload.after),
+            previousCommitHash: NES.unsafeFromString(context.payload.before),
             actor: GITHUB_ACTOR,
             actorId: GITHUB_ACTOR_ID,
+            pr: PullRequest.unsafeFrom(context),
             data: data,
             computedAt: computedAt
         });
+        lib_core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`);
+        return r;
     }
 }
 const execCommands = (inputs) => {
@@ -50913,7 +50875,7 @@ const pingServer = Effect_tryPromise({
 });
 const uploadResults = (inputs, results, computedAt) => Effect_tryPromise({
     try: (signal) => {
-        const body = PostJmhResultBody.from(results, computedAt);
+        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt);
         const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
         const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
         return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
