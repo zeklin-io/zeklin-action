@@ -7,17 +7,52 @@ import * as fs from "fs/promises"
 import { Inputs } from "./index.js"
 import { logDebug, logInfo } from "./utils.js"
 import * as envvars from "./envvars.js"
-import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars.js"
+import { HttpsUrl, NES, RunnerArch, RunnerOs } from "./envvars.js"
 import * as path from "path"
 import fetch from "node-fetch"
-
 import * as github from "@actions/github"
+import { Context } from "@actions/github/lib/context.js"
 
-const context = github.context
-const isPullRequest = github.context.payload.pull_request !== undefined
+const isPullRequest = (context: Context) => context.payload.pull_request !== undefined
 
-core.debug(`-- context: ${JSON.stringify(context, null, 2)}`)
-core.debug(`-- isPullRequest : ${isPullRequest}`)
+core.debug(`-- context: ${JSON.stringify(github.context, null, 2)}`)
+core.debug(`-- isPullRequest : ${isPullRequest(github.context)}`)
+
+class PullRequest extends Data.TaggedClass("PullRequest")<{
+  prId: number
+  prNumber: number
+  prTitle: NES
+  baseLabel: NES
+  baseRef: NES
+  baseSha: NES
+  headLabel: NES
+  headRef: NES
+  headSha: NES
+  userId: number
+}> {
+  static unsafeFrom(context: Context): Option.Option<PullRequest> {
+    if (isPullRequest(context)) {
+      const pr = context.payload.pull_request!
+
+      return Option.some(
+        new PullRequest({
+          prId: Number(pr.id),
+          prNumber: Number(pr.number),
+          prTitle: NES.unsafeFromString(pr.title),
+          baseLabel: NES.unsafeFromString(pr.base.label),
+          baseRef: NES.unsafeFromString(pr.base.ref),
+          baseSha: NES.unsafeFromString(pr.base.sha),
+          headLabel: NES.unsafeFromString(pr.head.label),
+          headRef: NES.unsafeFromString(pr.head.ref),
+          headSha: NES.unsafeFromString(pr.head.sha),
+          userId: Number(pr.user.id),
+        }),
+      )
+    } else {
+      return Option.none()
+    }
+  }
+}
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
@@ -31,44 +66,39 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   runnerArch: RunnerArch       // RUNNER_ARCH
   orgId: number                // GITHUB_REPOSITORY_OWNER_ID
   projectId: number            // GITHUB_REPOSITORY_ID
-  ref: Ref                     // GITHUB_REF_TYPE & GITHUB_REF_NAME
-  commitHash: NES              // GITHUB_SHA
+  commitHash: NES
+  previousCommitHash: NES,
   actor: NES                   // GITHUB_ACTOR
   actorId: number              // GITHUB_ACTOR_ID
-  baseLabel: NES
-  baseRef: NES,
-  baseSha: NES,
-  headLabel: NES,
-  headRef: NES,
-  headSha: NES,
+  pr: Option.Option<PullRequest>
   data: JSON
   computedAt: Date
 }> {
-  static from(data: JSON, computedAt: Date): PostJmhResultBody {
-    return new PostJmhResultBody({
-      workflowRunId: envvars.GITHUB_RUN_ID,
-      workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
-      workflowRunnerName: envvars.RUNNER_NAME,
-      workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
-      workflowUrl: envvars.WORKFLOW_URL,
-      runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
-      runnerOs: envvars.RUNNER_OS,
-      runnerArch: envvars.RUNNER_ARCH,
-      orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
-      projectId: envvars.GITHUB_REPOSITORY_ID,
-      ref: envvars.REF,
-      commitHash: envvars.GITHUB_SHA,
-      actor: envvars.GITHUB_ACTOR,
-      actorId: envvars.GITHUB_ACTOR_ID,
-      baseLabel: NES.unsafeFromString(context.payload.pull_request?.base.label),
-      baseRef: NES.unsafeFromString(context.payload.pull_request?.base.ref),
-      baseSha: NES.unsafeFromString(context.payload.pull_request?.base.sha),
-      headLabel: NES.unsafeFromString(context.payload.pull_request?.head.label),
-      headRef: NES.unsafeFromString(context.payload.pull_request?.head.ref),
-      headSha: NES.unsafeFromString(context.payload.pull_request?.head.sha),
-      data: data,
-      computedAt: computedAt
-    })
+  static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
+    const r =
+      new PostJmhResultBody({
+        workflowRunId: envvars.GITHUB_RUN_ID,
+        workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
+        workflowRunnerName: envvars.RUNNER_NAME,
+        workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
+        workflowUrl: envvars.WORKFLOW_URL,
+        runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
+        runnerOs: envvars.RUNNER_OS,
+        runnerArch: envvars.RUNNER_ARCH,
+        orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
+        projectId: envvars.GITHUB_REPOSITORY_ID,
+        commitHash: NES.unsafeFromString(context.payload.after),
+        previousCommitHash: NES.unsafeFromString(context.payload.before),
+        actor: envvars.GITHUB_ACTOR,
+        actorId: envvars.GITHUB_ACTOR_ID,
+        pr: PullRequest.unsafeFrom(context),
+        data: data,
+        computedAt: computedAt
+      })
+
+    core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`)
+
+    return r
   }
 }
 
@@ -156,7 +186,7 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
 ) =>
   Effect.tryPromise({
     try: (signal) => {
-      const body = PostJmhResultBody.from(results, computedAt)
+      const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt)
       const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
       const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 

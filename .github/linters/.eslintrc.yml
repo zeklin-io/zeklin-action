@@ -50,6 +50,7 @@ rules:
     'object-shorthand': 'off',
     'no-redeclare': 'off',
     'import/no-unresolved': 'off',
+    'import/extensions': 'off',
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/ban-ts-comment': 'error',
