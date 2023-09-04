@@ -11,13 +11,6 @@ export const NES = {
   unsafeFromString: (s: string): NES => S.parseSync(NESSchema)(s),
 }
 
-const HttpsUrlBrand = Symbol.for("HttpsUrl")
-const HttpsUrlSchema = pipe(S.string, S.trim, S.startsWith("https://"), S.brand(HttpsUrlBrand))
-export type HttpsUrl = S.To<typeof HttpsUrlSchema>
-const HttpsUrl = {
-  unsafeFromString: (s: string): HttpsUrl => S.parseSync(HttpsUrlSchema)(s),
-}
-
 export type RunnerOs = "linux" | "windows" | "macos"
 const RunnerOs = {
   unsafeFromString: (s: string): RunnerOs => {
@@ -121,12 +114,6 @@ export const RUNNER_OS: RunnerOs = RunnerOs.unsafeFromString(process.env.RUNNER_
 export const RUNNER_ARCH: RunnerArch = RunnerArch.unsafeFromString(process.env.RUNNER_ARCH!)
 
 /**
- * Returns the API URL.
- * For example: https://api.github.com.
- */
-export const GITHUB_API_URL: HttpsUrl = HttpsUrl.unsafeFromString(process.env.GITHUB_API_URL!)
-
-/**
  * The name of the person or app that initiated the workflow.
  * For example, octocat.
  */
@@ -149,7 +136,6 @@ export const debugVariables = () => {
   core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`)
   core.debug(`RUNNER_OS: ${RUNNER_OS}`)
   core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`)
-  core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`)
   core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
   core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
 }

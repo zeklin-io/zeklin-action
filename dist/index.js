@@ -48488,11 +48488,6 @@ const NES = {
     fromString: (s) => parseOption(NESSchema)(s),
     unsafeFromString: (s) => parseSync(NESSchema)(s),
 };
-const HttpsUrlBrand = Symbol.for("HttpsUrl");
-const HttpsUrlSchema = Function_pipe(Schema_string, trim, startsWith("https://"), brand(HttpsUrlBrand));
-const HttpsUrl = {
-    unsafeFromString: (s) => parseSync(HttpsUrlSchema)(s),
-};
 const RunnerOs = {
     unsafeFromString: (s) => {
         switch (s.toLowerCase()) {
@@ -48582,11 +48577,6 @@ const RUNNER_OS = RunnerOs.unsafeFromString(process.env.RUNNER_OS);
  */
 const RUNNER_ARCH = RunnerArch.unsafeFromString(process.env.RUNNER_ARCH);
 /**
- * Returns the API URL.
- * For example: https://api.github.com.
- */
-const GITHUB_API_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_API_URL);
-/**
  * The name of the person or app that initiated the workflow.
  * For example, octocat.
  */
@@ -48607,7 +48597,6 @@ const debugVariables = () => {
     lib_core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`);
     lib_core.debug(`RUNNER_OS: ${RUNNER_OS}`);
     lib_core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
-    lib_core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`);
     lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
 };
