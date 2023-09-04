@@ -1,6 +1,6 @@
 import { Data, Option, pipe } from "effect"
-import { logDebug } from "./utils.js"
 import * as S from "@effect/schema/Schema"
+import * as core from "@actions/core"
 
 const NESBrand = Symbol.for("NonEmptyString")
 const NESSchema = pipe(S.string, S.trim, S.nonEmpty(), S.brand(NESBrand))
@@ -195,24 +195,24 @@ export const WORKFLOW_URL: HttpsUrl = HttpsUrl.unsafeFromString(`${GITHUB_SERVER
 export const REF: Ref = Ref_.unsafeMake(GITHUB_REF_TYPE, GITHUB_REF_NAME)
 
 export const debugVariables = () => {
-  logDebug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
-  logDebug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
-  logDebug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`)
-  logDebug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`)
-  logDebug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`)
-  logDebug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`)
-  logDebug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`)
-  logDebug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`)
-  logDebug(`GITHUB_SHA: ${GITHUB_SHA}`)
-  logDebug(`GITHUB_REF_NAME: ${GITHUB_REF_NAME}`)
-  logDebug(`GITHUB_REF_TYPE: ${GITHUB_REF_TYPE}`)
-  logDebug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`)
-  logDebug(`RUNNER_OS: ${RUNNER_OS}`)
-  logDebug(`RUNNER_ARCH: ${RUNNER_ARCH}`)
-  logDebug(`GITHUB_API_URL: ${GITHUB_API_URL}`)
-  logDebug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
-  logDebug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
-  logDebug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`)
-  logDebug(`WORKFLOW_URL: ${WORKFLOW_URL}`)
-  logDebug(`REF: ${REF}`)
+  core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
+  core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
+  core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`)
+  core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`)
+  core.debug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`)
+  core.debug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`)
+  core.debug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`)
+  core.debug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`)
+  core.debug(`GITHUB_SHA: ${GITHUB_SHA}`)
+  core.debug(`GITHUB_REF_NAME: ${GITHUB_REF_NAME}`)
+  core.debug(`GITHUB_REF_TYPE: ${GITHUB_REF_TYPE}`)
+  core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`)
+  core.debug(`RUNNER_OS: ${RUNNER_OS}`)
+  core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`)
+  core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`)
+  core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
+  core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
+  core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`)
+  core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`)
+  core.debug(`REF: ${REF}`)
 }
