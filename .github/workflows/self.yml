@@ -8,7 +8,7 @@ on:
       - 'releases/*'
 
 env:
-  ZEKLIN_SERVER_URL: ${{ secrets.ZEKLIN_SERVER_URL }}
+  ZEKLIN_SERVER_URL: ${{ secrets.LOCAL_ZEKLIN_SERVER_URL }}
 
 jobs:
   test-action:
