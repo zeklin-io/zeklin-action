@@ -50802,7 +50802,7 @@ class PullRequest extends TaggedClass("PullRequest") {
     static unsafeFrom(context) {
         if (isPullRequest(context)) {
             const pr = context.payload.pull_request;
-            return mjs_Option_some(new PullRequest({
+            return new PullRequest({
                 prId: Number(pr.id),
                 prNumber: Number(pr.number),
                 prTitle: NES.unsafeFromString(pr.title),
@@ -50813,10 +50813,10 @@ class PullRequest extends TaggedClass("PullRequest") {
                 headRef: NES.unsafeFromString(pr.head.ref),
                 headSha: NES.unsafeFromString(pr.head.sha),
                 userId: Number(pr.user.id),
-            }));
+            });
         }
         else {
-            return Option_none();
+            return undefined;
         }
     }
 }

@@ -30,26 +30,24 @@ class PullRequest extends Data.TaggedClass("PullRequest")<{
   headSha: NES
   userId: number
 }> {
-  static unsafeFrom(context: Context): Option.Option<PullRequest> {
+  static unsafeFrom(context: Context): PullRequest | undefined {
     if (isPullRequest(context)) {
       const pr = context.payload.pull_request!
 
-      return Option.some(
-        new PullRequest({
-          prId: Number(pr.id),
-          prNumber: Number(pr.number),
-          prTitle: NES.unsafeFromString(pr.title),
-          baseLabel: NES.unsafeFromString(pr.base.label),
-          baseRef: NES.unsafeFromString(pr.base.ref),
-          baseSha: NES.unsafeFromString(pr.base.sha),
-          headLabel: NES.unsafeFromString(pr.head.label),
-          headRef: NES.unsafeFromString(pr.head.ref),
-          headSha: NES.unsafeFromString(pr.head.sha),
-          userId: Number(pr.user.id),
-        }),
-      )
+      return new PullRequest({
+        prId: Number(pr.id),
+        prNumber: Number(pr.number),
+        prTitle: NES.unsafeFromString(pr.title),
+        baseLabel: NES.unsafeFromString(pr.base.label),
+        baseRef: NES.unsafeFromString(pr.base.ref),
+        baseSha: NES.unsafeFromString(pr.base.sha),
+        headLabel: NES.unsafeFromString(pr.head.label),
+        headRef: NES.unsafeFromString(pr.head.ref),
+        headSha: NES.unsafeFromString(pr.head.sha),
+        userId: Number(pr.user.id),
+      })
     } else {
-      return Option.none()
+      return undefined
     }
   }
 }
@@ -70,7 +68,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   previousCommitHash: NES,
   actor: NES                   // GITHUB_ACTOR
   actorId: number              // GITHUB_ACTOR_ID
-  pr: Option.Option<PullRequest>
+  pr: PullRequest | undefined
   data: JSON
   computedAt: Date
 }> {
