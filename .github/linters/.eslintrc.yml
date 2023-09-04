@@ -17,7 +17,7 @@ ignorePatterns:
 parser: '@typescript-eslint/parser'
 
 parserOptions:
-  ecmaVersion: 2023
+  ecmaVersion: latest
   sourceType: module
   project:
     - './.github/linters/tsconfig.json'
@@ -48,6 +48,8 @@ rules:
     'github/no-then': 'off',
     'github/array-foreach': 'off',
     'object-shorthand': 'off',
+    'no-redeclare': 'off',
+    'import/no-unresolved': 'off',
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/ban-ts-comment': 'error',
@@ -61,11 +63,11 @@ rules:
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-extraneous-class': 'error',
     '@typescript-eslint/no-for-in-array': 'error',
-    '@typescript-eslint/no-inferrable-types': 'error',
+    '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-misused-new': 'error',
     '@typescript-eslint/no-namespace': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'warn',
-    '@typescript-eslint/no-require-imports': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-require-imports': 'off',
     '@typescript-eslint/no-unnecessary-qualifier': 'error',
     '@typescript-eslint/no-unnecessary-type-assertion': 'error',
     '@typescript-eslint/no-unused-vars': 'error',

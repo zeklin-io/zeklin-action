@@ -11,7 +11,7 @@ import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars.js"
 import * as path from "path"
 import fetch from "node-fetch"
 
-const github = require("@actions/github")
+import github from "@actions/github"
 
 const context = github.context
 
@@ -54,14 +54,14 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       actorId: envvars.GITHUB_ACTOR_ID,
       data: data,
       computedAt: computedAt
-    });
+    })
   }
 }
 
 const execCommands: (inputs: Inputs) => Effect.Effect<never, Error, ExitCode> = (inputs: Inputs) => {
   const args: string[] = []
 
-  // @ts-ignore
+  // @ts-expect-error "The TS `exactOptionalPropertyTypes` option make it fail to compile"
   const options: ExecOptions = {
     cwd: Option.getOrUndefined(inputs.workdir),
     listeners: {
