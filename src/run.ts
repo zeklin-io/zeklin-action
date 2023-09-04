@@ -58,7 +58,6 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   workflowRunNumber: number    // GITHUB_RUN_NUMBER
   workflowRunnerName: NES      // GITHUB_RUNNER_NAME
   workflowRunAttempt: number   // GITHUB_RUN_ATTEMPT
-  workflowUrl: HttpsUrl        // WORKFLOW_URL
   runnerEnvironment: NES       // RUNNER_ENVIRONMENT
   runnerOs: RunnerOs           // RUNNER_OS
   runnerArch: RunnerArch       // RUNNER_ARCH
@@ -79,7 +78,6 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
         workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
         workflowRunnerName: envvars.RUNNER_NAME,
         workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
-        workflowUrl: envvars.WORKFLOW_URL,
         runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
         runnerOs: envvars.RUNNER_OS,
         runnerArch: envvars.RUNNER_ARCH,

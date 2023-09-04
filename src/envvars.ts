@@ -87,12 +87,6 @@ export const RUNNER_NAME: NES = NES.unsafeFromString(process.env.RUNNER_NAME!)
 export const GITHUB_RUN_ATTEMPT: number = Number(process.env.GITHUB_RUN_ATTEMPT!)
 
 /**
- * The owner and repository name.
- * For example, octocat/Hello-World.
- */
-export const GITHUB_REPOSITORY: NES = NES.unsafeFromString(process.env.GITHUB_REPOSITORY!)
-
-/**
  * The ID of the repository.
  * For example, 123456789.
  * Note that this is different from the repository name.
@@ -144,24 +138,12 @@ export const GITHUB_ACTOR: NES = NES.unsafeFromString(process.env.GITHUB_ACTOR!)
  */
 export const GITHUB_ACTOR_ID: number = Number(process.env.GITHUB_ACTOR_ID!)
 
-/**
- * The URL of the GitHub server.
- * For example: https://github.com.
- */
-export const GITHUB_SERVER_URL: HttpsUrl = HttpsUrl.unsafeFromString(process.env.GITHUB_SERVER_URL!)
-
-/**
- * Comes from https://docs.github.com/en/actions/learn-github-actions/variables
- */
-export const WORKFLOW_URL: HttpsUrl = HttpsUrl.unsafeFromString(`${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`)
-
 export const debugVariables = () => {
   core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
   core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
   core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`)
   core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`)
   core.debug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`)
-  core.debug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`)
   core.debug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`)
   core.debug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`)
   core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`)
@@ -170,6 +152,4 @@ export const debugVariables = () => {
   core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`)
   core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
   core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
-  core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`)
-  core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`)
 }

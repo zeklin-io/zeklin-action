@@ -48552,11 +48552,6 @@ const RUNNER_NAME = NES.unsafeFromString(process.env.RUNNER_NAME);
  */
 const GITHUB_RUN_ATTEMPT = Number(process.env.GITHUB_RUN_ATTEMPT);
 /**
- * The owner and repository name.
- * For example, octocat/Hello-World.
- */
-const GITHUB_REPOSITORY = NES.unsafeFromString(process.env.GITHUB_REPOSITORY);
-/**
  * The ID of the repository.
  * For example, 123456789.
  * Note that this is different from the repository name.
@@ -48601,22 +48596,12 @@ const GITHUB_ACTOR = NES.unsafeFromString(process.env.GITHUB_ACTOR);
  * For example, 1234567. Note that this is different from the actor username.
  */
 const GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
-/**
- * The URL of the GitHub server.
- * For example: https://github.com.
- */
-const GITHUB_SERVER_URL = HttpsUrl.unsafeFromString(process.env.GITHUB_SERVER_URL);
-/**
- * Comes from https://docs.github.com/en/actions/learn-github-actions/variables
- */
-const WORKFLOW_URL = HttpsUrl.unsafeFromString(`${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`);
 const debugVariables = () => {
     lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
     lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
     lib_core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`);
     lib_core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`);
     lib_core.debug(`GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}`);
-    lib_core.debug(`GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
     lib_core.debug(`GITHUB_REPOSITORY_ID: ${GITHUB_REPOSITORY_ID}`);
     lib_core.debug(`GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}`);
     lib_core.debug(`RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}`);
@@ -48625,8 +48610,6 @@ const debugVariables = () => {
     lib_core.debug(`GITHUB_API_URL: ${GITHUB_API_URL}`);
     lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
-    lib_core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`);
-    lib_core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`);
 };
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
@@ -50828,7 +50811,6 @@ class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
             workflowRunNumber: GITHUB_RUN_NUMBER,
             workflowRunnerName: RUNNER_NAME,
             workflowRunAttempt: GITHUB_RUN_ATTEMPT,
-            workflowUrl: WORKFLOW_URL,
             runnerEnvironment: RUNNER_ENVIRONMENT,
             runnerOs: RUNNER_OS,
             runnerArch: RUNNER_ARCH,
