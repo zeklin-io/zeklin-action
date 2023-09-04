@@ -14,7 +14,10 @@ import fetch from "node-fetch"
 import * as github from "@actions/github"
 
 const context = github.context
+const isPullRequest = github.context.payload.pull_request !== undefined
+
 core.debug(`-- context: ${JSON.stringify(context, null, 2)}`)
+core.debug(`-- isPullRequest : ${isPullRequest}`)
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
@@ -32,6 +35,12 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   commitHash: NES              // GITHUB_SHA
   actor: NES                   // GITHUB_ACTOR
   actorId: number              // GITHUB_ACTOR_ID
+  baseLabel: NES
+  baseRef: NES,
+  baseSha: NES,
+  headLabel: NES,
+  headRef: NES,
+  headSha: NES,
   data: JSON
   computedAt: Date
 }> {
@@ -51,6 +60,12 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       commitHash: envvars.GITHUB_SHA,
       actor: envvars.GITHUB_ACTOR,
       actorId: envvars.GITHUB_ACTOR_ID,
+      baseLabel: NES.unsafeFromString(context.payload.pull_request?.base.label),
+      baseRef: NES.unsafeFromString(context.payload.pull_request?.base.ref),
+      baseSha: NES.unsafeFromString(context.payload.pull_request?.base.sha),
+      headLabel: NES.unsafeFromString(context.payload.pull_request?.head.label),
+      headRef: NES.unsafeFromString(context.payload.pull_request?.head.ref),
+      headSha: NES.unsafeFromString(context.payload.pull_request?.head.sha),
       data: data,
       computedAt: computedAt
     })
