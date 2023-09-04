@@ -7,6 +7,9 @@ on:
       - main
       - 'releases/*'
 
+env:
+  ZEKLIN_SERVER_URL: ${{ secrets.ZEKLIN_SERVER_URL }}
+
 jobs:
   test-action:
     name: zeklin-action test
@@ -21,17 +24,23 @@ jobs:
         id: test-action
         uses: ./
         with:
-          apikey: "this is an api key"
-          cmd: echo 'hello world'
-          workdir: "." # optional
+          api-key: ${{ secrets.ZEKLIN_API_KEY }}
+          api-key-id: ${{ secrets.ZEKLIN_API_KEY_ID }}
+          output-file-path: 'jmh_samples_all.json'
+          workdir: "."
+          cmd: |
+            echo 'hello world'
+            ls
 
       - name: Test Failing Action
         id: test-failing-action
         continue-on-error: true
         uses: ./
         with:
-          apikey: "this is an api key"
+          api-key: ${{ secrets.ZEKLIN_API_KEY }}
+          api-key-id: ${{ secrets.ZEKLIN_API_KEY_ID }}
           cmd: sh -c "if true; then exit 1; fi"
+          output-file-path: '../empty_report.json'
 
       - name: Print Output
         id: output
@@ -44,8 +53,9 @@ jobs:
       JAVA_OPTS: -Xms6g -Xmx6g -XX:+UseG1GC
       JDK_JAVA_OPTIONS: -Xms6g -Xmx6g -XX:+UseG1GC # See https://stackoverflow.com/a/73708006
     strategy:
+      fail-fast: false
       matrix:
-        jmh-samples: ["0", "1", "2", "3.0", "3.1"]
+        jmh-samples: [ "0", "1", "2", "3.0", "3.1" ]
     steps:
       - run: env
       - uses: actions/checkout@v3
@@ -70,9 +80,13 @@ jobs:
 
       - name: Test Action with JMH - ${{ matrix.jmh-samples }}
         uses: ./
+        env:
+          NODE_DEBUG: http # See: https://github.com/actions/toolkit/tree/main/packages/http-client#debugging
         with:
-          apikey: "this is an api key"
+          api-key: ${{ secrets.ZEKLIN_API_KEY }}
+          api-key-id: ${{ secrets.ZEKLIN_API_KEY_ID }}
           workdir: jmh-dir/jmh-samples-${{ matrix.jmh-samples }}
+          output-file-path: 'reports.json'
           cmd: |
             java -jar target/benchmarks.jar -wi 2 -i 2 -r 1 -w 1 -t 1 -f 1 -foe true -rff reports.json -rf json
             ls
