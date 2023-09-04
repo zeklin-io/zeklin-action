@@ -214,5 +214,5 @@ export const debugVariables = () => {
   core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
   core.debug(`GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}`)
   core.debug(`WORKFLOW_URL: ${WORKFLOW_URL}`)
-  core.debug(`REF: ${REF}`)
+  core.debug(`REF: ${JSON.stringify(REF)}`)
 }
