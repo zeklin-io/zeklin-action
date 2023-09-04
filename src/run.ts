@@ -11,9 +11,9 @@ import { HttpsUrl, NES, Ref, RunnerArch, RunnerOs } from "./envvars.js"
 import * as path from "path"
 import fetch from "node-fetch"
 
-import { context } from "@actions/github"
+import github from "@actions/github"
 
-core.debug(`-- context: ${JSON.stringify(context, null, 2)}`)
+core.debug(`-- context: ${JSON.stringify(github.context, null, 2)}`)
 
 // prettier-ignore
 class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
