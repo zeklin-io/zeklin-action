@@ -51664,7 +51664,7 @@ class PullRequest extends TaggedClass("PullRequest") {
 // prettier-ignore
 class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
     static unsafeFrom(context, data, computedAt) {
-        const r = new PostJmhResultBody({
+        return new PostJmhResultBody({
             workflowRunId: GITHUB_RUN_ID,
             workflowRunNumber: GITHUB_RUN_NUMBER,
             workflowRunnerName: RUNNER_NAME,
@@ -51683,8 +51683,6 @@ class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
             computedAt: computedAt,
             context: context
         });
-        lib_core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`);
-        return r;
     }
 }
 const execCommands = (inputs) => {

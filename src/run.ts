@@ -73,30 +73,25 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   context: Context
 }> {
   static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
-    const r =
-      new PostJmhResultBody({
-        workflowRunId: envvars.GITHUB_RUN_ID,
-        workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
-        workflowRunnerName: envvars.RUNNER_NAME,
-        workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
-        runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
-        runnerOs: envvars.RUNNER_OS,
-        runnerArch: envvars.RUNNER_ARCH,
-        orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
-        projectId: envvars.GITHUB_REPOSITORY_ID,
-        commitHash: NES.unsafeFromString(context.payload.after),
-        previousCommitHash: NES.unsafeFromString(context.payload.before),
-        actor: envvars.GITHUB_ACTOR,
-        actorId: envvars.GITHUB_ACTOR_ID,
-        pr: PullRequest.unsafeFrom(context),
-        data: data,
-        computedAt: computedAt,
-        context: context
-      })
-
-    core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`)
-
-    return r
+    return new PostJmhResultBody({
+      workflowRunId: envvars.GITHUB_RUN_ID,
+      workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
+      workflowRunnerName: envvars.RUNNER_NAME,
+      workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
+      runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
+      runnerOs: envvars.RUNNER_OS,
+      runnerArch: envvars.RUNNER_ARCH,
+      orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
+      projectId: envvars.GITHUB_REPOSITORY_ID,
+      commitHash: NES.unsafeFromString(context.payload.after),
+      previousCommitHash: NES.unsafeFromString(context.payload.before),
+      actor: envvars.GITHUB_ACTOR,
+      actorId: envvars.GITHUB_ACTOR_ID,
+      pr: PullRequest.unsafeFrom(context),
+      data: data,
+      computedAt: computedAt,
+      context: context
+    })
   }
 }
 
