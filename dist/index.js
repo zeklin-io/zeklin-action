@@ -44734,7 +44734,7 @@ const Brand_all = (...brands) => {
   });
 };
 //# sourceMappingURL=Brand.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/internal/common.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/internal/common.mjs
 /**
  * @since 1.0.0
  */
@@ -44764,6 +44764,10 @@ const getKeysForIndexSignature = (input, parameter) => {
 // general helpers
 // ---------------------------------------------
 /** @internal */
+const maxSafeInteger = /*#__PURE__*/BigInt(Number.MAX_SAFE_INTEGER);
+/** @internal */
+const minSafeInteger = /*#__PURE__*/BigInt(Number.MIN_SAFE_INTEGER);
+/** @internal */
 const common_ownKeys = o => Object.keys(o).concat(Object.getOwnPropertySymbols(o));
 /** @internal */
 const memoizeThunk = f => {
@@ -44779,7 +44783,7 @@ const memoizeThunk = f => {
   };
 };
 //# sourceMappingURL=common.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/ParseResult.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/ParseResult.mjs
 /**
  * @since 1.0.0
  */
@@ -44905,7 +44909,7 @@ const ParseResult_map = (self, f) => {
   return Effect_map(self, f);
 };
 //# sourceMappingURL=ParseResult.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/AST.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/AST.mjs
 /**
  * @since 1.0.0
  */
@@ -45794,7 +45798,7 @@ const _keyof = ast => {
   }
 };
 //# sourceMappingURL=AST.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/TreeFormatter.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/TreeFormatter.mjs
 /**
  * @since 1.0.0
  */
@@ -45920,7 +45924,7 @@ const go = e => {
   }
 };
 //# sourceMappingURL=TreeFormatter.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Parser.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Parser.mjs
 /**
  * @since 1.0.0
  */
@@ -46812,7 +46816,7 @@ const Parser_reverse = ast => {
   return ast;
 };
 //# sourceMappingURL=Parser.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.33.2_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Schema.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.3_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Schema.mjs
 /**
  * @since 1.0.0
  */
@@ -47162,7 +47166,7 @@ const brand = (brand, options) => self => {
       meta: input,
       message: formatErrors(e.errors)
     }]),
-    refine: input => is(input),
+    is: input => is(input),
     pipe() {
       return Pipeable_pipeArguments(this, arguments);
     }
@@ -47642,6 +47646,40 @@ const bigintFromString = self => {
  * @since 1.0.0
  */
 const BigintFromString = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromString(Schema_string)));
+/**
+ * This combinator transforms a `number` into a `bigint` by parsing the number using the `BigInt` function.
+ *
+ * It returns an error if the value can't be safely encoded as a `number` due to being out of range.
+ *
+ * @param self - The schema representing the input number
+ *
+ * @category bigint
+ * @since 1.0.0
+ */
+const bigintFromNumber = self => {
+  const schema = transformResult(self, Schema_bigint, n => {
+    try {
+      return PR.success(BigInt(n));
+    } catch (_) {
+      return PR.failure(PR.type(schema.ast, n));
+    }
+  }, b => {
+    if (b > I.maxSafeInteger || b < I.minSafeInteger) {
+      return PR.failure(PR.type(schema.ast, b));
+    }
+    return PR.success(Number(b));
+  });
+  return schema;
+};
+/**
+ * This schema transforms a `number` into a `bigint` by parsing the number using the `BigInt` function.
+ *
+ * It returns an error if the value can't be safely encoded as a `number` due to being out of range.
+ *
+ * @category bigint
+ * @since 1.0.0
+ */
+const BigintFromNumber = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromNumber(Schema_number)));
 // ---------------------------------------------
 // data/Boolean
 // ---------------------------------------------
@@ -48452,6 +48490,39 @@ const Schema_includes = (searchString, options) => self => self.pipe(Schema_filt
 const trim = self => Schema_transform(self, to(self).pipe(trimmed()), s => s.trim(),
 // this is safe because `pipe(to(self), trimmed())` will check its input anyway
 Function_identity);
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const LowercasedTypeId = "@effect/schema/LowercasedTypeId";
+/**
+ * Verifies that a string is lowercased
+ *
+ * Note. This combinator does not make any transformations, it only validates.
+ * If what you were looking for was a combinator to lowercase strings, then check out the `lowercase` combinator.
+ *
+ * @category string
+ * @since 1.0.0
+ */
+const lowercased = options => self => self.pipe(Schema_filter(a => a === a.toLowerCase(), {
+  typeId: LowercasedTypeId,
+  description: "a lowercase string",
+  ...options
+}));
+/**
+ * This combinator converts a string to lowercase
+ *
+ * @category string
+ * @since 1.0.0
+ */
+const lowercase = self => Schema_transform(self, to(self).pipe(lowercased()), s => s.toLowerCase(), identity);
+/**
+ * This combinator converts a string to lowercase
+ *
+ * @category string
+ * @since 1.0.0
+ */
+const Lowercase = /*#__PURE__*/(/* unused pure expression or super */ null && (lowercase(Schema_string)));
 /**
  * This schema allows removing whitespaces from the beginning and end of a string.
  *
