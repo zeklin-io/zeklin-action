@@ -1,6 +1,6 @@
 import * as core from "@actions/core"
 import { ExitCode } from "@actions/core"
-import { Data, Option, pipe } from "effect"
+import { Data, Duration, Option, pipe, Schedule } from "effect"
 import * as Effect from "effect/Effect"
 import { exec, ExecOptions } from "@actions/exec"
 import * as fs from "fs/promises"
@@ -73,30 +73,25 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   context: Context
 }> {
   static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
-    const r =
-      new PostJmhResultBody({
-        workflowRunId: envvars.GITHUB_RUN_ID,
-        workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
-        workflowRunnerName: envvars.RUNNER_NAME,
-        workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
-        runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
-        runnerOs: envvars.RUNNER_OS,
-        runnerArch: envvars.RUNNER_ARCH,
-        orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
-        projectId: envvars.GITHUB_REPOSITORY_ID,
-        commitHash: NES.unsafeFromString(context.payload.after),
-        previousCommitHash: NES.unsafeFromString(context.payload.before),
-        actor: envvars.GITHUB_ACTOR,
-        actorId: envvars.GITHUB_ACTOR_ID,
-        pr: PullRequest.unsafeFrom(context),
-        data: data,
-        computedAt: computedAt,
-        context: context
-      })
-
-    core.debug(`-- PostJmhResultBody: ${JSON.stringify(r, null, 2)}`)
-
-    return r
+    return new PostJmhResultBody({
+      workflowRunId: envvars.GITHUB_RUN_ID,
+      workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
+      workflowRunnerName: envvars.RUNNER_NAME,
+      workflowRunAttempt: envvars.GITHUB_RUN_ATTEMPT,
+      runnerEnvironment: envvars.RUNNER_ENVIRONMENT,
+      runnerOs: envvars.RUNNER_OS,
+      runnerArch: envvars.RUNNER_ARCH,
+      orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
+      projectId: envvars.GITHUB_REPOSITORY_ID,
+      commitHash: NES.unsafeFromString(context.payload.after),
+      previousCommitHash: NES.unsafeFromString(context.payload.before),
+      actor: envvars.GITHUB_ACTOR,
+      actorId: envvars.GITHUB_ACTOR_ID,
+      pr: PullRequest.unsafeFrom(context),
+      data: data,
+      computedAt: computedAt,
+      context: context
+    })
   }
 }
 
@@ -160,51 +155,57 @@ const findResults: (inputs: Inputs) => Effect.Effect<never, Error, JSON> = (inpu
     Effect.tap((data) => logDebug(`Found results: ${JSON.stringify(data, null, 2)}`)),
   )
 
-const pingServer: Effect.Effect<never, Error, void> = Effect.tryPromise({
-  try: (signal) => {
-    return fetch(`${envvars.ZEKLIN_SERVER_URL}/ping`, {
-      method: "GET",
-      headers: {
-        "User-Agent": "zeklin-action",
-      },
-      signal: signal,
-    }).then((response) => {
-      if (!response.ok) {
-        Promise.reject(Error(`Failed to ping Zeklin servers: ${response.status} ${response.statusText}`))
-      }
-    })
-  },
-  catch: (_) => _ as Error,
-})
+const pingServer: Effect.Effect<never, Error, void> = pipe(
+  Effect.tryPromise({
+    try: (signal) => {
+      return fetch(`${envvars.ZEKLIN_SERVER_URL}/ping`, {
+        method: "GET",
+        headers: {
+          "User-Agent": "zeklin-action",
+        },
+        signal: signal,
+      }).then((response) => {
+        if (!response.ok) {
+          Promise.reject(Error(`Failed to ping Zeklin servers: ${response.status} ${response.statusText}`))
+        }
+      })
+    },
+    catch: (_) => _ as Error,
+  }),
+  Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+)
 
 const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect.Effect<never, Error, void> = (
   inputs: Inputs,
   results: JSON,
   computedAt: Date,
 ) =>
-  Effect.tryPromise({
-    try: (signal) => {
-      const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt)
-      const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
-      const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
+  pipe(
+    Effect.tryPromise({
+      try: (signal) => {
+        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt)
+        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
+        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
-      return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
-        method: "POST",
-        body: buff,
-        headers: {
-          "User-Agent": "zeklin-action",
-          "Content-Type": "application/json",
-          Authorization: `Basic ${credentials}`,
-        },
-        signal: signal,
-      }).then((response) => {
-        if (!response.ok) {
-          Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
-        }
-      })
-    },
-    catch: (_) => _ as Error,
-  })
+        return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+          method: "POST",
+          body: buff,
+          headers: {
+            "User-Agent": "zeklin-action",
+            "Content-Type": "application/json",
+            Authorization: `Basic ${credentials}`,
+          },
+          signal: signal,
+        }).then((response) => {
+          if (!response.ok) {
+            Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
+          }
+        })
+      },
+      catch: (_) => _ as Error,
+    }),
+    Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+  )
 
 /**
  * The main function for the action.
