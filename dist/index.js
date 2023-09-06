@@ -52307,9 +52307,11 @@ const uploadResults = (inputs, results, computedAt, before, after) => {
         },
         catch: (_) => _,
     }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
-    return Function_pipe(Effect_promise(() => (0,exec.exec)("git", ["fetch", "--depth=2", "--quiet"])), 
+    return Function_pipe(
     // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
-    Effect_flatMap(() => Effect_tryPromise(() => (0,exec.getExecOutput)("git", ["show", "-s", "--format=%s", after]))), Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout.trim())));
+    // We need to fetch as the "after" commit is not the one we're on in GHA.
+    // GHA seems to create a merge commit between the "after" commit and the "before" commit and run from this merge commit.
+    Effect_tryPromise(() => (0,exec.exec)("git", ["fetch", "--depth=2"])), Effect_flatMap(() => Effect_tryPromise(() => (0,exec.getExecOutput)("git", ["show", "-s", "--format=%s", after]))), Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: ${commitMessage.stdout.trim()}, stderr: ${commitMessage.stderr.trim()}, exitCode: ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout.trim())));
 };
 /**
  * The main function for the action.
