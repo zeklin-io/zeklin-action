@@ -247,7 +247,7 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
       logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`),
     ),
     Effect.mapError((e) => new Error(`Failed to get commit message: ${e}`)),
-    Effect.flatMap((commitMessage) => postData(commitMessage.stdout)),
+    Effect.flatMap((commitMessage) => postData(commitMessage.stdout.trim())),
   )
 }
 
