@@ -48718,6 +48718,7 @@ const GITHUB_ACTOR = NES.unsafeFromString(process.env.GITHUB_ACTOR);
  * For example, 1234567. Note that this is different from the actor username.
  */
 const GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
+const GITHUB_SHA = NES.unsafeFromString(process.env.GITHUB_SHA);
 const debugVariables = () => {
     lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
     lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
@@ -48731,6 +48732,7 @@ const debugVariables = () => {
     lib_core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
     lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
+    lib_core.debug(`GITHUB_SHA: ${GITHUB_SHA}`);
 };
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.4/node_modules/@effect/match/mjs/internal/matcher.mjs
@@ -52320,7 +52322,7 @@ const uploadResults = (inputs, results, computedAt) => {
         },
         catch: (_) => _,
     }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
-    return Function_pipe(Effect_tryPromise(() => (0,exec.getExecOutput)("echo ${GITHUB_SHA} | git show -s --format=%s")), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+    return Function_pipe(Effect_tryPromise(() => (0,exec.getExecOutput)("git", ["show", "-s", "--format=%s", GITHUB_SHA])), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
     Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout.trim())));
 };
 /**
