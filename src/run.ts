@@ -242,9 +242,9 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
     )
 
   return pipe(
-    Effect.tryPromise(() => getExecOutput("git", ["log", "-1", `--pretty=format:"%s"`])),
+    Effect.tryPromise(() => getExecOutput("git show -s --format=%s")), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
     Effect.tap((commitMessage) =>
-      logDebug(`Commit message: ${commitMessage.stdout} - ${commitMessage.stderr} - ${commitMessage.exitCode}`),
+      logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`),
     ),
     Effect.mapError((e) => new Error(`Failed to get commit message: ${e}`)),
     Effect.flatMap((commitMessage) => postData(commitMessage.stdout)),

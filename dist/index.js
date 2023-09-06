@@ -52320,7 +52320,8 @@ const uploadResults = (inputs, results, computedAt) => {
         },
         catch: (_) => _,
     }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
-    return Function_pipe(Effect_tryPromise(() => (0,exec.getExecOutput)("git", ["log", "-1", `--pretty=format:"%s"`])), Effect_tap((commitMessage) => utils_logDebug(`Commit message: ${commitMessage.stdout} - ${commitMessage.stderr} - ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout)));
+    return Function_pipe(Effect_tryPromise(() => (0,exec.getExecOutput)("git show -s --format=%s")), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+    Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout)));
 };
 /**
  * The main function for the action.
