@@ -73,7 +73,7 @@
     "effect": "2.0.0-next.30",
     "md5-file": "5.0.0",
     "node-fetch": "3.3.2",
-    "tar": "6.1.15"
+    "tar": "6.2.0"
   },
   "devDependencies": {
     "@types/jest": "29.5.4",
