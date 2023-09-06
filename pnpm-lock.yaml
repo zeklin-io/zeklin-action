@@ -19,19 +19,13 @@ dependencies:
     version: 1.1.3
   '@effect/schema':
     specifier: 0.34.0
-    version: 0.34.0(@effect/data@0.18.3)(@effect/io@0.39.1)
+    version: 0.34.0(@effect/data@0.18.4)(@effect/io@0.39.1)
   effect:
     specifier: 2.0.0-next.30
-    version: 2.0.0-next.30(@effect/data@0.18.3)(@effect/io@0.39.1)(@effect/match@0.35.1)(@effect/stm@0.23.0)(@effect/stream@0.35.1)
-  md5-file:
-    specifier: 5.0.0
-    version: 5.0.0
+    version: 2.0.0-next.30(@effect/data@0.18.4)(@effect/io@0.39.1)(@effect/match@0.35.2)(@effect/stm@0.23.0)(@effect/stream@0.35.1)
   node-fetch:
     specifier: 3.3.2
     version: 3.3.2
-  tar:
-    specifier: 6.1.15
-    version: 6.1.15
 
 devDependencies:
   '@types/jest':
@@ -471,55 +465,55 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@effect/data@0.18.3:
-    resolution: {integrity: sha512-xNG4CwxE758EK0v81EIPnKv9QeU/x9st1Doab/Fjf7sb9V3n55C85aBiKChpKgGD8pKCPHcjGydLsRHVUvzpwg==}
+  /@effect/data@0.18.4:
+    resolution: {integrity: sha512-qe5D3CWguC1IpLl6T7Og+zHb450X2HH8UK0kQfpCZJw5uOIWhxOjImyF2RZHaTARsrVBxZpU8mKWY6zJNQ4Rqg==}
     dev: false
 
-  /@effect/io@0.39.1(@effect/data@0.18.3):
+  /@effect/io@0.39.1(@effect/data@0.18.4):
     resolution: {integrity: sha512-ISBX1EYsWdVBMOV3ZmEVtbMW8FyVwmK6K47rx8ztOjMBKS5tfhB4W8iRjyycObvvlolfpIcZuAAPrCW5Tty+4Q==}
     peerDependencies:
       '@effect/data': ^0.18.0
     dependencies:
-      '@effect/data': 0.18.3
+      '@effect/data': 0.18.4
     dev: false
 
-  /@effect/match@0.35.1(@effect/data@0.18.3):
-    resolution: {integrity: sha512-uIj86SLtIswSnGlKfjTM/Ea/3MbW+JhsTdv414E3YlxLycjx5X9yOodzVM0I3/z9PaYhbpqAcHk9oEtLt7kk1w==}
+  /@effect/match@0.35.2(@effect/data@0.18.4):
+    resolution: {integrity: sha512-2zZhWIdejX3xqbjormykBveHZTB/DBr/u/XBj5Ln6u2ShbMvoUykgVEscQLN3CsQeHDS14Vvr1DOvH0qeMILZQ==}
     peerDependencies:
       '@effect/data': ^0.18.3
     dependencies:
-      '@effect/data': 0.18.3
+      '@effect/data': 0.18.4
     dev: false
 
-  /@effect/schema@0.34.0(@effect/data@0.18.3)(@effect/io@0.39.1):
+  /@effect/schema@0.34.0(@effect/data@0.18.4)(@effect/io@0.39.1):
     resolution: {integrity: sha512-7BdriGSWYj+f9jVqIq6PyfLoPztV05RW1Sj+mdKX3gAwqqIM7MBwkM0kTaLYKAFbGXTE9AK83uG2SSfzMigqTA==}
     peerDependencies:
       '@effect/data': ^0.18.3
       '@effect/io': ^0.39.0
     dependencies:
-      '@effect/data': 0.18.3
-      '@effect/io': 0.39.1(@effect/data@0.18.3)
+      '@effect/data': 0.18.4
+      '@effect/io': 0.39.1(@effect/data@0.18.4)
       fast-check: 3.12.0
     dev: false
 
-  /@effect/stm@0.23.0(@effect/data@0.18.3)(@effect/io@0.39.1):
+  /@effect/stm@0.23.0(@effect/data@0.18.4)(@effect/io@0.39.1):
     resolution: {integrity: sha512-c8pXK5mN9ZCFwPvxNJRzxAWwwSWjkdxs1FlCh1mdyXSah0uSD+lkuvEKrcpJCJroMmMBPrxKJv5ascfzTbBE9A==}
     peerDependencies:
       '@effect/data': ^0.18.3
       '@effect/io': ^0.39.0
     dependencies:
-      '@effect/data': 0.18.3
-      '@effect/io': 0.39.1(@effect/data@0.18.3)
+      '@effect/data': 0.18.4
+      '@effect/io': 0.39.1(@effect/data@0.18.4)
     dev: false
 
-  /@effect/stream@0.35.1(@effect/data@0.18.3)(@effect/io@0.39.1):
+  /@effect/stream@0.35.1(@effect/data@0.18.4)(@effect/io@0.39.1):
     resolution: {integrity: sha512-MPtZdEZ3U2vtQTg+jXm6Xg5i0p4wO+BC4KtXqV93KIajk7sLfjlLlRf7GqlUPZgMH+jSoOAPARjM+G3UsNhMvg==}
     peerDependencies:
       '@effect/data': ^0.18.3
       '@effect/io': ^0.39.0
     dependencies:
-      '@effect/data': 0.18.3
-      '@effect/io': 0.39.1(@effect/data@0.18.3)
+      '@effect/data': 0.18.4
+      '@effect/io': 0.39.1(@effect/data@0.18.4)
     dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.48.0):
@@ -1701,11 +1695,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /chownr@2.0.0:
-    resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
-    engines: {node: '>=10'}
-    dev: false
-
   /ci-info@3.8.0:
     resolution: {integrity: sha512-eXTggHWSooYhq49F2opQhuHWgzucfF2YgODK4e1566GQs5BIfP30B0oenwBJHfWxAs2fyPB1s7Mg949zLf61Yw==}
     engines: {node: '>=8'}
@@ -1905,7 +1894,7 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /effect@2.0.0-next.30(@effect/data@0.18.3)(@effect/io@0.39.1)(@effect/match@0.35.1)(@effect/stm@0.23.0)(@effect/stream@0.35.1):
+  /effect@2.0.0-next.30(@effect/data@0.18.4)(@effect/io@0.39.1)(@effect/match@0.35.2)(@effect/stm@0.23.0)(@effect/stream@0.35.1):
     resolution: {integrity: sha512-7mCheLiy6x33e4qXLSFpQ9TCpj/+gPhPjLtBY9HODzH0sQw3B4sBUytoKWd+7DnRJRU7sdJbpPZnfDz+M1g3fw==}
     peerDependencies:
       '@effect/data': ^0.18.3
@@ -1914,11 +1903,11 @@ packages:
       '@effect/stm': ^0.23.0
       '@effect/stream': ^0.35.1
     dependencies:
-      '@effect/data': 0.18.3
-      '@effect/io': 0.39.1(@effect/data@0.18.3)
-      '@effect/match': 0.35.1(@effect/data@0.18.3)
-      '@effect/stm': 0.23.0(@effect/data@0.18.3)(@effect/io@0.39.1)
-      '@effect/stream': 0.35.1(@effect/data@0.18.3)(@effect/io@0.39.1)
+      '@effect/data': 0.18.4
+      '@effect/io': 0.39.1(@effect/data@0.18.4)
+      '@effect/match': 0.35.2(@effect/data@0.18.4)
+      '@effect/stm': 0.23.0(@effect/data@0.18.4)(@effect/io@0.39.1)
+      '@effect/stream': 0.35.1(@effect/data@0.18.4)(@effect/io@0.39.1)
     dev: false
 
   /electron-to-chromium@1.4.505:
@@ -2543,13 +2532,6 @@ packages:
     engines: {node: '>=12.20.0'}
     dependencies:
       fetch-blob: 3.2.0
-    dev: false
-
-  /fs-minipass@2.1.0:
-    resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
-    engines: {node: '>= 8'}
-    dependencies:
-      minipass: 3.3.6
     dev: false
 
   /fs.realpath@1.0.0:
@@ -3659,12 +3641,6 @@ packages:
       tmpl: 1.0.5
     dev: true
 
-  /md5-file@5.0.0:
-    resolution: {integrity: sha512-xbEFXCYVWrSx/gEKS1VPlg84h/4L20znVIulKw6kMfmBUAZNAnF00eczz9ICMl+/hjQGo5KSXRxbL/47X3rmMw==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    dev: false
-
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
     dev: true
@@ -3701,32 +3677,6 @@ packages:
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: true
-
-  /minipass@3.3.6:
-    resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
-    engines: {node: '>=8'}
-    dependencies:
-      yallist: 4.0.0
-    dev: false
-
-  /minipass@5.0.0:
-    resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
-    engines: {node: '>=8'}
-    dev: false
-
-  /minizlib@2.1.2:
-    resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
-    engines: {node: '>= 8'}
-    dependencies:
-      minipass: 3.3.6
-      yallist: 4.0.0
-    dev: false
-
-  /mkdirp@1.0.4:
-    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: false
 
   /mri@1.1.4:
     resolution: {integrity: sha512-6y7IjGPm8AzlvoUrwAaw1tLnUBudaS3752vcd8JtrpGGQn+rXIe63LFVHm/YMwtqAuh+LJPCFdlLYPWM1nYn6w==}
@@ -4369,18 +4319,6 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /tar@6.1.15:
-    resolution: {integrity: sha512-/zKt9UyngnxIT/EAGYuxaMYgOIJiP81ab9ZfkILq4oNLPFX50qyYmu7jRj9qeXoxmJHjGlbH0+cm2uy1WCs10A==}
-    engines: {node: '>=10'}
-    dependencies:
-      chownr: 2.0.0
-      fs-minipass: 2.1.0
-      minipass: 5.0.0
-      minizlib: 2.1.2
-      mkdirp: 1.0.4
-      yallist: 4.0.0
-    dev: false
-
   /test-exclude@6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
     engines: {node: '>=8'}
@@ -4725,6 +4663,7 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+    dev: true
 
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
