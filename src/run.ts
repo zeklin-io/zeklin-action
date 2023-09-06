@@ -1,6 +1,6 @@
 import * as core from "@actions/core"
 import { ExitCode } from "@actions/core"
-import { Data, Duration, Option, pipe, Schedule } from "effect"
+import { Data, Duration, Match, Option, pipe, Schedule } from "effect"
 import * as Effect from "effect/Effect"
 import { exec, ExecOptions } from "@actions/exec"
 import * as fs from "fs/promises"
@@ -73,6 +73,26 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   context: Context
 }> {
   static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
+    const [before, after]: readonly [NES, NES] =
+      pipe(
+        Match.value(context.payload.action),
+        Match.when("opened", () => {
+          const after = NES.unsafeFromString(context.payload.pull_request!.head.sha)
+          const before = NES.unsafeFromString(context.payload.pull_request!.base.sha)
+
+          return [before, after] as const
+        }),
+        Match.when("synchronize", () => {
+          const after = NES.unsafeFromString(context.payload.after)
+          const before = NES.unsafeFromString(context.payload.before)
+
+          return [before, after] as const
+        }),
+        Match.orElse((action) => {
+          throw new Error(`Unhandled 'payload.action' type: ${action}`)
+        }) // TODO: To improve?
+      )
+
     return new PostJmhResultBody({
       workflowRunId: envvars.GITHUB_RUN_ID,
       workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
@@ -83,8 +103,8 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       runnerArch: envvars.RUNNER_ARCH,
       orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
       projectId: envvars.GITHUB_REPOSITORY_ID,
-      commitHash: NES.unsafeFromString(context.payload.after),
-      previousCommitHash: NES.unsafeFromString(context.payload.before),
+      commitHash: after,
+      previousCommitHash: before,
       actor: envvars.GITHUB_ACTOR,
       actorId: envvars.GITHUB_ACTOR_ID,
       pr: PullRequest.unsafeFrom(context),

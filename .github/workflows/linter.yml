@@ -2,11 +2,10 @@ name: Lint Code Base
 
 on:
   pull_request:
+  push:
     branches:
       - main
-  push:
-    branches-ignore:
-      - main
+      - 'releases/*'
 
 jobs:
   lint:
