@@ -49184,7 +49184,6 @@ const GITHUB_ACTOR = NES.unsafeFromString(process.env.GITHUB_ACTOR);
  * For example, 1234567. Note that this is different from the actor username.
  */
 const GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
-const GITHUB_SHA = NES.unsafeFromString(process.env.GITHUB_SHA);
 const debugVariables = () => {
     lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
     lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
@@ -49198,7 +49197,6 @@ const debugVariables = () => {
     lib_core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
     lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
-    lib_core.debug(`GITHUB_SHA: ${GITHUB_SHA}`);
 };
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Schedule.mjs
