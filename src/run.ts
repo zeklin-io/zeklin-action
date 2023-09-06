@@ -221,7 +221,7 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date, before: N
     )
 
   return pipe(
-    Effect.promise(() => exec("git", ["pull"])),
+    Effect.promise(() => exec("git", ["fetch"])),
     // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
     Effect.flatMap(() => Effect.tryPromise(() => getExecOutput("git", ["show", "-s", "--format=%s", after]))),
     Effect.tap((commitMessage) =>
