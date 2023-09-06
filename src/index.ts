@@ -1,10 +1,12 @@
 import * as core from "@actions/core"
 import { setFailed } from "@actions/core"
-import { Chunk, Data, Either, Option, pipe } from "effect"
+import { Chunk, Data, Either, Match, Option, pipe } from "effect"
 import * as Effect from "effect/Effect"
 import { logDebug, logInfo } from "./utils.js"
 import { debugVariables, NES } from "./envvars.js"
 import { run } from "./run.js"
+import { Context } from "@actions/github/lib/context.js"
+import * as github from "@actions/github"
 
 const banner = String.raw`
  ___________
@@ -69,6 +71,32 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
   }
 }
 
+const getBeforeAfter: (context: Context) => readonly [NES, NES] = (context: Context) =>
+  pipe(
+    Match.value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }),
+    Match.when(
+      {
+        before: (_: string | undefined) => _ !== undefined,
+        after: (_: string | undefined) => _ !== undefined,
+      },
+      () => {
+        const before = NES.unsafeFromString(context.payload.before)
+        const after = NES.unsafeFromString(context.payload.after)
+
+        return [before, after] as const
+      },
+    ),
+    Match.when({ action: "opened" }, () => {
+      const after = NES.unsafeFromString(context.payload.pull_request!.head.sha)
+      const before = NES.unsafeFromString(context.payload.pull_request!.base.sha)
+
+      return [before, after] as const
+    }),
+    Match.orElse((e) => {
+      throw new Error(`Unhandled 'payload.action' type: ${e.action}`)
+    }), // TODO: To improve?
+  )
+
 /**
  * The main function for the action.
  */
@@ -76,7 +104,13 @@ export const main: Effect.Effect<never, Error, void> = pipe(
   logInfo(banner),
   Effect.flatMap(() => Effect.suspend(unsafeParseInputs)),
   Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)),
-  Effect.flatMap((inputs) => run(inputs)),
+  Effect.flatMap((inputs) =>
+    pipe(
+      Effect.sync(() => getBeforeAfter(github.context)),
+      Effect.map((beforeAfter) => [inputs, beforeAfter] as const),
+    ),
+  ),
+  Effect.flatMap(([inputs, [before, after]]) => run(inputs, before, after)),
 )
 
 if (process.env.GITHUB_ACTIONS !== "true") {
