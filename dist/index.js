@@ -15943,7 +15943,7 @@ __nccwpck_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.10.0/node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(7733);
-cla;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/GlobalValue.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/GlobalValue.mjs
 /**
  * @since 1.0.0
  */
@@ -48733,6 +48733,472 @@ const debugVariables = () => {
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
 };
 
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.4/node_modules/@effect/match/mjs/internal/matcher.mjs
+
+
+
+
+/** @internal */
+const matcher_TypeId = /*#__PURE__*/Symbol.for("@effect/matcher/Matcher");
+const TypeMatcherProto = {
+  [matcher_TypeId]: {
+    _input: Function_identity,
+    _filters: Function_identity,
+    _remaining: Function_identity,
+    _result: Function_identity
+  },
+  _tag: "TypeMatcher",
+  add(_case) {
+    return makeTypeMatcher([...this.cases, _case]);
+  },
+  pipe() {
+    return Pipeable_pipeArguments(this, arguments);
+  }
+};
+function makeTypeMatcher(cases) {
+  const matcher = Object.create(TypeMatcherProto);
+  matcher.cases = cases;
+  return matcher;
+}
+const ValueMatcherProto = {
+  [matcher_TypeId]: {
+    _input: Function_identity,
+    _filters: Function_identity,
+    _result: Function_identity
+  },
+  _tag: "ValueMatcher",
+  add(_case) {
+    if (this.value._tag === "Right") {
+      return this;
+    }
+    if (_case._tag === "When" && _case.guard(this.provided) === true) {
+      return makeValueMatcher(this.provided, Either_right(_case.evaluate(this.provided)));
+    } else if (_case._tag === "Not" && _case.guard(this.provided) === false) {
+      return makeValueMatcher(this.provided, Either_right(_case.evaluate(this.provided)));
+    }
+    return this;
+  },
+  pipe() {
+    return Pipeable_pipeArguments(this, arguments);
+  }
+};
+function makeValueMatcher(provided, value) {
+  const matcher = Object.create(ValueMatcherProto);
+  matcher.provided = provided;
+  matcher.value = value;
+  return matcher;
+}
+const makeWhen = (guard, evaluate) => ({
+  _tag: "When",
+  guard,
+  evaluate
+});
+const makeNot = (guard, evaluate) => ({
+  _tag: "Not",
+  guard,
+  evaluate
+});
+const makePredicate = pattern => {
+  if (typeof pattern === "function") {
+    return pattern;
+  } else if (Array.isArray(pattern)) {
+    const predicates = pattern.map(makePredicate);
+    const len = predicates.length;
+    return u => {
+      if (!Array.isArray(u)) {
+        return false;
+      }
+      for (let i = 0; i < len; i++) {
+        if (predicates[i](u[i]) === false) {
+          return false;
+        }
+      }
+      return true;
+    };
+  } else if (pattern !== null && typeof pattern === "object") {
+    const keysAndPredicates = Object.entries(pattern).map(([k, p]) => [k, makePredicate(p)]);
+    const len = keysAndPredicates.length;
+    return u => {
+      if (typeof u !== "object" || u === null) {
+        return false;
+      }
+      for (let i = 0; i < len; i++) {
+        const [key, predicate] = keysAndPredicates[i];
+        if (!(key in u) || predicate(u[key]) === false) {
+          return false;
+        }
+      }
+      return true;
+    };
+  }
+  return u => u === pattern;
+};
+const makeOrPredicate = patterns => {
+  const predicates = patterns.map(makePredicate);
+  const len = predicates.length;
+  return u => {
+    for (let i = 0; i < len; i++) {
+      if (predicates[i](u) === true) {
+        return true;
+      }
+    }
+    return false;
+  };
+};
+const makeAndPredicate = patterns => {
+  const predicates = patterns.map(makePredicate);
+  const len = predicates.length;
+  return u => {
+    for (let i = 0; i < len; i++) {
+      if (predicates[i](u) === false) {
+        return false;
+      }
+    }
+    return true;
+  };
+};
+/** @internal */
+const matcher_type = () => makeTypeMatcher([]);
+/** @internal */
+const matcher_value = i => makeValueMatcher(i, Either_left(i));
+/** @internal */
+const valueTags = fields => {
+  const match = tagsExhaustive(fields)(makeTypeMatcher([]));
+  return input => match(input);
+};
+/** @internal */
+const typeTags = () => fields => {
+  const match = tagsExhaustive(fields)(makeTypeMatcher([]));
+  return input => match(input);
+};
+/** @internal */
+const matcher_when = (pattern, f) => self => self.add(makeWhen(makePredicate(pattern), f));
+/** @internal */
+const whenOr = (...args) => self => {
+  const onMatch = args[args.length - 1];
+  const patterns = args.slice(0, -1);
+  return self.add(makeWhen(makeOrPredicate(patterns), onMatch));
+};
+/** @internal */
+const whenAnd = (...args) => self => {
+  const onMatch = args[args.length - 1];
+  const patterns = args.slice(0, -1);
+  return self.add(makeWhen(makeAndPredicate(patterns), onMatch));
+};
+/** @internal */
+const discriminator = field => (...pattern) => {
+  const f = pattern[pattern.length - 1];
+  const values = pattern.slice(0, -1);
+  const pred = values.length === 1 ? _ => _[field] === values[0] : _ => values.includes(_[field]);
+  return self => self.add(makeWhen(pred, f));
+};
+/** @internal */
+const discriminatorStartsWith = field => (pattern, f) => {
+  const pred = _ => typeof _[field] === "string" && _[field].startsWith(pattern);
+  return self => self.add(makeWhen(pred, f));
+};
+/** @internal */
+const discriminators = field => fields => {
+  const predicates = [];
+  for (const key in fields) {
+    const pred = _ => _[field] === key;
+    const f = fields[key];
+    if (f) {
+      predicates.push(makeWhen(pred, f));
+    }
+  }
+  const len = predicates.length;
+  return self => {
+    let matcher = self;
+    for (let i = 0; i < len; i++) {
+      matcher = matcher.add(predicates[i]);
+    }
+    return matcher;
+  };
+};
+/** @internal */
+const discriminatorsExhaustive = field => fields => {
+  const addCases = discriminators(field)(fields);
+  return matcher => exhaustive(addCases(matcher));
+};
+/** @internal */
+const tag = /*#__PURE__*/discriminator("_tag");
+/** @internal */
+const tagStartsWith = /*#__PURE__*/discriminatorStartsWith("_tag");
+/** @internal */
+const tags = /*#__PURE__*/discriminators("_tag");
+/** @internal */
+const tagsExhaustive = /*#__PURE__*/discriminatorsExhaustive("_tag");
+/** @internal */
+const matcher_not = (pattern, f) => self => self.add(makeNot(makePredicate(pattern), f));
+/** @internal */
+const nonEmptyString = u => typeof u === "string" && u.length > 0;
+/** @internal */
+const is = (...literals) => {
+  const len = literals.length;
+  return u => {
+    for (let i = 0; i < len; i++) {
+      if (u === literals[i]) {
+        return true;
+      }
+    }
+    return false;
+  };
+};
+/** @internal */
+const matcher_any = () => true;
+/** @internal */
+const defined = u => u !== undefined && u !== null;
+/** @internal */
+const matcher_instanceOf = constructor => u => u instanceof constructor;
+/** @internal */
+const instanceOfUnsafe = (/* unused pure expression or super */ null && (matcher_instanceOf));
+/** @internal */
+const matcher_orElse = f => self => {
+  const result = matcher_either(self);
+  if (Either_isEither(result)) {
+    // @ts-expect-error
+    return result._tag === "Right" ? result.right : f(result.left);
+  }
+  // @ts-expect-error
+  return input => {
+    const a = result(input);
+    return a._tag === "Right" ? a.right : f(a.left);
+  };
+};
+/** @internal */
+const orElseAbsurd = self => matcher_orElse(() => {
+  throw new Error("absurd");
+})(self);
+/** @internal */
+const matcher_either = self => {
+  if (self._tag === "ValueMatcher") {
+    return self.value;
+  }
+  const len = self.cases.length;
+  return input => {
+    for (let i = 0; i < len; i++) {
+      const _case = self.cases[i];
+      if (_case._tag === "When" && _case.guard(input) === true) {
+        return Either_right(_case.evaluate(input));
+      } else if (_case._tag === "Not" && _case.guard(input) === false) {
+        return Either_right(_case.evaluate(input));
+      }
+    }
+    return Either_left(input);
+  };
+};
+/** @internal */
+const matcher_option = self => {
+  const toEither = matcher_either(self);
+  if (Either_isEither(toEither)) {
+    return Either_match(toEither, {
+      onLeft: () => Option_none(),
+      onRight: mjs_Option_some
+    });
+  }
+  return input => Either_match(toEither(input), {
+    onLeft: () => Option_none(),
+    onRight: mjs_Option_some
+  });
+};
+/** @internal */
+const exhaustive = self => {
+  const toEither = matcher_either(self);
+  if (Either_isEither(toEither)) {
+    if (toEither._tag === "Right") {
+      return toEither.right;
+    }
+    throw new Error("@effect/match: exhaustive absurd");
+  }
+  return u => {
+    // @ts-expect-error
+    const result = toEither(u);
+    if (result._tag === "Right") {
+      return result.right;
+    }
+    throw new Error("@effect/match: exhaustive absurd");
+  };
+};
+//# sourceMappingURL=matcher.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.4/node_modules/@effect/match/mjs/index.mjs
+
+
+/**
+ * @category type ids
+ * @since 1.0.0
+ */
+const MatcherTypeId = matcher_TypeId;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const mjs_type = matcher_type;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const mjs_value = matcher_value;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const mjs_valueTags = valueTags;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const mjs_typeTags = typeTags;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_when = matcher_when;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_whenOr = whenOr;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_whenAnd = whenAnd;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_discriminator = discriminator;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_discriminatorStartsWith = discriminatorStartsWith;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_discriminators = discriminators;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_discriminatorsExhaustive = discriminatorsExhaustive;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_tag = tag;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_tagStartsWith = tagStartsWith;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_tags = tags;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_tagsExhaustive = tagsExhaustive;
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const mjs_not = matcher_not;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_nonEmptyString = nonEmptyString;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_is = is;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_string = Predicate_isString;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_number = Predicate_isNumber;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_any = matcher_any;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_defined = defined;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_boolean = isBoolean;
+const mjs_undefined = isUndefined;
+
+const mjs_null = isNull;
+
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_bigint = isBigint;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_date = isDate;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_record = isRecord;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_instanceOf = matcher_instanceOf;
+/**
+ * @category predicates
+ * @since 1.0.0
+ */
+const mjs_instanceOfUnsafe = matcher_instanceOf;
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+const mjs_orElse = matcher_orElse;
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+const mjs_orElseAbsurd = orElseAbsurd;
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+const mjs_either = matcher_either;
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+const mjs_option = matcher_option;
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+const mjs_exhaustive = exhaustive;
+//# sourceMappingURL=index.mjs.map
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Schedule.mjs
 
 /**
@@ -51735,6 +52201,18 @@ class PullRequest extends TaggedClass("PullRequest") {
 // prettier-ignore
 class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
     static unsafeFrom(context, data, computedAt) {
+        const [before, after] = Function_pipe(mjs_value(context.payload.action), mjs_when("opened", () => {
+            const after = NES.unsafeFromString(context.payload.pull_request.head.sha);
+            const before = NES.unsafeFromString(context.payload.pull_request.base.sha);
+            return [before, after];
+        }), mjs_when("synchronize", () => {
+            const after = NES.unsafeFromString(context.payload.after);
+            const before = NES.unsafeFromString(context.payload.before);
+            return [before, after];
+        }), mjs_orElse((action) => {
+            throw new Error(`Unhandled 'payload.action' type: ${action}`);
+        }) // TODO: To improve?
+        );
         return new PostJmhResultBody({
             workflowRunId: GITHUB_RUN_ID,
             workflowRunNumber: GITHUB_RUN_NUMBER,
@@ -51745,8 +52223,8 @@ class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
             runnerArch: RUNNER_ARCH,
             orgId: GITHUB_REPOSITORY_OWNER_ID,
             projectId: GITHUB_REPOSITORY_ID,
-            commitHash: NES.unsafeFromString(context.payload.after),
-            previousCommitHash: NES.unsafeFromString(context.payload.before),
+            commitHash: after,
+            previousCommitHash: before,
             actor: GITHUB_ACTOR,
             actorId: GITHUB_ACTOR_ID,
             pr: PullRequest.unsafeFrom(context),
