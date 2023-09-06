@@ -2,7 +2,7 @@ import * as core from "@actions/core"
 import { ExitCode } from "@actions/core"
 import { Data, Duration, Match, Option, pipe, Schedule } from "effect"
 import * as Effect from "effect/Effect"
-import { exec, ExecOptions } from "@actions/exec"
+import { exec, ExecOptions, getExecOutput } from "@actions/exec"
 import * as fs from "fs/promises"
 import { Inputs } from "./index.js"
 import { logDebug, logInfo } from "./utils.js"
@@ -63,6 +63,8 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   runnerArch: RunnerArch       // RUNNER_ARCH
   orgId: number                // GITHUB_REPOSITORY_OWNER_ID
   projectId: number            // GITHUB_REPOSITORY_ID
+  branchName: NES
+  commitMessage: string,
   commitHash: NES
   previousCommitHash: NES,
   actor: NES                   // GITHUB_ACTOR
@@ -72,7 +74,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   computedAt: Date
   context: Context
 }> {
-  static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
+  static unsafeFrom(context: Context, data: JSON, computedAt: Date, commitMessage: string): PostJmhResultBody {
     const [before, after]: readonly [NES, NES] =
       pipe(
         Match.value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }),
@@ -96,6 +98,12 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
         }) // TODO: To improve?
       )
 
+    // See https://stackoverflow.com/a/58035262/2431728
+    const branchName =
+      NES.unsafeFromString(
+        context.payload.pull_request?.head.ref ?? context.ref.replace("refs/heads/", "")
+      )
+
     return new PostJmhResultBody({
       workflowRunId: envvars.GITHUB_RUN_ID,
       workflowRunNumber: envvars.GITHUB_RUN_NUMBER,
@@ -106,6 +114,8 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       runnerArch: envvars.RUNNER_ARCH,
       orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
       projectId: envvars.GITHUB_REPOSITORY_ID,
+      branchName: branchName,
+      commitMessage: commitMessage,
       commitHash: after,
       previousCommitHash: before,
       actor: envvars.GITHUB_ACTOR,
@@ -202,33 +212,44 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
   inputs: Inputs,
   results: JSON,
   computedAt: Date,
-) =>
-  pipe(
-    Effect.tryPromise({
-      try: (signal) => {
-        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt)
-        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
-        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
+) => {
+  const postData = (commitMessage: string) =>
+    pipe(
+      Effect.tryPromise({
+        try: (signal) => {
+          const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage)
+          const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
+          const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
-        return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
-          method: "POST",
-          body: buff,
-          headers: {
-            "User-Agent": "zeklin-action",
-            "Content-Type": "application/json",
-            Authorization: `Basic ${credentials}`,
-          },
-          signal: signal,
-        }).then((response) => {
-          if (!response.ok) {
-            Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
-          }
-        })
-      },
-      catch: (_) => _ as Error,
-    }),
-    Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+          return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+            method: "POST",
+            body: buff,
+            headers: {
+              "User-Agent": "zeklin-action",
+              "Content-Type": "application/json",
+              Authorization: `Basic ${credentials}`,
+            },
+            signal: signal,
+          }).then((response) => {
+            if (!response.ok) {
+              Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
+            }
+          })
+        },
+        catch: (_) => _ as Error,
+      }),
+      Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+    )
+
+  return pipe(
+    Effect.tryPromise(() => getExecOutput("git", ["log", "-1", `--pretty=format:"%s"`])),
+    Effect.tap((commitMessage) =>
+      logDebug(`Commit message: ${commitMessage.stdout} - ${commitMessage.stderr} - ${commitMessage.exitCode}`),
+    ),
+    Effect.mapError((e) => new Error(`Failed to get commit message: ${e}`)),
+    Effect.flatMap((commitMessage) => postData(commitMessage.stdout)),
   )
+}
 
 /**
  * The main function for the action.
