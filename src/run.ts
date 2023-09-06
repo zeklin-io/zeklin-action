@@ -80,21 +80,21 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
           before: (_: string | undefined) => _ !== undefined,
           after: (_: string | undefined) => _ !== undefined
         }, () => {
-          const before = NES.unsafeFromString(context.payload.before!);
-          const after = NES.unsafeFromString(context.payload.after!);
+          const before = NES.unsafeFromString(context.payload.before)
+          const after = NES.unsafeFromString(context.payload.after)
 
-          return [before, after] as const;
+          return [before, after] as const
         }),
         Match.when({ action: "opened" }, () => {
-          const after = NES.unsafeFromString(context.payload.pull_request!.head.sha);
-          const before = NES.unsafeFromString(context.payload.pull_request!.base.sha);
+          const after = NES.unsafeFromString(context.payload.pull_request!.head.sha)
+          const before = NES.unsafeFromString(context.payload.pull_request!.base.sha)
 
-          return [before, after] as const;
+          return [before, after] as const
         }),
         Match.orElse((e) => {
-          throw new Error(`Unhandled 'payload.action' type: ${e.action}`);
+          throw new Error(`Unhandled 'payload.action' type: ${e.action}`)
         }) // TODO: To improve?
-      );
+      )
 
     return new PostJmhResultBody({
       workflowRunId: envvars.GITHUB_RUN_ID,
@@ -114,7 +114,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       data: data,
       computedAt: computedAt,
       context: context
-    });
+    })
   }
 }
 
