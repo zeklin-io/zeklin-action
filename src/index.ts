@@ -7,6 +7,7 @@ import { debugVariables, NES } from "./envvars.js"
 import { run } from "./run.js"
 import { Context } from "@actions/github/lib/context.js"
 import * as github from "@actions/github"
+import { exec, getExecOutput } from "@actions/exec"
 
 const banner = String.raw`
  ___________
@@ -71,7 +72,7 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
   }
 }
 
-const getBeforeAfter: (context: Context) => readonly [NES, NES] = (context: Context) =>
+const unsafeGetBeforeAfter: (context: Context) => readonly [NES, NES] = (context: Context) =>
   pipe(
     Match.value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }),
     Match.when(
@@ -98,6 +99,36 @@ const getBeforeAfter: (context: Context) => readonly [NES, NES] = (context: Cont
   )
 
 /**
+ * See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+ *
+ * We need to fetch as the "after" commit is not the one we're on in GHA.
+ * GHA seems to create a merge commit between the "after" commit and the "before" commit and run from this merge commit.
+ */
+const getCommitMessage = (after: NES): Effect.Effect<never, Error, string> =>
+  pipe(
+    Effect.tryPromise(() => exec("git", ["fetch", "--depth=2", "--quiet"], { silent: true, failOnStdErr: true })),
+    Effect.flatMap(() =>
+      Effect.tryPromise(() =>
+        getExecOutput("git", ["show", "-s", "--format=%s", after], {
+          silent: true,
+          failOnStdErr: true,
+        }),
+      ),
+    ),
+    Effect.tap((commitMessage) =>
+      logDebug(
+        `Commit message - stdout: "${commitMessage.stdout.trim()}", stderr: "${commitMessage.stderr.trim()}", exitCode: ${
+          commitMessage.exitCode
+        }`,
+      ),
+    ),
+    Effect.mapBoth({
+      onFailure: (e) => new Error(`Failed to get commit message: ${e}`),
+      onSuccess: (_) => _.stdout,
+    }),
+  )
+
+/**
  * The main function for the action.
  */
 export const main: Effect.Effect<never, Error, void> = pipe(
@@ -106,11 +137,17 @@ export const main: Effect.Effect<never, Error, void> = pipe(
   Effect.tap((inputs) => logDebug(`Inputs: ${JSON.stringify(inputs)}`)),
   Effect.flatMap((inputs) =>
     pipe(
-      Effect.sync(() => getBeforeAfter(github.context)),
+      Effect.sync(() => unsafeGetBeforeAfter(github.context)),
       Effect.map((beforeAfter) => [inputs, beforeAfter] as const),
     ),
   ),
-  Effect.flatMap(([inputs, [before, after]]) => run(inputs, before, after)),
+  Effect.flatMap(([inputs, [before, after]]) =>
+    pipe(
+      getCommitMessage(after),
+      Effect.map((commitMessage) => [inputs, before, after, commitMessage] as const),
+    ),
+  ),
+  Effect.flatMap(([inputs, before, after, commitMessage]) => run(inputs, before, after, commitMessage)),
 )
 
 if (process.env.GITHUB_ACTIONS !== "true") {

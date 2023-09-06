@@ -2,7 +2,7 @@ import * as core from "@actions/core"
 import { ExitCode } from "@actions/core"
 import { Data, Duration, Option, pipe, Schedule } from "effect"
 import * as Effect from "effect/Effect"
-import { exec, ExecOptions, getExecOutput } from "@actions/exec"
+import { exec, ExecOptions } from "@actions/exec"
 import * as fs from "fs/promises"
 import { Inputs } from "./index.js"
 import { logDebug, logInfo } from "./utils.js"
@@ -185,68 +185,49 @@ const pingServer: Effect.Effect<never, Error, void> = pipe(
   Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
 )
 
-const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date, before: NES, after: NES) => Effect.Effect<never, Error, void> = (
+const uploadResults: (
   inputs: Inputs,
   results: JSON,
   computedAt: Date,
   before: NES,
   after: NES,
-) => {
-  const postData = (commitMessage: string) =>
-    pipe(
-      Effect.tryPromise({
-        try: (signal) => {
-          const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage, before, after)
-          const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
-          const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
+  commitMessage: string,
+) => Effect.Effect<never, Error, void> = (inputs, results, computedAt, before, after, commitMessage) =>
+  pipe(
+    Effect.tryPromise({
+      try: (signal) => {
+        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage, before, after)
+        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
+        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
-          return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
-            method: "POST",
-            body: buff,
-            headers: {
-              "User-Agent": "zeklin-action",
-              "Content-Type": "application/json",
-              Authorization: `Basic ${credentials}`,
-            },
-            signal: signal,
-          }).then((response) => {
-            if (!response.ok) {
-              Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
-            }
-          })
-        },
-        catch: (_) => _ as Error,
-      }),
-      Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
-    )
-
-  return pipe(
-    // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
-    // We need to fetch as the "after" commit is not the one we're on in GHA.
-    // GHA seems to create a merge commit between the "after" commit and the "before" commit and run from this merge commit.
-    Effect.tryPromise(() => exec("git", ["fetch", "--depth=2", "--quiet"], { silent: true, failOnStdErr: true })),
-    Effect.flatMap(() =>
-      Effect.tryPromise(() => getExecOutput("git", ["show", "-s", "--format=%s", after], { silent: true, failOnStdErr: true })),
-    ),
-    Effect.tap((commitMessage) =>
-      logDebug(
-        `Commit message - stdout: "${commitMessage.stdout.trim()}", stderr: "${commitMessage.stderr.trim()}", exitCode: ${
-          commitMessage.exitCode
-        }`,
-      ),
-    ),
-    Effect.mapError((e) => new Error(`Failed to get commit message: ${e}`)),
-    Effect.flatMap((commitMessage) => postData(commitMessage.stdout.trim())),
+        return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+          method: "POST",
+          body: buff,
+          headers: {
+            "User-Agent": "zeklin-action",
+            "Content-Type": "application/json",
+            Authorization: `Basic ${credentials}`,
+          },
+          signal: signal,
+        }).then((response) => {
+          if (!response.ok) {
+            Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
+          }
+        })
+      },
+      catch: (_) => _ as Error,
+    }),
+    Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
   )
-}
 
 /**
  * The main function for the action.
  */
-export const run: (inputs: Inputs, before: NES, after: NES) => Effect.Effect<never, Error, void> = (
-  inputs: Inputs,
-  before: NES,
-  after: NES,
+export const run: (inputs: Inputs, before: NES, after: NES, commitMessage: string) => Effect.Effect<never, Error, void> = (
+  inputs,
+  before,
+  after,
+  commitMessage,
 ) =>
   pipe(
     execCommands(inputs),
@@ -257,5 +238,5 @@ export const run: (inputs: Inputs, before: NES, after: NES) => Effect.Effect<nev
     ),
     Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt] as const))),
     Effect.flatMap((data) => pingServer.pipe(Effect.as(data))),
-    Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after)),
+    Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)),
   )

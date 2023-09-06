@@ -52284,43 +52284,37 @@ const pingServer = Function_pipe(Effect_tryPromise({
     },
     catch: (_) => _,
 }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
-const uploadResults = (inputs, results, computedAt, before, after) => {
-    const postData = (commitMessage) => Function_pipe(Effect_tryPromise({
-        try: (signal) => {
-            const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage, before, after);
-            const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
-            const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
-            return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
-                method: "POST",
-                body: buff,
-                headers: {
-                    "User-Agent": "zeklin-action",
-                    "Content-Type": "application/json",
-                    Authorization: `Basic ${credentials}`,
-                },
-                signal: signal,
-            }).then((response) => {
-                if (!response.ok) {
-                    Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`));
-                }
-            });
-        },
-        catch: (_) => _,
-    }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
-    return Function_pipe(
-    // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
-    // We need to fetch as the "after" commit is not the one we're on in GHA.
-    // GHA seems to create a merge commit between the "after" commit and the "before" commit and run from this merge commit.
-    Effect_tryPromise(() => (0,exec.exec)("git", ["fetch", "--depth=2", "--quiet"], { silent: true, failOnStdErr: true })), Effect_flatMap(() => Effect_tryPromise(() => (0,exec.getExecOutput)("git", ["show", "-s", "--format=%s", after], { silent: true, failOnStdErr: true }))), Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: "${commitMessage.stdout.trim()}", stderr: "${commitMessage.stderr.trim()}", exitCode: ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout.trim())));
-};
+const uploadResults = (inputs, results, computedAt, before, after, commitMessage) => Function_pipe(Effect_tryPromise({
+    try: (signal) => {
+        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage, before, after);
+        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
+        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
+        return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+            method: "POST",
+            body: buff,
+            headers: {
+                "User-Agent": "zeklin-action",
+                "Content-Type": "application/json",
+                Authorization: `Basic ${credentials}`,
+            },
+            signal: signal,
+        }).then((response) => {
+            if (!response.ok) {
+                Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`));
+            }
+        });
+    },
+    catch: (_) => _,
+}), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
 /**
  * The main function for the action.
  */
-const run_run = (inputs, before, after) => Function_pipe(execCommands(inputs), Effect_flatMap((exitCode) => exitCode === lib_core.ExitCode.Success
+const run_run = (inputs, before, after, commitMessage) => Function_pipe(execCommands(inputs), Effect_flatMap((exitCode) => exitCode === lib_core.ExitCode.Success
     ? utils_logInfo(`🎉 '${inputs.cmd}' ran successfully!`).pipe(Effect_as(new Date()))
-    : Effect_fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect_flatMap((computedAt) => findResults(inputs).pipe(Effect_map((_) => [_, computedAt]))), Effect_flatMap((data) => pingServer.pipe(Effect_as(data))), Effect_flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after)));
+    : Effect_fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect_flatMap((computedAt) => findResults(inputs).pipe(Effect_map((_) => [_, computedAt]))), Effect_flatMap((data) => pingServer.pipe(Effect_as(data))), Effect_flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)));
 
 ;// CONCATENATED MODULE: ./src/index.ts
+
 
 
 
@@ -52378,7 +52372,7 @@ const unsafeParseInputs = () => {
         return Either_left(error);
     }
 };
-const getBeforeAfter = (context) => Function_pipe(mjs_value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }), mjs_when({
+const unsafeGetBeforeAfter = (context) => Function_pipe(mjs_value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }), mjs_when({
     before: (_) => _ !== undefined,
     after: (_) => _ !== undefined,
 }, () => {
@@ -52393,9 +52387,22 @@ const getBeforeAfter = (context) => Function_pipe(mjs_value({ before: context.pa
     throw new Error(`Unhandled 'payload.action' type: ${e.action}`);
 }));
 /**
+ * See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+ *
+ * We need to fetch as the "after" commit is not the one we're on in GHA.
+ * GHA seems to create a merge commit between the "after" commit and the "before" commit and run from this merge commit.
+ */
+const getCommitMessage = (after) => Function_pipe(Effect_tryPromise(() => (0,exec.exec)("git", ["fetch", "--depth=2", "--quiet"], { silent: true, failOnStdErr: true })), Effect_flatMap(() => Effect_tryPromise(() => (0,exec.getExecOutput)("git", ["show", "-s", "--format=%s", after], {
+    silent: true,
+    failOnStdErr: true,
+}))), Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: "${commitMessage.stdout.trim()}", stderr: "${commitMessage.stderr.trim()}", exitCode: ${commitMessage.exitCode}`)), Effect_mapBoth({
+    onFailure: (e) => new Error(`Failed to get commit message: ${e}`),
+    onSuccess: (_) => _.stdout,
+}));
+/**
  * The main function for the action.
  */
-const main = Function_pipe(utils_logInfo(banner), Effect_flatMap(() => Effect_suspend(unsafeParseInputs)), Effect_tap((inputs) => utils_logDebug(`Inputs: ${JSON.stringify(inputs)}`)), Effect_flatMap((inputs) => Function_pipe(Effect_sync(() => getBeforeAfter(github.context)), Effect_map((beforeAfter) => [inputs, beforeAfter]))), Effect_flatMap(([inputs, [before, after]]) => run_run(inputs, before, after)));
+const main = Function_pipe(utils_logInfo(banner), Effect_flatMap(() => Effect_suspend(unsafeParseInputs)), Effect_tap((inputs) => utils_logDebug(`Inputs: ${JSON.stringify(inputs)}`)), Effect_flatMap((inputs) => Function_pipe(Effect_sync(() => unsafeGetBeforeAfter(github.context)), Effect_map((beforeAfter) => [inputs, beforeAfter]))), Effect_flatMap(([inputs, [before, after]]) => Function_pipe(getCommitMessage(after), Effect_map((commitMessage) => [inputs, before, after, commitMessage]))), Effect_flatMap(([inputs, before, after, commitMessage]) => run_run(inputs, before, after, commitMessage)));
 if (process.env.GITHUB_ACTIONS !== "true") {
     (0,lib_core.setFailed)("The script must be run in GitHub Actions environment");
 }
