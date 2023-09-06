@@ -52201,16 +52201,19 @@ class PullRequest extends TaggedClass("PullRequest") {
 // prettier-ignore
 class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
     static unsafeFrom(context, data, computedAt) {
-        const [before, after] = Function_pipe(mjs_value(context.payload.action), mjs_when("opened", () => {
+        const [before, after] = Function_pipe(mjs_value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }), mjs_when({
+            before: (_) => _ !== undefined,
+            after: (_) => _ !== undefined
+        }, () => {
+            const before = NES.unsafeFromString(context.payload.before);
+            const after = NES.unsafeFromString(context.payload.after);
+            return [before, after];
+        }), mjs_when({ action: "opened" }, () => {
             const after = NES.unsafeFromString(context.payload.pull_request.head.sha);
             const before = NES.unsafeFromString(context.payload.pull_request.base.sha);
             return [before, after];
-        }), mjs_when("synchronize", () => {
-            const after = NES.unsafeFromString(context.payload.after);
-            const before = NES.unsafeFromString(context.payload.before);
-            return [before, after];
-        }), mjs_orElse((action) => {
-            throw new Error(`Unhandled 'payload.action' type: ${action}`);
+        }), mjs_orElse((e) => {
+            throw new Error(`Unhandled 'payload.action' type: ${e.action}`);
         }) // TODO: To improve?
         );
         return new PostJmhResultBody({

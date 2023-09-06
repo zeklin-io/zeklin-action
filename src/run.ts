@@ -75,21 +75,24 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
     const [before, after]: readonly [NES, NES] =
       pipe(
-        Match.value(context.payload.action),
-        Match.when("opened", () => {
+        Match.value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }),
+        Match.when({
+          before: (_: string | undefined) => _ !== undefined,
+          after: (_: string | undefined) => _ !== undefined
+        }, () => {
+          const before = NES.unsafeFromString(context.payload.before)
+          const after = NES.unsafeFromString(context.payload.after)
+
+          return [before, after] as const
+        }),
+        Match.when({ action: "opened" }, () => {
           const after = NES.unsafeFromString(context.payload.pull_request!.head.sha)
           const before = NES.unsafeFromString(context.payload.pull_request!.base.sha)
 
           return [before, after] as const
         }),
-        Match.when("synchronize", () => {
-          const after = NES.unsafeFromString(context.payload.after)
-          const before = NES.unsafeFromString(context.payload.before)
-
-          return [before, after] as const
-        }),
-        Match.orElse((action) => {
-          throw new Error(`Unhandled 'payload.action' type: ${action}`)
+        Match.orElse((e) => {
+          throw new Error(`Unhandled 'payload.action' type: ${e.action}`)
         }) // TODO: To improve?
       )
 
