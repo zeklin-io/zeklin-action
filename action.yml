@@ -29,9 +29,5 @@ outputs:
     description: 'Your output description here'
 
 runs:
-  using: node20
+  using: node16
   main: dist/index.js
-  pre: |
-    HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)
-    echo ${HEAD_COMMIT_MESSAGE}
-    echo "HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}" >> $GITHUB_ENV # https://stackoverflow.com/a/57969570/2431728

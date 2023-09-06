@@ -2,7 +2,7 @@ import * as core from "@actions/core"
 import { ExitCode } from "@actions/core"
 import { Data, Duration, Match, Option, pipe, Schedule } from "effect"
 import * as Effect from "effect/Effect"
-import { exec, ExecOptions } from "@actions/exec"
+import { exec, ExecOptions, getExecOutput } from "@actions/exec"
 import * as fs from "fs/promises"
 import { Inputs } from "./index.js"
 import { logDebug, logInfo } from "./utils.js"
@@ -74,7 +74,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   computedAt: Date
   context: Context
 }> {
-  static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
+  static unsafeFrom(context: Context, data: JSON, computedAt: Date, commitMessage: string): PostJmhResultBody {
     const [before, after]: readonly [NES, NES] =
       pipe(
         Match.value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }),
@@ -115,7 +115,7 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
       projectId: envvars.GITHUB_REPOSITORY_ID,
       branchName: branchName,
-      commitMessage: envvars.HEAD_COMMIT_MESSAGE,
+      commitMessage: commitMessage,
       commitHash: after,
       previousCommitHash: before,
       actor: envvars.GITHUB_ACTOR,
@@ -212,33 +212,44 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
   inputs: Inputs,
   results: JSON,
   computedAt: Date,
-) =>
-  pipe(
-    Effect.tryPromise({
-      try: (signal) => {
-        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt)
-        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
-        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
+) => {
+  const postData = (commitMessage: string) =>
+    pipe(
+      Effect.tryPromise({
+        try: (signal) => {
+          const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage)
+          const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
+          const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
-        return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
-          method: "POST",
-          body: buff,
-          headers: {
-            "User-Agent": "zeklin-action",
-            "Content-Type": "application/json",
-            Authorization: `Basic ${credentials}`,
-          },
-          signal: signal,
-        }).then((response) => {
-          if (!response.ok) {
-            Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
-          }
-        })
-      },
-      catch: (_) => _ as Error,
-    }),
-    Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+          return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+            method: "POST",
+            body: buff,
+            headers: {
+              "User-Agent": "zeklin-action",
+              "Content-Type": "application/json",
+              Authorization: `Basic ${credentials}`,
+            },
+            signal: signal,
+          }).then((response) => {
+            if (!response.ok) {
+              Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`))
+            }
+          })
+        },
+        catch: (_) => _ as Error,
+      }),
+      Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+    )
+
+  return pipe(
+    Effect.tryPromise(() => getExecOutput("git show -s --format=%s")), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+    Effect.tap((commitMessage) =>
+      logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`),
+    ),
+    Effect.mapError((e) => new Error(`Failed to get commit message: ${e}`)),
+    Effect.flatMap((commitMessage) => postData(commitMessage.stdout.trim())),
   )
+}
 
 /**
  * The main function for the action.

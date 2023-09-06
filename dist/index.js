@@ -48718,10 +48718,6 @@ const GITHUB_ACTOR = NES.unsafeFromString(process.env.GITHUB_ACTOR);
  * For example, 1234567. Note that this is different from the actor username.
  */
 const GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
-/**
- * https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
- */
-const HEAD_COMMIT_MESSAGE = process.env.HEAD_COMMIT_MESSAGE;
 const debugVariables = () => {
     lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
     lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
@@ -48735,7 +48731,6 @@ const debugVariables = () => {
     lib_core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`);
     lib_core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`);
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
-    lib_core.debug(`HEAD_COMMIT_MESSAGE: ${HEAD_COMMIT_MESSAGE}`);
 };
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.4/node_modules/@effect/match/mjs/internal/matcher.mjs
@@ -52205,7 +52200,7 @@ class PullRequest extends TaggedClass("PullRequest") {
 }
 // prettier-ignore
 class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
-    static unsafeFrom(context, data, computedAt) {
+    static unsafeFrom(context, data, computedAt, commitMessage) {
         const [before, after] = Function_pipe(mjs_value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }), mjs_when({
             before: (_) => _ !== undefined,
             after: (_) => _ !== undefined
@@ -52234,7 +52229,7 @@ class PostJmhResultBody extends TaggedClass("PostJmhResultBody") {
             orgId: GITHUB_REPOSITORY_OWNER_ID,
             projectId: GITHUB_REPOSITORY_ID,
             branchName: branchName,
-            commitMessage: HEAD_COMMIT_MESSAGE,
+            commitMessage: commitMessage,
             commitHash: after,
             previousCommitHash: before,
             actor: GITHUB_ACTOR,
@@ -52302,28 +52297,32 @@ const pingServer = Function_pipe(Effect_tryPromise({
     },
     catch: (_) => _,
 }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
-const uploadResults = (inputs, results, computedAt) => Function_pipe(Effect_tryPromise({
-    try: (signal) => {
-        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt);
-        const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
-        const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
-        return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
-            method: "POST",
-            body: buff,
-            headers: {
-                "User-Agent": "zeklin-action",
-                "Content-Type": "application/json",
-                Authorization: `Basic ${credentials}`,
-            },
-            signal: signal,
-        }).then((response) => {
-            if (!response.ok) {
-                Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`));
-            }
-        });
-    },
-    catch: (_) => _,
-}), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
+const uploadResults = (inputs, results, computedAt) => {
+    const postData = (commitMessage) => Function_pipe(Effect_tryPromise({
+        try: (signal) => {
+            const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage);
+            const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
+            const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
+            return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+                method: "POST",
+                body: buff,
+                headers: {
+                    "User-Agent": "zeklin-action",
+                    "Content-Type": "application/json",
+                    Authorization: `Basic ${credentials}`,
+                },
+                signal: signal,
+            }).then((response) => {
+                if (!response.ok) {
+                    Promise.reject(Error(`Failed to upload results: ${response.status} ${response.statusText}`));
+                }
+            });
+        },
+        catch: (_) => _,
+    }), Effect_retry(Schedule_intersect(Schedule_recurs(3), Schedule_spaced(seconds(1)))));
+    return Function_pipe(Effect_tryPromise(() => (0,exec.getExecOutput)("git show -s --format=%s")), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+    Effect_tap((commitMessage) => utils_logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`)), Effect_mapError((e) => new Error(`Failed to get commit message: ${e}`)), Effect_flatMap((commitMessage) => postData(commitMessage.stdout.trim())));
+};
 /**
  * The main function for the action.
  */
