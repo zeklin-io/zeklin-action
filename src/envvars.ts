@@ -125,6 +125,11 @@ export const GITHUB_ACTOR: NES = NES.unsafeFromString(process.env.GITHUB_ACTOR!)
  */
 export const GITHUB_ACTOR_ID: number = Number(process.env.GITHUB_ACTOR_ID!)
 
+/**
+ * https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+ */
+export const HEAD_COMMIT_MESSAGE: string = process.env.HEAD_COMMIT_MESSAGE!
+
 export const debugVariables = () => {
   core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
   core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
@@ -138,4 +143,5 @@ export const debugVariables = () => {
   core.debug(`RUNNER_ARCH: ${RUNNER_ARCH}`)
   core.debug(`GITHUB_ACTOR: ${GITHUB_ACTOR}`)
   core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`)
+  core.debug(`HEAD_COMMIT_MESSAGE: ${HEAD_COMMIT_MESSAGE}`)
 }
