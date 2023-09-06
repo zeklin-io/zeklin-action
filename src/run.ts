@@ -224,8 +224,10 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date, before: N
     // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
     // We need to fetch as the "after" commit is not the one we're on in GHA.
     // GHA seems to create a merge commit between the "after" commit and the "before" commit and run from this merge commit.
-    Effect.tryPromise(() => exec("git", ["fetch", "--depth=2", "--quiet"])),
-    Effect.flatMap(() => Effect.tryPromise(() => getExecOutput("git", ["show", "-s", "--format=%s", after], { silent: true }))),
+    Effect.tryPromise(() => exec("git", ["fetch", "--depth=2", "--quiet"], { silent: true, failOnStdErr: true })),
+    Effect.flatMap(() =>
+      Effect.tryPromise(() => getExecOutput("git", ["show", "-s", "--format=%s", after], { silent: true, failOnStdErr: true })),
+    ),
     Effect.tap((commitMessage) =>
       logDebug(
         `Commit message - stdout: "${commitMessage.stdout.trim()}", stderr: "${commitMessage.stderr.trim()}", exitCode: ${
