@@ -221,7 +221,9 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date, before: N
     )
 
   return pipe(
-    Effect.tryPromise(() => getExecOutput("git", ["show", "-s", "--format=%s", after])), // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+    Effect.promise(() => exec("git", ["pull"])),
+    // See https://github.com/orgs/community/discussions/28474#discussioncomment-6300866
+    Effect.flatMap(() => Effect.tryPromise(() => getExecOutput("git", ["show", "-s", "--format=%s", after]))),
     Effect.tap((commitMessage) =>
       logDebug(`Commit message - stdout: ${commitMessage.stdout}, stderr: ${commitMessage.stderr}, exitCode: ${commitMessage.exitCode}`),
     ),
