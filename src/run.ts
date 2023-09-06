@@ -1,6 +1,6 @@
 import * as core from "@actions/core"
 import { ExitCode } from "@actions/core"
-import { Data, Duration, Match, Option, pipe, Schedule } from "effect"
+import { Data, Duration, Option, pipe, Schedule } from "effect"
 import * as Effect from "effect/Effect"
 import { exec, ExecOptions } from "@actions/exec"
 import * as fs from "fs/promises"
@@ -63,6 +63,8 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   runnerArch: RunnerArch       // RUNNER_ARCH
   orgId: number                // GITHUB_REPOSITORY_OWNER_ID
   projectId: number            // GITHUB_REPOSITORY_ID
+  branchName: NES
+  commitMessage: string,
   commitHash: NES
   previousCommitHash: NES,
   actor: NES                   // GITHUB_ACTOR
@@ -72,28 +74,11 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
   computedAt: Date
   context: Context
 }> {
-  static unsafeFrom(context: Context, data: JSON, computedAt: Date): PostJmhResultBody {
-    const [before, after]: readonly [NES, NES] =
-      pipe(
-        Match.value({ before: context.payload.before, after: context.payload.after, action: context.payload.action }),
-        Match.when({
-          before: (_: string | undefined) => _ !== undefined,
-          after: (_: string | undefined) => _ !== undefined
-        }, () => {
-          const before = NES.unsafeFromString(context.payload.before)
-          const after = NES.unsafeFromString(context.payload.after)
-
-          return [before, after] as const
-        }),
-        Match.when({ action: "opened" }, () => {
-          const after = NES.unsafeFromString(context.payload.pull_request!.head.sha)
-          const before = NES.unsafeFromString(context.payload.pull_request!.base.sha)
-
-          return [before, after] as const
-        }),
-        Match.orElse((e) => {
-          throw new Error(`Unhandled 'payload.action' type: ${e.action}`)
-        }) // TODO: To improve?
+  static unsafeFrom(context: Context, data: JSON, computedAt: Date, commitMessage: string, before: NES, after: NES): PostJmhResultBody {
+    // See https://stackoverflow.com/a/58035262/2431728
+    const branchName =
+      NES.unsafeFromString(
+        context.payload.pull_request?.head.ref ?? context.ref.replace("refs/heads/", "")
       )
 
     return new PostJmhResultBody({
@@ -106,6 +91,8 @@ class PostJmhResultBody extends Data.TaggedClass("PostJmhResultBody")<{
       runnerArch: envvars.RUNNER_ARCH,
       orgId: envvars.GITHUB_REPOSITORY_OWNER_ID,
       projectId: envvars.GITHUB_REPOSITORY_ID,
+      branchName: branchName,
+      commitMessage: commitMessage,
       commitHash: after,
       previousCommitHash: before,
       actor: envvars.GITHUB_ACTOR,
@@ -198,15 +185,18 @@ const pingServer: Effect.Effect<never, Error, void> = pipe(
   Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
 )
 
-const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect.Effect<never, Error, void> = (
+const uploadResults: (
   inputs: Inputs,
   results: JSON,
   computedAt: Date,
-) =>
+  before: NES,
+  after: NES,
+  commitMessage: string,
+) => Effect.Effect<never, Error, void> = (inputs, results, computedAt, before, after, commitMessage) =>
   pipe(
     Effect.tryPromise({
       try: (signal) => {
-        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt)
+        const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage, before, after)
         const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
         const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
@@ -233,7 +223,12 @@ const uploadResults: (inputs: Inputs, results: JSON, computedAt: Date) => Effect
 /**
  * The main function for the action.
  */
-export const run: (inputs: Inputs) => Effect.Effect<never, Error, void> = (inputs: Inputs) =>
+export const run: (inputs: Inputs, before: NES, after: NES, commitMessage: string) => Effect.Effect<never, Error, void> = (
+  inputs,
+  before,
+  after,
+  commitMessage,
+) =>
   pipe(
     execCommands(inputs),
     Effect.flatMap((exitCode) =>
@@ -243,5 +238,5 @@ export const run: (inputs: Inputs) => Effect.Effect<never, Error, void> = (input
     ),
     Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt] as const))),
     Effect.flatMap((data) => pingServer.pipe(Effect.as(data))),
-    Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt)),
+    Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)),
   )
