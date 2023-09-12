@@ -8,7 +8,7 @@ on:
       - 'releases/*'
 
 env:
-  ZEKLIN_SERVER_URL: ${{ secrets.LOCAL_ZEKLIN_SERVER_URL }}
+  ZEKLIN_SERVER_URL: ${{ secrets.STAGING_ZEKLIN_SERVER_URL }}
 
 jobs:
   test-action:
@@ -26,8 +26,8 @@ jobs:
         id: test-action
         uses: ./
         with:
-          api-key: ${{ secrets.ZEKLIN_API_KEY }}
-          api-key-id: ${{ secrets.ZEKLIN_API_KEY_ID }}
+          api-key: ${{ secrets.STAGING_ZEKLIN_API_KEY }}
+          api-key-id: ${{ secrets.STAGING_ZEKLIN_API_KEY_ID }}
           output-file-path: 'jmh_samples_all.json'
           workdir: "."
           cmd: |
@@ -39,7 +39,7 @@ jobs:
         continue-on-error: true
         uses: ./
         with:
-          api-key: ${{ secrets.ZEKLIN_API_KEY }}
-          api-key-id: ${{ secrets.ZEKLIN_API_KEY_ID }}
+          api-key: ${{ secrets.STAGING_ZEKLIN_API_KEY }}
+          api-key-id: ${{ secrets.STAGING_ZEKLIN_API_KEY_ID }}
           cmd: sh -c "if true; then exit 1; fi"
           output-file-path: '../empty_report.json'
