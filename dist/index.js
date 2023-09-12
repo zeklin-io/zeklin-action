@@ -15943,7 +15943,7 @@ __nccwpck_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.10.0/node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(6071);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/GlobalValue.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/GlobalValue.mjs
 /**
  * @since 1.0.0
  */
@@ -15963,7 +15963,7 @@ const globalValue = (id, compute) => {
   return globalStore.get(id);
 };
 //# sourceMappingURL=GlobalValue.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Function.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Function.mjs
 /**
  * Tests if a value is a `function`.
  *
@@ -16369,7 +16369,7 @@ const hole = /*#__PURE__*/(/* unused pure expression or super */ null && (Functi
  */
 const SK = (_, b) => b;
 //# sourceMappingURL=Function.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Predicate.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Predicate.mjs
 /**
  * @since 1.0.0
  */
@@ -16686,6 +16686,23 @@ const isNotNullable = input => input !== null && input !== undefined;
  */
 const isError = input => input instanceof Error;
 /**
+ * A guard that succeeds when the input is a `Uint8Array`.
+ *
+ * @param input - The value to test.
+ *
+ * @example
+ * import { isUint8Array } from "@effect/data/Predicate"
+ *
+ * assert.deepStrictEqual(isUint8Array(new Uint8Array()), true)
+ *
+ * assert.deepStrictEqual(isUint8Array(null), false)
+ * assert.deepStrictEqual(isUint8Array({}), false)
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+const isUint8Array = input => input instanceof Uint8Array;
+/**
  * A guard that succeeds when the input is a `Date`.
  *
  * @param input - The value to test.
@@ -16931,7 +16948,7 @@ const some = collection => a => {
   return false;
 };
 //# sourceMappingURL=Predicate.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/PCGRandom.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/PCGRandom.mjs
 /*
  * Copyright 2014 Thom Chiovoloni, released under the MIT license.
  *
@@ -17089,7 +17106,7 @@ function add64(out, aHi, aLo, bHi, bLo) {
   out[1] = lo;
 }
 //# sourceMappingURL=PCGRandom.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Hash.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Hash.mjs
 /**
  * @since 1.0.0
  */
@@ -17235,7 +17252,7 @@ const array = arr => {
   return optimize(h);
 };
 //# sourceMappingURL=Hash.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Equal.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Equal.mjs
 
 /**
  * @since 1.0.0
@@ -17272,9 +17289,9 @@ const isEqual = u => typeof u === "object" && u !== null && Equal_symbol in u;
  * @since 1.0.0
  * @category instances
  */
-const equivalence = () => (self, that) => Hash_hash(self) === Hash_hash(that) && equals(self, that);
+const equivalence = () => (self, that) => equals(self, that);
 //# sourceMappingURL=Equal.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Data.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Data.mjs
 /**
  * @since 1.0.0
  */
@@ -17438,7 +17455,7 @@ const Class = Structural;
  */
 const taggedEnum = () => tagged;
 //# sourceMappingURL=Data.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Equivalence.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Equivalence.mjs
 /**
  * This module provides an implementation of the `Equivalence` type class, which defines a binary relation
  * that is reflexive, symmetric, and transitive. In other words, it defines a notion of equivalence between values of a certain type.
@@ -17605,7 +17622,7 @@ const Equivalence_struct = fields => {
   });
 };
 //# sourceMappingURL=Equivalence.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Inspectable.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Inspectable.mjs
 /**
  * @since 1.0.0
  */
@@ -17614,8 +17631,23 @@ const Equivalence_struct = fields => {
  * @category symbols
  */
 const NodeInspectSymbol = /*#__PURE__*/Symbol.for("nodejs.util.inspect.custom");
+/**
+ * @since 1.0.0
+ */
+const toJSON = x => {
+  if (typeof x === "object" && x !== null && "toJSON" in x && typeof x["toJSON"] === "function" && x["toJSON"].length === 0) {
+    return x.toJSON();
+  } else if (Array.isArray(x)) {
+    return x.map(toJSON);
+  }
+  return x;
+};
+/**
+ * @since 1.0.0
+ */
+const Inspectable_toString = x => JSON.stringify(x, null, 2);
 //# sourceMappingURL=Inspectable.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Effect.mjs
 /** @internal */
 const EffectTypeId = /*#__PURE__*/Symbol.for("@effect/io/Effect");
 /** @internal */
@@ -17625,7 +17657,7 @@ const effectVariance = {
   _A: _ => _
 };
 //# sourceMappingURL=Effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Pipeable.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Pipeable.mjs
 /**
  * @since 1.0.0
  */
@@ -17663,7 +17695,7 @@ const Pipeable_pipeArguments = (self, args) => {
   }
 };
 //# sourceMappingURL=Pipeable.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Option.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Option.mjs
 /**
  * @since 1.0.0
  */
@@ -17685,7 +17717,7 @@ const CommonProto = {
     return Pipeable_pipeArguments(this, arguments);
   },
   toString() {
-    return JSON.stringify(this, null, 2);
+    return Inspectable_toString(this.toJSON());
   }
 };
 const SomeProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(CommonProto), {
@@ -17698,8 +17730,9 @@ const SomeProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(CommonP
   },
   toJSON() {
     return {
+      _id: "Option",
       _tag: this._tag,
-      value: this.value
+      value: toJSON(this.value)
     };
   }
 });
@@ -17713,6 +17746,7 @@ const NoneProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(CommonP
   },
   toJSON() {
     return {
+      _id: "Option",
       _tag: this._tag
     };
   }
@@ -17732,7 +17766,7 @@ const Option_some = value => {
   return a;
 };
 //# sourceMappingURL=Option.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Either.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Either.mjs
 /**
  * @since 1.0.0
  */
@@ -17759,7 +17793,7 @@ const Either_CommonProto = {
     return Pipeable_pipeArguments(this, arguments);
   },
   toString() {
-    return JSON.stringify(this, null, 2);
+    return Inspectable_toString(this.toJSON());
   }
 };
 const RightProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(Either_CommonProto), {
@@ -17772,8 +17806,9 @@ const RightProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(Either
   },
   toJSON() {
     return {
+      _id: "Either",
       _tag: this._tag,
-      right: this.right
+      right: toJSON(this.right)
     };
   }
 });
@@ -17787,8 +17822,9 @@ const LeftProto = /*#__PURE__*/Object.assign( /*#__PURE__*/Object.create(Either_
   },
   toJSON() {
     return {
+      _id: "Either",
       _tag: this._tag,
-      left: this.left
+      left: toJSON(this.left)
     };
   }
 });
@@ -17817,7 +17853,7 @@ const getRight = self => isLeft(self) ? none : Option_some(self.right);
 /** @internal */
 const fromOption = /*#__PURE__*/Function_dual(2, (self, onNone) => isNone(self) ? left(onNone()) : right(self.value));
 //# sourceMappingURL=Either.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Order.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Order.mjs
 /**
  * @since 1.0.0
  */
@@ -18043,7 +18079,7 @@ const clamp = O => dual(3, (self, minimum, maximum) => min(O)(maximum, max(O)(mi
  */
 const between = O => dual(3, (self, minimum, maximum) => !lessThan(O)(self, minimum) && !greaterThan(O)(self, maximum));
 //# sourceMappingURL=Order.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Number.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Number.mjs
 /**
  * This module provides utility functions and type class instances for working with the `number` type in TypeScript.
  * It includes functions for basic arithmetic operations, as well as type class instances for
@@ -18390,7 +18426,7 @@ const remainder = /*#__PURE__*/(/* unused pure expression or super */ null && (d
   return selfInt % divisorInt / Math.pow(10, decCount);
 })));
 //# sourceMappingURL=Number.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Option.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Option.mjs
 
 
 
@@ -19361,14 +19397,14 @@ const gen = f => {
   }
 };
 //# sourceMappingURL=Option.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/ReadonlyArray.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/ReadonlyArray.mjs
 /**
  * @since 1.0.0
  */
 /** @internal */
 const isNonEmptyArray = self => self.length > 0;
 //# sourceMappingURL=ReadonlyArray.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/ReadonlyRecord.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/ReadonlyRecord.mjs
 /**
  * This module provides utility functions for working with records in TypeScript.
  *
@@ -19848,7 +19884,7 @@ const partition = /*#__PURE__*/(/* unused pure expression or super */ null && (d
   return [left, right];
 })));
 //# sourceMappingURL=ReadonlyRecord.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/ReadonlyArray.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/ReadonlyArray.mjs
 /**
  * This module provides utility functions for working with arrays in TypeScript.
  *
@@ -21142,7 +21178,7 @@ const cartesianWith = /*#__PURE__*/(/* unused pure expression or super */ null &
  */
 const cartesian = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, that) => cartesianWith(self, that, (a, b) => [a, b]))));
 //# sourceMappingURL=ReadonlyArray.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Chunk.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Chunk.mjs
 
 
 
@@ -21174,12 +21210,12 @@ const ChunkProto = {
     _A: _ => _
   },
   toString() {
-    return `Chunk(${toReadonlyArray(this).map(String).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "Chunk",
-      values: toReadonlyArray(this)
+      _id: "Chunk",
+      values: toReadonlyArray(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -22121,7 +22157,7 @@ const Chunk_reduce = reduce;
  */
 const Chunk_reduceRight = reduceRight;
 //# sourceMappingURL=Chunk.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Either.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Either.mjs
 /**
  * @since 1.0.0
  */
@@ -22492,7 +22528,7 @@ const Either_gen = f => {
   }
 };
 //# sourceMappingURL=Either.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.4/node_modules/@effect/match/mjs/internal/matcher.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.5/node_modules/@effect/match/mjs/internal/matcher.mjs
 
 
 
@@ -22780,7 +22816,7 @@ const exhaustive = self => {
   };
 };
 //# sourceMappingURL=matcher.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.4/node_modules/@effect/match/mjs/index.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+match@0.35.2_@effect+data@0.18.5/node_modules/@effect/match/mjs/index.mjs
 
 
 /**
@@ -22958,7 +22994,7 @@ const mjs_option = matcher_option;
  */
 const mjs_exhaustive = exhaustive;
 //# sourceMappingURL=index.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Context.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Context.mjs
 
 
 
@@ -22984,11 +23020,11 @@ const TagProto = {
     return random(this);
   },
   toString() {
-    return JSON.stringify(this, null, 2);
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "Tag",
+      _id: "Tag",
       identifier: this.identifier,
       stack: this.stack
     };
@@ -23055,12 +23091,12 @@ const ContextProto = {
     return Pipeable_pipeArguments(this, arguments);
   },
   toString() {
-    return JSON.stringify(this, null, 2);
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "Context",
-      services: Array.from(this.unsafeMap)
+      _id: "Context",
+      services: Array.from(this.unsafeMap).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -23150,7 +23186,7 @@ const omit = (...tags) => self => {
   return makeContext(newEnv);
 };
 //# sourceMappingURL=Context.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Context.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Context.mjs
 
 const Context_TagTypeId = TagTypeId;
 /**
@@ -23385,7 +23421,7 @@ const Context_pick = pick;
  */
 const Context_omit = omit;
 //# sourceMappingURL=Context.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Differ/ChunkPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Differ/ChunkPatch.mjs
 
 
 
@@ -23511,7 +23547,7 @@ const ChunkPatch_patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ) 
   return chunk;
 });
 //# sourceMappingURL=ChunkPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Differ/ContextPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Differ/ContextPatch.mjs
 
 
 
@@ -23651,7 +23687,7 @@ const ContextPatch_patch = /*#__PURE__*/Function_dual(2, (self, context) => {
   return makeContext(map);
 });
 //# sourceMappingURL=ContextPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashMap/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashMap/config.mjs
 /** @internal */
 const SIZE = 5;
 /** @internal */
@@ -23663,7 +23699,7 @@ const MAX_INDEX_NODE = BUCKET_SIZE / 2;
 /** @internal */
 const MIN_ARRAY_NODE = BUCKET_SIZE / 4;
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashMap/bitwise.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashMap/bitwise.mjs
 
 /**
  * Hamming weight.
@@ -23693,7 +23729,7 @@ function fromBitmap(bitmap, bit) {
   return popcount(bitmap & bit - 1);
 }
 //# sourceMappingURL=bitwise.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashMap/array.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashMap/array.mjs
 /** @internal */
 function arrayUpdate(mutate, at, v, arr) {
   let out = arr;
@@ -23743,7 +23779,7 @@ function arraySpliceIn(mutate, at, v, arr) {
   return out;
 }
 //# sourceMappingURL=array.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Stack.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Stack.mjs
 /** @internal */
 class Stack {
   constructor(value, previous) {
@@ -23752,7 +23788,7 @@ class Stack {
   }
 }
 //# sourceMappingURL=Stack.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashMap/node.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashMap/node.mjs
 
 
 
@@ -24001,7 +24037,7 @@ function mergeLeaves(edit, shift, h1, n1, h2, n2) {
   }
 }
 //# sourceMappingURL=node.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashMap.mjs
 
 
 
@@ -24047,12 +24083,12 @@ const HashMapProto = {
     return false;
   },
   toString() {
-    return `HashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "HashMap",
-      values: Array.from(this)
+      _id: "HashMap",
+      values: Array.from(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -24334,7 +24370,7 @@ const HashMap_findFirst = /*#__PURE__*/Function_dual(2, (self, predicate) => {
   return Option_none();
 });
 //# sourceMappingURL=HashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashSet.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashSet.mjs
 
 
 
@@ -24359,12 +24395,12 @@ const HashSetProto = {
     return false;
   },
   toString() {
-    return `HashSet(${Array.from(this).map(String).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "HashSet",
-      values: Array.from(this)
+      _id: "HashSet",
+      values: Array.from(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -24516,14 +24552,14 @@ const HashSet_partition = /*#__PURE__*/Function_dual(2, (self, f) => {
   return [HashSet_endMutation(left), HashSet_endMutation(right)];
 });
 //# sourceMappingURL=HashSet.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/HashMap/keySet.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/HashMap/keySet.mjs
 
 /** @internal */
 function keySet(self) {
   return HashSet_makeImpl(self);
 }
 //# sourceMappingURL=keySet.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/HashMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/HashMap.mjs
 /**
  * @since 1.0.0
  */
@@ -24764,7 +24800,7 @@ const mjs_HashMap_filterMap = HashMap_filterMap;
  */
 const mjs_HashMap_findFirst = HashMap_findFirst;
 //# sourceMappingURL=HashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Differ/HashMapPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Differ/HashMapPatch.mjs
 
 
 
@@ -24891,7 +24927,7 @@ const HashMapPatch_patch = /*#__PURE__*/Function_dual(3, (self, oldValue, differ
   return map;
 });
 //# sourceMappingURL=HashMapPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/HashSet.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/HashSet.mjs
 /**
  * @since 1.0.0
  */
@@ -25083,7 +25119,7 @@ const mjs_HashSet_filter = HashSet_filter;
  */
 const mjs_HashSet_partition = HashSet_partition;
 //# sourceMappingURL=HashSet.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Differ/HashSetPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Differ/HashSetPatch.mjs
 
 
 
@@ -25181,7 +25217,7 @@ const HashSetPatch_patch = /*#__PURE__*/Function_dual(2, (self, oldValue) => {
   return set;
 });
 //# sourceMappingURL=HashSetPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Differ/OrPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Differ/OrPatch.mjs
 
 
 
@@ -25348,7 +25384,7 @@ const OrPatch_patch = /*#__PURE__*/Function_dual(2, (self, {
   return result;
 });
 //# sourceMappingURL=OrPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/internal/Differ.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Differ.mjs
 
 
 
@@ -25467,7 +25503,7 @@ const Differ_zip = /*#__PURE__*/Function_dual(2, (self, that) => Differ_make({
   patch: (patch, oldValue) => [self.patch(patch[0], oldValue[0]), that.patch(patch[1], oldValue[1])]
 }));
 //# sourceMappingURL=Differ.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Differ.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Differ.mjs
 
 
 
@@ -25591,7 +25627,7 @@ const Differ_updateWith = updateWith;
  */
 const mjs_Differ_zip = Differ_zip;
 //# sourceMappingURL=Differ.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/List.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/List.mjs
 /**
  * A data type for immutable linked lists representing ordered collections of elements of type `A`.
  *
@@ -25647,12 +25683,13 @@ const ConsProto = {
   [List_TypeId]: List_TypeId,
   _tag: "Cons",
   toString() {
-    return `List.Cons(${List_toReadonlyArray(this).map(String).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "List.Cons",
-      values: List_toReadonlyArray(this)
+      _id: "List",
+      _tag: "Cons",
+      values: List_toReadonlyArray(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -25709,11 +25746,12 @@ const NilProto = {
   [List_TypeId]: List_TypeId,
   _tag: "Nil",
   toString() {
-    return `List.Nil`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "List.Nil"
+      _id: "List",
+      _tag: "Nil"
     };
   },
   [NodeInspectSymbol]() {
@@ -26336,7 +26374,7 @@ const unsafeTail = self => {
   return self.tail;
 };
 //# sourceMappingURL=List.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/MutableRef.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/MutableRef.mjs
 /**
  * @since 1.0.0
  */
@@ -26348,12 +26386,12 @@ const MutableRef_TypeId = /*#__PURE__*/Symbol.for("@effect/data/MutableRef");
 const MutableRefProto = {
   [MutableRef_TypeId]: MutableRef_TypeId,
   toString() {
-    return `MutableRef(${String(this.current)})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "MutableRef",
-      current: this.current
+      _id: "MutableRef",
+      current: toJSON(this.current)
     };
   },
   [NodeInspectSymbol]() {
@@ -26464,8 +26502,9 @@ const updateAndGet = /*#__PURE__*/Function_dual(2, (self, f) => setAndGet(self, 
  */
 const MutableRef_toggle = self => MutableRef_update(self, _ => !_);
 //# sourceMappingURL=MutableRef.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberId.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberId.mjs
 var _a, _b, _c;
+
 
 
 
@@ -26495,6 +26534,18 @@ class None {
   [Equal_symbol](that) {
     return isFiberId(that) && that._tag === OP_NONE;
   }
+  toString() {
+    return Inspectable_toString(this.toJSON());
+  }
+  toJSON() {
+    return {
+      _id: "FiberId",
+      _tag: this._tag
+    };
+  }
+  [NodeInspectSymbol]() {
+    return this.toJSON();
+  }
 }
 /** @internal */
 class Runtime {
@@ -26510,6 +26561,20 @@ class Runtime {
   [Equal_symbol](that) {
     return isFiberId(that) && that._tag === OP_RUNTIME && this.id === that.id && this.startTimeMillis === that.startTimeMillis;
   }
+  toString() {
+    return Inspectable_toString(this.toJSON());
+  }
+  toJSON() {
+    return {
+      _id: "FiberId",
+      _tag: this._tag,
+      id: this.id,
+      startTimeMillis: this.startTimeMillis
+    };
+  }
+  [NodeInspectSymbol]() {
+    return this.toJSON();
+  }
 }
 /** @internal */
 class Composite {
@@ -26524,6 +26589,20 @@ class Composite {
   }
   [Equal_symbol](that) {
     return isFiberId(that) && that._tag === OP_COMPOSITE && equals(this.left, that.left) && equals(this.right, that.right);
+  }
+  toString() {
+    return Inspectable_toString(this.toJSON());
+  }
+  toJSON() {
+    return {
+      _id: "FiberId",
+      _tag: this._tag,
+      left: toJSON(this.left),
+      right: toJSON(this.right)
+    };
+  }
+  [NodeInspectSymbol]() {
+    return this.toJSON();
   }
 }
 /** @internal */
@@ -26639,7 +26718,7 @@ const fiberId_unsafeMake = () => {
   return new Runtime(id, new Date().getTime());
 };
 //# sourceMappingURL=fiberId.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/FiberId.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberId.mjs
 
 /**
  * @since 1.0.0
@@ -26755,7 +26834,7 @@ const FiberId_toSet = toSet;
  */
 const FiberId_unsafeMake = fiberId_unsafeMake;
 //# sourceMappingURL=FiberId.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/opCodes/cause.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/cause.mjs
 /** @internal */
 const OP_DIE = "Die";
 /** @internal */
@@ -26771,7 +26850,8 @@ const OP_PARALLEL = "Parallel";
 /** @internal */
 const OP_SEQUENTIAL = "Sequential";
 //# sourceMappingURL=cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/cause.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/cause.mjs
+
 
 
 
@@ -26808,15 +26888,50 @@ const proto = {
     return Pipeable_pipeArguments(this, arguments);
   },
   toJSON() {
-    return {
-      _tag: "Cause",
-      errors: prettyErrors(this)
-    };
+    switch (this._tag) {
+      case "Empty":
+        return {
+          _id: "Cause",
+          _tag: this._tag
+        };
+      case "Die":
+        return {
+          _id: "Cause",
+          _tag: this._tag,
+          defect: toJSON(this.defect)
+        };
+      case "Interrupt":
+        return {
+          _id: "Cause",
+          _tag: this._tag,
+          fiberId: this.fiberId.toJSON()
+        };
+      case "Fail":
+        return {
+          _id: "Cause",
+          _tag: this._tag,
+          failure: toJSON(this.error)
+        };
+      case "Annotated":
+        return {
+          _id: "Cause",
+          _tag: this._tag,
+          cause: this.cause.toJSON(),
+          annotation: toJSON(this.annotation)
+        };
+      case "Sequential":
+      case "Parallel":
+        return {
+          _id: "Cause",
+          _tag: this._tag,
+          errors: toJSON(cause_prettyErrors(this))
+        };
+    }
   },
   toString() {
-    return cause_pretty(this);
+    return pretty(this);
   },
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  [NodeInspectSymbol]() {
     return this.toJSON();
   }
 };
@@ -26882,17 +26997,17 @@ const isCause = u => typeof u === "object" && u != null && CauseTypeId in u;
 /** @internal */
 const isEmptyType = self => self._tag === OP_EMPTY;
 /** @internal */
-const isFailType = self => self._tag === OP_FAIL;
+const isFailType = self => self._tag === OpCodes.OP_FAIL;
 /** @internal */
 const isDieType = self => self._tag === OP_DIE;
 /** @internal */
-const isInterruptType = self => self._tag === OP_INTERRUPT;
+const isInterruptType = self => self._tag === OpCodes.OP_INTERRUPT;
 /** @internal */
-const isAnnotatedType = self => self._tag === OP_ANNOTATED;
+const isAnnotatedType = self => self._tag === OpCodes.OP_ANNOTATED;
 /** @internal */
-const isSequentialType = self => self._tag === OP_SEQUENTIAL;
+const isSequentialType = self => self._tag === OpCodes.OP_SEQUENTIAL;
 /** @internal */
-const isParallelType = self => self._tag === OP_PARALLEL;
+const isParallelType = self => self._tag === OpCodes.OP_PARALLEL;
 // -----------------------------------------------------------------------------
 // Getters
 // -----------------------------------------------------------------------------
@@ -26923,9 +27038,9 @@ const cause_isEmpty = self => {
   });
 };
 /** @internal */
-const isFailure = self => Option_isSome(failureOption(self));
+const isFailure = self => Option.isSome(failureOption(self));
 /** @internal */
-const isDie = self => Option_isSome(dieOption(self));
+const isDie = self => Option.isSome(dieOption(self));
 /** @internal */
 const isInterrupted = self => Option_isSome(interruptOption(self));
 /** @internal */
@@ -26954,37 +27069,37 @@ const failureOrCause = self => {
   }
 };
 /** @internal */
-const dieOption = self => find(self, cause => cause._tag === OP_DIE ? mjs_Option_some(cause.defect) : Option_none());
+const dieOption = self => find(self, cause => cause._tag === OpCodes.OP_DIE ? Option.some(cause.defect) : Option.none());
 /** @internal */
 const flipCauseOption = self => cause_match(self, {
-  onEmpty: mjs_Option_some(cause_empty),
-  onFail: failureOption => map(fail)(failureOption),
-  onDie: defect => mjs_Option_some(die(defect)),
-  onInterrupt: fiberId => mjs_Option_some(interrupt(fiberId)),
-  onAnnotated: (causeOption, annotation) => map(cause => annotated(cause, annotation))(causeOption),
+  onEmpty: Option.some(cause_empty),
+  onFail: failureOption => Option.map(fail)(failureOption),
+  onDie: defect => Option.some(die(defect)),
+  onInterrupt: fiberId => Option.some(interrupt(fiberId)),
+  onAnnotated: (causeOption, annotation) => Option.map(cause => annotated(cause, annotation))(causeOption),
   onSequential: (left, right) => {
-    if (Option_isSome(left) && Option_isSome(right)) {
-      return mjs_Option_some(sequential(left.value, right.value));
+    if (Option.isSome(left) && Option.isSome(right)) {
+      return Option.some(sequential(left.value, right.value));
     }
-    if (Option_isNone(left) && Option_isSome(right)) {
-      return mjs_Option_some(right.value);
+    if (Option.isNone(left) && Option.isSome(right)) {
+      return Option.some(right.value);
     }
-    if (Option_isSome(left) && Option_isNone(right)) {
-      return mjs_Option_some(left.value);
+    if (Option.isSome(left) && Option.isNone(right)) {
+      return Option.some(left.value);
     }
-    return Option_none();
+    return Option.none();
   },
   onParallel: (left, right) => {
-    if (Option_isSome(left) && Option_isSome(right)) {
-      return mjs_Option_some(parallel(left.value, right.value));
+    if (Option.isSome(left) && Option.isSome(right)) {
+      return Option.some(parallel(left.value, right.value));
     }
-    if (Option_isNone(left) && Option_isSome(right)) {
-      return mjs_Option_some(right.value);
+    if (Option.isNone(left) && Option.isSome(right)) {
+      return Option.some(right.value);
     }
-    if (Option_isSome(left) && Option_isNone(right)) {
-      return mjs_Option_some(left.value);
+    if (Option.isSome(left) && Option.isNone(right)) {
+      return Option.some(left.value);
     }
-    return Option_none();
+    return Option.none();
   }
 });
 /** @internal */
@@ -27055,13 +27170,13 @@ const keepDefectsAndElectFailures = self => cause_match(self, {
 });
 /** @internal */
 const linearize = self => cause_match(self, {
-  onEmpty: mjs_HashSet_empty(),
-  onFail: error => mjs_HashSet_make(fail(error)),
-  onDie: defect => mjs_HashSet_make(die(defect)),
-  onInterrupt: fiberId => mjs_HashSet_make(interrupt(fiberId)),
-  onAnnotated: (set, annotation) => mjs_HashSet_map(cause => annotated(cause, annotation))(set),
-  onSequential: (leftSet, rightSet) => mjs_HashSet_flatMap(leftCause => mjs_HashSet_map(rightCause => sequential(leftCause, rightCause))(rightSet))(leftSet),
-  onParallel: (leftSet, rightSet) => mjs_HashSet_flatMap(leftCause => mjs_HashSet_map(rightCause => parallel(leftCause, rightCause))(rightSet))(leftSet)
+  onEmpty: HashSet.empty(),
+  onFail: error => HashSet.make(fail(error)),
+  onDie: defect => HashSet.make(die(defect)),
+  onInterrupt: fiberId => HashSet.make(interrupt(fiberId)),
+  onAnnotated: (set, annotation) => HashSet.map(cause => annotated(cause, annotation))(set),
+  onSequential: (leftSet, rightSet) => HashSet.flatMap(leftCause => HashSet.map(rightCause => sequential(leftCause, rightCause))(rightSet))(leftSet),
+  onParallel: (leftSet, rightSet) => HashSet.flatMap(leftCause => HashSet.map(rightCause => parallel(leftCause, rightCause))(rightSet))(leftSet)
 });
 /** @internal */
 const stripFailures = self => cause_match(self, {
@@ -27084,45 +27199,45 @@ const electFailures = self => cause_match(self, {
   onParallel: (left, right) => parallel(left, right)
 });
 /** @internal */
-const stripSomeDefects = /*#__PURE__*/Function_dual(2, (self, pf) => cause_match(self, {
-  onEmpty: mjs_Option_some(cause_empty),
-  onFail: error => mjs_Option_some(fail(error)),
+const stripSomeDefects = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, pf) => cause_match(self, {
+  onEmpty: Option.some(cause_empty),
+  onFail: error => Option.some(fail(error)),
   onDie: defect => {
     const option = pf(defect);
-    return Option_isSome(option) ? Option_none() : mjs_Option_some(die(defect));
+    return Option.isSome(option) ? Option.none() : Option.some(die(defect));
   },
-  onInterrupt: fiberId => mjs_Option_some(interrupt(fiberId)),
-  onAnnotated: (option, annotation) => map(cause => annotated(cause, annotation))(option),
+  onInterrupt: fiberId => Option.some(interrupt(fiberId)),
+  onAnnotated: (option, annotation) => Option.map(cause => annotated(cause, annotation))(option),
   onSequential: (left, right) => {
-    if (Option_isSome(left) && Option_isSome(right)) {
-      return mjs_Option_some(sequential(left.value, right.value));
+    if (Option.isSome(left) && Option.isSome(right)) {
+      return Option.some(sequential(left.value, right.value));
     }
-    if (Option_isSome(left) && Option_isNone(right)) {
-      return mjs_Option_some(left.value);
+    if (Option.isSome(left) && Option.isNone(right)) {
+      return Option.some(left.value);
     }
-    if (Option_isNone(left) && Option_isSome(right)) {
-      return mjs_Option_some(right.value);
+    if (Option.isNone(left) && Option.isSome(right)) {
+      return Option.some(right.value);
     }
-    return Option_none();
+    return Option.none();
   },
   onParallel: (left, right) => {
-    if (Option_isSome(left) && Option_isSome(right)) {
-      return mjs_Option_some(parallel(left.value, right.value));
+    if (Option.isSome(left) && Option.isSome(right)) {
+      return Option.some(parallel(left.value, right.value));
     }
-    if (Option_isSome(left) && Option_isNone(right)) {
-      return mjs_Option_some(left.value);
+    if (Option.isSome(left) && Option.isNone(right)) {
+      return Option.some(left.value);
     }
-    if (Option_isNone(left) && Option_isSome(right)) {
-      return mjs_Option_some(right.value);
+    if (Option.isNone(left) && Option.isSome(right)) {
+      return Option.some(right.value);
     }
-    return Option_none();
+    return Option.none();
   }
-}));
+}))));
 // -----------------------------------------------------------------------------
 // Mapping
 // -----------------------------------------------------------------------------
 /** @internal */
-const cause_as = /*#__PURE__*/Function_dual(2, (self, error) => cause_map(self, () => error));
+const cause_as = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, error) => cause_map(self, () => error))));
 /** @internal */
 const cause_map = /*#__PURE__*/Function_dual(2, (self, f) => cause_flatMap(self, e => fail(f(e))));
 // -----------------------------------------------------------------------------
@@ -27144,14 +27259,14 @@ const cause_flatten = self => cause_flatMap(self, Function_identity);
 // Equality
 // -----------------------------------------------------------------------------
 /** @internal */
-const cause_contains = /*#__PURE__*/Function_dual(2, (self, that) => {
-  if (that._tag === OP_EMPTY || self === that) {
+const cause_contains = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, that) => {
+  if (that._tag === OpCodes.OP_EMPTY || self === that) {
     return true;
   }
   return cause_reduce(self, false, (accumulator, cause) => {
-    return mjs_Option_some(accumulator || causeEquals(cause, that));
+    return Option.some(accumulator || causeEquals(cause, that));
   });
-});
+})));
 /** @internal */
 const causeEquals = (left, right) => {
   let leftStack = Chunk_of(left);
@@ -27208,28 +27323,28 @@ const flattenCauseLoop = (causes, flattened) => {
 // -----------------------------------------------------------------------------
 /** @internal */
 const squash = self => {
-  return squashWith(Function_identity)(self);
+  return squashWith(identity)(self);
 };
 /** @internal */
-const squashWith = /*#__PURE__*/Function_dual(2, (self, f) => {
-  const option = map(f)(failureOption(self));
+const squashWith = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, f) => {
+  const option = Option.map(f)(failureOption(self));
   switch (option._tag) {
     case "None":
       {
-        return match({
+        return Option.match({
           onNone: () => {
-            const interrupts = Array.from(interruptors(self)).flatMap(fiberId => Array.from(FiberId_ids(fiberId)).map(id => `#${id}`));
+            const interrupts = Array.from(interruptors(self)).flatMap(fiberId => Array.from(FiberId.ids(fiberId)).map(id => `#${id}`));
             return InterruptedException(interrupts ? `Interrupted by fibers: ${interrupts.join(", ")}` : void 0);
           },
-          onSome: Function_identity
-        })(Chunk_head(cause_defects(self)));
+          onSome: identity
+        })(Chunk.head(cause_defects(self)));
       }
     case "Some":
       {
         return option.value;
       }
   }
-});
+})));
 // -----------------------------------------------------------------------------
 // Finding
 // -----------------------------------------------------------------------------
@@ -27270,7 +27385,7 @@ const find = /*#__PURE__*/Function_dual(2, (self, pf) => {
 // Filtering
 // -----------------------------------------------------------------------------
 /** @internal */
-const cause_filter = /*#__PURE__*/Function_dual(2, (self, predicate) => reduceWithContext(self, void 0, FilterCauseReducer(predicate)));
+const cause_filter = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, predicate) => reduceWithContext(self, void 0, FilterCauseReducer(predicate)))));
 // -----------------------------------------------------------------------------
 // Evaluation
 // -----------------------------------------------------------------------------
@@ -27672,7 +27787,7 @@ const makeSpanAnnotation = span => ({
   span
 });
 /** @internal */
-const globalErrorSeq = /*#__PURE__*/MutableRef_make(0);
+const globalErrorSeq = /*#__PURE__*/(/* unused pure expression or super */ null && (MRef.make(0)));
 /** @internal */
 const UnAnnotateCauseReducer = () => ({
   emptyCase: () => cause_empty,
@@ -27688,42 +27803,6 @@ const unannotate = self => reduceWithContext(self, void 0, UnAnnotateCauseReduce
 // -----------------------------------------------------------------------------
 // Pretty Printing
 // -----------------------------------------------------------------------------
-/** @internal */
-const renderToString = u => {
-  if (typeof u === "object" && u != null && "toString" in u && typeof u["toString"] === "function" && u["toString"] !== Object.prototype.toString) {
-    return u["toString"]();
-  }
-  if (typeof u === "string") {
-    return `Error: ${u}`;
-  }
-  if (typeof u === "object" && u !== null) {
-    if ("message" in u && typeof u["message"] === "string") {
-      const raw = JSON.parse(JSON.stringify(u));
-      const keys = new Set(Object.keys(raw));
-      keys.delete("name");
-      keys.delete("message");
-      keys.delete("_tag");
-      if (keys.size === 0) {
-        return `${"name" in u && typeof u.name === "string" ? u.name : "Error"}${"_tag" in u && typeof u["_tag"] === "string" ? `(${u._tag})` : ``}: ${u.message}`;
-      }
-    }
-  }
-  return `Error: ${JSON.stringify(u)}`;
-};
-/** @internal */
-const defaultErrorToLines = error => {
-  if (error instanceof Error) {
-    return [renderToString(error), error.stack?.split("\n").filter(_ => !_.startsWith("Error")).join("\n")];
-  }
-  return [renderToString(error), void 0];
-};
-class RenderError {
-  constructor(message, stack, span) {
-    this.message = message;
-    this.stack = stack;
-    this.span = span;
-  }
-}
 const filterStack = stack => {
   const lines = stack.split("\n");
   const out = [];
@@ -27737,11 +27816,11 @@ const filterStack = stack => {
   return out.join("\n");
 };
 /** @internal */
-const cause_pretty = cause => {
+const pretty = cause => {
   if (isInterruptedOnly(cause)) {
     return "All fibers interrupted without errors.";
   }
-  const final = prettyErrors(cause).map(e => {
+  const final = cause_prettyErrors(cause).map(e => {
     let message = e.message;
     if (e.stack) {
       message += `\r\n${filterStack(e.stack)}`;
@@ -27756,505 +27835,97 @@ const cause_pretty = cause => {
       }
     }
     return message;
-  }).join("\r\n\r\n");
-  if (!final.includes("\r\n")) {
-    return final;
+  }).join("\r\n");
+  return final;
+};
+class PrettyError {
+  constructor(message, stack, span) {
+    this.message = message;
+    this.stack = stack;
+    this.span = span;
   }
-  return `\r\n${final}\r\n`;
+  toJSON() {
+    const out = {
+      message: this.message
+    };
+    if (this.stack) {
+      out.stack = this.stack;
+    }
+    if (this.span) {
+      out.span = this.span;
+    }
+    return out;
+  }
+}
+/**
+ * A utility function for generating human-readable error messages from a generic error of type `unknown`.
+ *
+ * Rules:
+ *
+ * 1) If the input `u` is already a string, it's considered a message, and "Error" is added as a prefix.
+ * 2) If `u` has a user-defined `toString()` method, it uses that method and adds "Error" as a prefix.
+ * 3) If `u` is an object and its only (optional) properties are "name", "message", or "_tag", it constructs
+ *    an error message based on those properties.
+ * 4) Otherwise, it uses `JSON.stringify` to produce a string representation and uses it as the error message,
+ *   with "Error" added as a prefix.
+ *
+ * @internal
+ */
+const prettyErrorMessage = u => {
+  // 1)
+  if (typeof u === "string") {
+    return `Error: ${u}`;
+  }
+  // 2)
+  if (typeof u === "object" && u != null && "toString" in u && typeof u["toString"] === "function" && u["toString"] !== Object.prototype.toString) {
+    return `Error: ${u["toString"]()}`;
+  }
+  // 3)
+  if (typeof u === "object" && u !== null) {
+    if ("message" in u && typeof u["message"] === "string") {
+      const raw = JSON.parse(JSON.stringify(u));
+      const keys = new Set(Object.keys(raw));
+      keys.delete("name");
+      keys.delete("message");
+      keys.delete("_tag");
+      if (keys.size === 0) {
+        const name = "name" in u && typeof u.name === "string" ? u.name : "Error";
+        const tag = "_tag" in u && typeof u["_tag"] === "string" ? `(${u._tag})` : ``;
+        return `${name}${tag}: ${u.message}`;
+      }
+    }
+  }
+  // 4)
+  return `Error: ${JSON.stringify(u)}`;
+};
+const defaultRenderError = error => {
+  if (error instanceof Error) {
+    return new PrettyError(prettyErrorMessage(error), error.stack?.split("\n").filter(_ => !_.startsWith("Error")).join("\n"), void 0);
+  }
+  return new PrettyError(prettyErrorMessage(error), void 0, void 0);
 };
 /** @internal */
-const prettyErrors = cause => reduceWithContext(cause, void 0, {
+const cause_prettyErrors = cause => reduceWithContext(cause, void 0, {
   emptyCase: () => [],
-  dieCase: (_, err) => {
-    const rendered = defaultErrorToLines(err);
-    return [{
-      message: rendered[0],
-      stack: rendered[1],
-      span: undefined
-    }];
+  dieCase: (_, unknownError) => {
+    return [defaultRenderError(unknownError)];
   },
-  failCase: (_, err) => {
-    const rendered = defaultErrorToLines(err);
-    return [{
-      message: rendered[0],
-      stack: rendered[1],
-      span: undefined
-    }];
+  failCase: (_, error) => {
+    return [defaultRenderError(error)];
   },
   interruptCase: () => [],
   parallelCase: (_, l, r) => [...l, ...r],
   sequentialCase: (_, l, r) => [...l, ...r],
-  annotatedCase: (_, v, annotation) => isSpanAnnotation(annotation) ? v.map(error => ({
-    ...error,
-    span: error.span ?? annotation.span
-  })) : v
+  annotatedCase: (_, renderErrors, annotation) => isSpanAnnotation(annotation) ? renderErrors.map(error => new PrettyError(error.message, error.stack, error.span ?? annotation.span)) : renderErrors
 });
 //# sourceMappingURL=cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Cause.mjs
-
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_CauseTypeId = CauseTypeId;
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_RuntimeExceptionTypeId = RuntimeExceptionTypeId;
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_InterruptedExceptionTypeId = InterruptedExceptionTypeId;
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_IllegalArgumentExceptionTypeId = IllegalArgumentExceptionTypeId;
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_NoSuchElementExceptionTypeId = NoSuchElementExceptionTypeId;
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_InvalidHubCapacityExceptionTypeId = InvalidHubCapacityExceptionTypeId;
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Cause_SpanAnnotationTypeId = SpanAnnotationTypeId;
-/**
- * @since 1.0.0
- * @category stack
- */
-const Cause_globalErrorSeq = globalErrorSeq;
-/**
- * Constructs a new `Empty` cause.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_empty = cause_empty;
-/**
- * Constructs a new `Fail` cause from the specified `error`.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_fail = fail;
-/**
- * Constructs a new `Die` cause from the specified `defect`.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_die = die;
-/**
- * Constructs a new `Interrupt` cause from the specified `fiberId`.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_interrupt = interrupt;
-/**
- * Constructs a new `Annotated` cause from the specified `annotation`.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_annotated = annotated;
-/**
- * Constructs a new `Parallel` cause from the specified `left` and `right`
- * causes.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_parallel = parallel;
-/**
- * Constructs a new `Sequential` cause from the specified pecified `left` and
- * `right` causes.
- *
- * @since 1.0.0
- * @category constructors
- */
-const Cause_sequential = sequential;
-/**
- * Returns `true` if the specified value is a `Cause`, `false` otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isCause = isCause;
-/**
- * Returns `true` if the specified `Cause` is an `Empty` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isEmptyType = isEmptyType;
-/**
- * Returns `true` if the specified `Cause` is a `Fail` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isFailType = isFailType;
-/**
- * Returns `true` if the specified `Cause` is a `Die` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isDieType = isDieType;
-/**
- * Returns `true` if the specified `Cause` is an `Interrupt` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isInterruptType = isInterruptType;
-/**
- * Returns `true` if the specified `Cause` is an `Annotated` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isAnnotatedType = isAnnotatedType;
-/**
- * Returns `true` if the specified `Cause` is a `Sequential` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isSequentialType = isSequentialType;
-/**
- * Returns `true` if the specified `Cause` is a `Parallel` type, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isParallelType = isParallelType;
-/**
- * Returns the size of the cause, calculated as the number of individual `Cause`
- * nodes found in the `Cause` semiring structure.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_size = cause_size;
-/**
- * Returns `true` if the specified cause is empty, `false` otherwise.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_isEmpty = cause_isEmpty;
-/**
- * Returns `true` if the specified cause contains a failure, `false` otherwise.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_isFailure = isFailure;
-/**
- * Returns `true` if the specified cause contains a defect, `false` otherwise.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_isDie = isDie;
-/**
- * Returns `true` if the specified cause contains an interruption, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_isInterrupted = isInterrupted;
-/**
- * Returns `true` if the specified cause contains only interruptions (without
- * any `Die` or `Fail` causes), `false` otherwise.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_isInterruptedOnly = isInterruptedOnly;
-/**
- * Returns a `List` of all recoverable errors of type `E` in the specified
- * cause.
- *
- * @since 1.0.0
- * @category getters
- */
-const failures = cause_failures;
-/**
- * Returns a `List` of all unrecoverable defects in the specified cause.
- *
- * @since 1.0.0
- * @category getters
- */
-const defects = cause_defects;
-/**
- * Returns a `HashSet` of `FiberId`s for all fibers that interrupted the fiber
- * described by the specified cause.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_interruptors = interruptors;
-/**
- * Returns the `E` associated with the first `Fail` in this `Cause`, if one
- * exists.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_failureOption = failureOption;
-/**
- * Returns the first checked error on the `Left` if available, if there are
- * no checked errors return the rest of the `Cause` that is known to contain
- * only `Die` or `Interrupt` causes.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_failureOrCause = failureOrCause;
-/**
- * Converts the specified `Cause<Option<E>>` to an `Option<Cause<E>>` by
- * recursively stripping out any failures with the error `None`.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_flipCauseOption = flipCauseOption;
-/**
- * Returns the defect associated with the first `Die` in this `Cause`, if one
- * exists.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_dieOption = dieOption;
-/**
- * Returns the `FiberId` associated with the first `Interrupt` in the specified
- * cause, if one exists.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_interruptOption = interruptOption;
-/**
- * Remove all `Fail` and `Interrupt` nodes from the specified cause, and return
- * a cause containing only `Die` cause/finalizer defects.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_keepDefects = keepDefects;
-/**
- * Linearizes the specified cause into a `HashSet` of parallel causes where each
- * parallel cause contains a linear sequence of failures.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_linearize = linearize;
-/**
- * Remove all `Fail` and `Interrupt` nodes from the specified cause, and return
- * a cause containing only `Die` cause/finalizer defects.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_stripFailures = stripFailures;
-/**
- * Remove all `Die` causes that the specified partial function is defined at,
- * returning `Some` with the remaining causes or `None` if there are no
- * remaining causes.
- *
- * @since 1.0.0
- * @category getters
- */
-const Cause_stripSomeDefects = stripSomeDefects;
-/**
- * @since 1.0.0
- * @category mapping
- */
-const Cause_as = cause_as;
-/**
- * @since 1.0.0
- * @category mapping
- */
-const Cause_map = cause_map;
-/**
- * @since 1.0.0
- * @category sequencing
- */
-const Cause_flatMap = cause_flatMap;
-/**
- * @since 1.0.0
- * @category sequencing
- */
-const Cause_flatten = cause_flatten;
-/**
- * Returns `true` if the `self` cause contains or is equal to `that` cause,
- * `false` otherwise.
- *
- * @since 1.0.0
- * @category elements
- */
-const Cause_contains = cause_contains;
-/**
- * Squashes a `Cause` down to a single defect, chosen to be the "most important"
- * defect.
- *
- * @since 1.0.0
- * @category destructors
- */
-const Cause_squash = squash;
-/**
- * Squashes a `Cause` down to a single defect, chosen to be the "most important"
- * defect. If a recoverable error is found, the provided function will be used
- * to map the error a defect, and the resulting value will be returned.
- *
- * @since 1.0.0
- * @category destructors
- */
-const Cause_squashWith = squashWith;
-/**
- * Uses the provided partial function to search the specified cause and attempt
- * to extract information from it.
- *
- * @since 1.0.0
- * @category elements
- */
-const Cause_find = find;
-/**
- * Filters causes which match the provided predicate out of the specified cause.
- *
- * @since 1.0.0
- * @category filtering
- */
-const Cause_filter = cause_filter;
-/**
- * Folds the specified cause into a value of type `Z`.
- *
- * @since 1.0.0
- * @category folding
- */
-const Cause_match = cause_match;
-/**
- * Reduces the specified cause into a value of type `Z`, beginning with the
- * provided `zero` value.
- *
- * @since 1.0.0
- * @category folding
- */
-const Cause_reduce = cause_reduce;
-/**
- * Reduces the specified cause into a value of type `Z` using a `Cause.Reducer`.
- * Also allows for accessing the provided context during reduction.
- *
- * @since 1.0.0
- * @category folding
- */
-const Cause_reduceWithContext = reduceWithContext;
-/**
- * Represents a checked exception which occurs when a `Fiber` is interrupted.
- *
- * @since 1.0.0
- * @category errors
- */
-const Cause_InterruptedException = InterruptedException;
-/**
- * Returns `true` if the specified value is an `InterruptedException`, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isInterruptedException = isInterruptedException;
-/**
- * Represents a checked exception which occurs when an invalid argument is
- * provided to a method.
- *
- * @since 1.0.0
- * @category errors
- */
-const Cause_IllegalArgumentException = IllegalArgumentException;
-/**
- * Returns `true` if the specified value is an `IllegalArgumentException`, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isIllegalArgumentException = isIllegalArgumentException;
-/**
- * Represents a checked exception which occurs when an expected element was
- * unable to be found.
- *
- * @since 1.0.0
- * @category errors
- */
-const Cause_NoSuchElementException = NoSuchElementException;
-/**
- * Returns `true` if the specified value is an `NoSuchElementException`, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isNoSuchElementException = isNoSuchElementException;
-/**
- * Represents a generic checked exception which occurs at runtime.
- *
- * @since 1.0.0
- * @category errors
- */
-const Cause_RuntimeException = RuntimeException;
-/**
- * Returns `true` if the specified value is an `RuntimeException`, `false`
- * otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Cause_isRuntimeException = isRuntimeException;
-/**
- * Returns the specified `Cause` as a pretty-printed string.
- *
- * @since 1.0.0
- * @category rendering
- */
-const pretty = cause_pretty;
-/**
- * Removes any annotation from the cause
- *
- * @since 1.0.0
- * @category filtering
- */
-const Cause_unannotate = unannotate;
-//# sourceMappingURL=Cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/opCodes/deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/deferred.mjs
 /** @internal */
 const OP_STATE_PENDING = "Pending";
 /** @internal */
 const OP_STATE_DONE = "Done";
 //# sourceMappingURL=deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/deferred.mjs
 
 /** @internal */
 const DeferredSymbolKey = "@effect/io/Deferred";
@@ -28280,7 +27951,7 @@ const done = effect => {
   };
 };
 //# sourceMappingURL=deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/opCodes/effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/effect.mjs
 /** @internal */
 const OP_ASYNC = "Async";
 /** @internal */
@@ -28312,7 +27983,7 @@ const OP_YIELD = "Yield";
 /** @internal */
 const OP_REVERT_FLAGS = "RevertFlags";
 //# sourceMappingURL=effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/runtimeFlagsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtimeFlagsPatch.mjs
 
 /** @internal */
 const BIT_MASK = 0xff;
@@ -28351,7 +28022,7 @@ const inverse = patch => runtimeFlagsPatch_make(enabled(patch), invert(active(pa
 /** @internal */
 const invert = n => ~n >>> 0 & BIT_MASK;
 //# sourceMappingURL=runtimeFlagsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/runtimeFlags.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtimeFlags.mjs
 
 
 
@@ -28459,7 +28130,7 @@ const differ = /*#__PURE__*/mjs_Differ_make({
   patch: (_patch, oldValue) => runtimeFlags_patch(oldValue, _patch)
 });
 //# sourceMappingURL=runtimeFlags.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/RuntimeFlagsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/RuntimeFlagsPatch.mjs
 /**
  * @since 1.0.0
  */
@@ -28594,263 +28265,8 @@ const RuntimeFlagsPatch_disabledSet = disabledSet;
  */
 const RuntimeFlagsPatch_render = renderPatch;
 //# sourceMappingURL=RuntimeFlagsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Scheduler.mjs
-/**
- * @since 1.0.0
- */
-
-/**
- * @since 1.0.0
- * @category utils
- */
-class PriorityBuckets {
-  constructor() {
-    /**
-     * @since 1.0.0
-     */
-    this.buckets = [];
-  }
-  /**
-   * @since 1.0.0
-   */
-  scheduleTask(task, priority) {
-    let bucket = undefined;
-    let index;
-    for (index = 0; index < this.buckets.length; index++) {
-      if (this.buckets[index][0] <= priority) {
-        bucket = this.buckets[index];
-      } else {
-        break;
-      }
-    }
-    if (bucket) {
-      bucket[1].push(task);
-    } else {
-      const newBuckets = [];
-      for (let i = 0; i < index; i++) {
-        newBuckets.push(this.buckets[i]);
-      }
-      newBuckets.push([priority, [task]]);
-      for (let i = index; i < this.buckets.length; i++) {
-        newBuckets.push(this.buckets[i]);
-      }
-      this.buckets = newBuckets;
-    }
-  }
-}
-/**
- * @since 1.0.0
- * @category constructors
- */
-class MixedScheduler {
-  constructor(
-  /**
-   * @since 1.0.0
-   */
-  maxNextTickBeforeTimer) {
-    this.maxNextTickBeforeTimer = maxNextTickBeforeTimer;
-    /**
-     * @since 1.0.0
-     */
-    this.running = false;
-    /**
-     * @since 1.0.0
-     */
-    this.tasks = new PriorityBuckets();
-  }
-  /**
-   * @since 1.0.0
-   */
-  starveInternal(depth) {
-    const tasks = this.tasks.buckets;
-    this.tasks.buckets = [];
-    for (const [_, toRun] of tasks) {
-      for (let i = 0; i < toRun.length; i++) {
-        toRun[i]();
-      }
-    }
-    if (this.tasks.buckets.length === 0) {
-      this.running = false;
-    } else {
-      this.starve(depth);
-    }
-  }
-  /**
-   * @since 1.0.0
-   */
-  starve(depth = 0) {
-    if (depth >= this.maxNextTickBeforeTimer) {
-      setTimeout(() => this.starveInternal(0), 0);
-    } else {
-      Promise.resolve(void 0).then(() => this.starveInternal(depth + 1));
-    }
-  }
-  /**
-   * @since 1.0.0
-   */
-  scheduleTask(task, priority) {
-    this.tasks.scheduleTask(task, priority);
-    if (!this.running) {
-      this.running = true;
-      this.starve();
-    }
-  }
-}
-/**
- * @since 1.0.0
- * @category schedulers
- */
-const defaultScheduler = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/Scheduler/defaultScheduler"), () => new MixedScheduler(2048));
-/**
- * @since 1.0.0
- * @category constructors
- */
-class SyncScheduler {
-  constructor() {
-    /**
-     * @since 1.0.0
-     */
-    this.tasks = new PriorityBuckets();
-    /**
-     * @since 1.0.0
-     */
-    this.deferred = false;
-  }
-  /**
-   * @since 1.0.0
-   */
-  scheduleTask(task, priority) {
-    if (this.deferred) {
-      defaultScheduler.scheduleTask(task, priority);
-    } else {
-      this.tasks.scheduleTask(task, priority);
-    }
-  }
-  /**
-   * @since 1.0.0
-   */
-  flush() {
-    while (this.tasks.buckets.length > 0) {
-      const tasks = this.tasks.buckets;
-      this.tasks.buckets = [];
-      for (const [_, toRun] of tasks) {
-        for (let i = 0; i < toRun.length; i++) {
-          toRun[i]();
-        }
-      }
-    }
-    this.deferred = true;
-  }
-}
-/**
- * @since 1.0.0
- * @category constructors
- */
-class ControlledScheduler {
-  constructor() {
-    /**
-     * @since 1.0.0
-     */
-    this.tasks = new PriorityBuckets();
-    /**
-     * @since 1.0.0
-     */
-    this.deferred = false;
-  }
-  /**
-   * @since 1.0.0
-   */
-  scheduleTask(task, priority) {
-    if (this.deferred) {
-      defaultScheduler.scheduleTask(task, priority);
-    } else {
-      this.tasks.scheduleTask(task, priority);
-    }
-  }
-  /**
-   * @since 1.0.0
-   */
-  step() {
-    const tasks = this.tasks.buckets;
-    this.tasks.buckets = [];
-    for (const [_, toRun] of tasks) {
-      for (let i = 0; i < toRun.length; i++) {
-        toRun[i]();
-      }
-    }
-  }
-}
-/**
- * @since 1.0.0
- * @category constructors
- */
-const makeMatrix = (...record) => {
-  const index = record.sort(([p0], [p1]) => p0 < p1 ? -1 : p0 > p1 ? 1 : 0);
-  return {
-    scheduleTask(task, priority) {
-      let scheduler = undefined;
-      for (const i of index) {
-        if (priority >= i[0]) {
-          scheduler = i[1];
-        } else {
-          return (scheduler ?? defaultScheduler).scheduleTask(task, priority);
-        }
-      }
-      return (scheduler ?? defaultScheduler).scheduleTask(task, priority);
-    }
-  };
-};
-/**
- * @since 1.0.0
- * @category constructors
- */
-const Scheduler_make = scheduleTask => ({
-  scheduleTask
-});
-/**
- * @since 1.0.0
- * @category constructors
- */
-const makeBatched = callback => {
-  let running = false;
-  const tasks = new PriorityBuckets();
-  const starveInternal = () => {
-    const tasksToRun = tasks.buckets;
-    tasks.buckets = [];
-    for (const [_, toRun] of tasksToRun) {
-      for (let i = 0; i < toRun.length; i++) {
-        toRun[i]();
-      }
-    }
-    if (tasks.buckets.length === 0) {
-      running = false;
-    } else {
-      starve();
-    }
-  };
-  const starve = () => callback(starveInternal);
-  return Scheduler_make((task, priority) => {
-    tasks.scheduleTask(task, priority);
-    if (!running) {
-      running = true;
-      starve();
-    }
-  });
-};
-/**
- * @since 1.0.0
- * @category constructors
- */
-const timer = ms => Scheduler_make(task => setTimeout(task, ms));
-/**
- * @since 1.0.0
- * @category constructors
- */
-const timerBatched = ms => makeBatched(task => setTimeout(task, ms));
-//# sourceMappingURL=Scheduler.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/core.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/core.mjs
 var core_a, core_b, core_c, _d;
-
 
 
 
@@ -28936,6 +28352,21 @@ class EffectPrimitive {
   pipe() {
     return Pipeable_pipeArguments(this, arguments);
   }
+  toJSON() {
+    return {
+      _id: "Effect",
+      _tag: this._tag,
+      i0: toJSON(this.i0),
+      i1: toJSON(this.i1),
+      i2: toJSON(this.i2)
+    };
+  }
+  toString() {
+    return Inspectable_toString(this.toJSON());
+  }
+  [NodeInspectSymbol]() {
+    return this.toJSON();
+  }
 }
 /** @internal */
 class EffectPrimitiveFailure {
@@ -28961,14 +28392,15 @@ class EffectPrimitiveFailure {
   }
   toJSON() {
     return {
+      _id: "Exit",
       _tag: this._tag,
       cause: this.cause.toJSON()
     };
   }
   toString() {
-    return pretty(this.cause);
+    return Inspectable_toString(this.toJSON());
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  [NodeInspectSymbol]() {
     return this.toJSON();
   }
 }
@@ -28996,14 +28428,15 @@ class EffectPrimitiveSuccess {
   }
   toJSON() {
     return {
+      _id: "Exit",
       _tag: this._tag,
-      value: this.value
+      value: toJSON(this.value)
     };
   }
   toString() {
-    return `Success: ${String(this.value)}`;
+    return Inspectable_toString(this.toJSON());
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  [NodeInspectSymbol]() {
     return this.toJSON();
   }
 }
@@ -29738,7 +29171,7 @@ const currentContext = /*#__PURE__*/fiberRefUnsafeMakeContext( /*#__PURE__*/mjs_
 /** @internal */
 const currentSchedulingPriority = /*#__PURE__*/fiberRefUnsafeMake(0);
 /** @internal */
-const currentMaxFiberOps = /*#__PURE__*/fiberRefUnsafeMake(2048);
+const currentMaxOpsBeforeYield = /*#__PURE__*/fiberRefUnsafeMake(2048);
 /** @internal */
 const currentLogAnnotations = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentLogAnnotation"), () => fiberRefUnsafeMake(mjs_HashMap_empty()));
 /** @internal */
@@ -29746,13 +29179,9 @@ const currentLogLevel = /*#__PURE__*/fiberRefUnsafeMake(logLevelInfo);
 /** @internal */
 const currentLogSpan = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentLogSpan"), () => fiberRefUnsafeMake(List_empty()));
 /** @internal */
-const currentScheduler = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentScheduler"), () => fiberRefUnsafeMake(defaultScheduler));
-/** @internal */
-const withScheduler = /*#__PURE__*/Function_dual(2, (self, scheduler) => fiberRefLocally(self, currentScheduler, scheduler));
-/** @internal */
 const withSchedulingPriority = /*#__PURE__*/Function_dual(2, (self, scheduler) => fiberRefLocally(self, currentSchedulingPriority, scheduler));
 /** @internal */
-const withMaxFiberOps = /*#__PURE__*/Function_dual(2, (self, ops) => fiberRefLocally(self, currentMaxFiberOps, ops));
+const withMaxOpsBeforeYield = /*#__PURE__*/Function_dual(2, (self, scheduler) => fiberRefLocally(self, currentMaxOpsBeforeYield, scheduler));
 /** @internal */
 const currentConcurrency = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentConcurrency"), () => fiberRefUnsafeMake("unbounded"));
 /**
@@ -30309,7 +29738,7 @@ const deferredInterruptJoiner = (self, joiner) => sync(() => {
   }
 });
 //# sourceMappingURL=core.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Duration.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Duration.mjs
 /**
  * @since 1.0.0
  */
@@ -30379,29 +29808,28 @@ const DurationProto = {
     return isDuration(that) && Duration_equals(this, that);
   },
   toString() {
-    switch (this.value._tag) {
-      case "Millis":
-        return `Duration("${this.value.millis} millis")`;
-      case "Nanos":
-        return `Duration("${this.value.nanos} nanos")`;
-      case "Infinity":
-        return "Duration(Infinity)";
-    }
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
-    if (this.value._tag === "Nanos") {
-      return {
-        _tag: "Duration",
-        value: {
+    switch (this.value._tag) {
+      case "Millis":
+        return {
+          _id: "Duration",
+          _tag: "Millis",
+          millis: this.value.millis
+        };
+      case "Nanos":
+        return {
+          _id: "Duration",
           _tag: "Nanos",
           hrtime: toHrTime(this)
-        }
-      };
+        };
+      case "Infinity":
+        return {
+          _id: "Duration",
+          _tag: "Infinity"
+        };
     }
-    return {
-      _tag: "Duration",
-      value: this.value
-    };
   },
   [NodeInspectSymbol]() {
     return this.toJSON();
@@ -30684,7 +30112,7 @@ const Duration_greaterThanOrEqualTo = /*#__PURE__*/Function_dual(2, (self, that)
  */
 const Duration_equals = /*#__PURE__*/Function_dual(2, (self, that) => Duration_Equivalence(decode(self), decode(that)));
 //# sourceMappingURL=Duration.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/clock.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/clock.mjs
 var clock_a;
 
 
@@ -30762,7 +30190,7 @@ clock_a = ClockTypeId;
 /** @internal */
 const clock_make = () => new ClockImpl();
 //# sourceMappingURL=clock.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/opCodes/configError.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/configError.mjs
 /** @internal */
 const OP_AND = "And";
 /** @internal */
@@ -30776,7 +30204,7 @@ const OP_SOURCE_UNAVAILABLE = "SourceUnavailable";
 /** @internal */
 const OP_UNSUPPORTED = "Unsupported";
 //# sourceMappingURL=configError.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/configError.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configError.mjs
 
 
 
@@ -31026,7 +30454,7 @@ const configError_reduceWithContext = /*#__PURE__*/(/* unused pure expression or
 /** @internal */
 const isMissingDataOnly = self => configError_reduceWithContext(self, void 0, IsMissingDataOnlyReducer);
 //# sourceMappingURL=configError.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/config.mjs
 
 
 
@@ -31337,7 +30765,7 @@ const config_zipWith = /*#__PURE__*/(/* unused pure expression or super */ null 
   return zipWith;
 })));
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/configProvider/pathPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configProvider/pathPatch.mjs
 
 
 
@@ -31414,7 +30842,7 @@ const pathPatch_patch = /*#__PURE__*/Function_dual(2, (path, patch) => {
   return Either_right(output);
 });
 //# sourceMappingURL=pathPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/opCodes/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/config.mjs
 /** @internal */
 const OP_CONSTANT = "Constant";
 /** @internal */
@@ -31438,7 +30866,7 @@ const OP_HASHMAP = "HashMap";
 /** @internal */
 const OP_ZIP_WITH = "ZipWith";
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/configProvider.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configProvider.mjs
 
 
 
@@ -31782,7 +31210,7 @@ const parseInteger = str => {
   return Number.isNaN(parsedIndex) ? Option_none() : mjs_Option_some(parsedIndex);
 };
 //# sourceMappingURL=configProvider.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/defaultServices/console.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/defaultServices/console.mjs
 
 
 /** @internal */
@@ -31875,7 +31303,7 @@ const defaultConsole = {
   unsafe: console
 };
 //# sourceMappingURL=console.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/random.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/random.mjs
 var random_a;
 
 
@@ -31931,7 +31359,7 @@ const swap = (buffer, index1, index2) => {
 };
 const random_make = seed => new RandomImpl(seed);
 //# sourceMappingURL=random.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/tracer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/tracer.mjs
 /**
  * @since 1.0.0
  */
@@ -31987,7 +31415,7 @@ const nativeTracer = /*#__PURE__*/tracer_make({
   context: f => f()
 });
 //# sourceMappingURL=tracer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/defaultServices.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/defaultServices.mjs
 
 
 
@@ -32050,7 +31478,7 @@ const tracerWith = f => fiberRefGetWith(currentServices, services => f(mjs_Conte
 /** @internal */
 const withTracer = /*#__PURE__*/Function_dual(2, (effect, value) => fiberRefLocallyWith(currentServices, Context_add(tracerTag, value))(effect));
 //# sourceMappingURL=defaultServices.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Clock.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Clock.mjs
 
 
 /**
@@ -32089,7 +31517,7 @@ const Clock_clockWith = clockWith;
  */
 const Clock_Clock = clock_clockTag;
 //# sourceMappingURL=Clock.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberRefs.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRefs.mjs
 var fiberRefs_a;
 
 
@@ -32243,7 +31671,7 @@ const updatedAs = /*#__PURE__*/Function_dual(2, (self, {
   return new FiberRefsImpl(locals.set(fiberRef, newStack));
 });
 //# sourceMappingURL=fiberRefs.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/FiberRefs.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberRefs.mjs
 
 /**
  * @since 1.0.0
@@ -32315,7 +31743,7 @@ const FiberRefs_updatedAs = updatedAs;
  */
 const FiberRefs_unsafeMake = fiberRefs_unsafeMake;
 //# sourceMappingURL=FiberRefs.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberRefs/patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRefs/patch.mjs
 
 
 
@@ -32423,7 +31851,7 @@ const patch_patch = /*#__PURE__*/Function_dual(3, (self, fiberId, oldValue) => {
   return fiberRefs;
 });
 //# sourceMappingURL=patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/label.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/label.mjs
 var label_a;
 
 
@@ -32458,7 +31886,7 @@ const isMetricLabel = u => {
   return typeof u === "object" && u != null && MetricLabelTypeId in u;
 };
 //# sourceMappingURL=label.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/singleShotGen.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/singleShotGen.mjs
 /** @internal */
 class SingleShotGen {
   constructor(self) {
@@ -32488,7 +31916,7 @@ class SingleShotGen {
   }
 }
 //# sourceMappingURL=singleShotGen.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/LogLevel.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/LogLevel.mjs
 /**
  * @since 1.0.0
  */
@@ -32615,7 +32043,7 @@ const fromLiteral = _ => {
   }
 };
 //# sourceMappingURL=LogLevel.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/logSpan.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/logSpan.mjs
 /** @internal */
 const logSpan_make = (label, startTime) => ({
   label,
@@ -32629,7 +32057,7 @@ const logSpan_render = now => {
   };
 };
 //# sourceMappingURL=logSpan.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/LogSpan.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/LogSpan.mjs
 /**
  * @since 1.0.0
  */
@@ -32645,7 +32073,7 @@ const LogSpan_make = logSpan_make;
  */
 const LogSpan_render = logSpan_render;
 //# sourceMappingURL=LogSpan.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/ref.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/ref.mjs
 var ref_a;
 
 
@@ -32751,7 +32179,7 @@ const updateSomeAndGet = /*#__PURE__*/Function_dual(2, (self, pf) => self.modify
 /** @internal */
 const ref_unsafeGet = self => MutableRef.get(self.ref);
 //# sourceMappingURL=ref.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Ref.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Ref.mjs
 
 /**
  * @since 1.0.0
@@ -32829,7 +32257,7 @@ const Ref_updateSomeAndGet = updateSomeAndGet;
  */
 const Ref_unsafeMake = ref_unsafeMake;
 //# sourceMappingURL=Ref.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Tracer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Tracer.mjs
 
 
 /**
@@ -32852,7 +32280,7 @@ const Tracer_make = tracer_make;
  */
 const Tracer_tracerWith = tracerWith;
 //# sourceMappingURL=Tracer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/effect.mjs
 
 
 
@@ -33152,7 +32580,7 @@ const effect_gen = f => suspend(() => {
   return run(state);
 });
 /* @internal */
-const effect_fiberRefs = /*#__PURE__*/withFiberRuntime(state => succeed(state.unsafeGetFiberRefs()));
+const effect_fiberRefs = /*#__PURE__*/withFiberRuntime(state => succeed(state.getFiberRefs()));
 /* @internal */
 const effect_head = self => matchEffect(self, {
   onFailure: e => core_fail(mjs_Option_some(e)),
@@ -33493,7 +32921,7 @@ const unlessEffect = /*#__PURE__*/Function_dual(2, (self, predicate) => core_fla
 const unsandbox = self => mapErrorCause(self, cause_flatten);
 /* @internal */
 const updateFiberRefs = f => withFiberRuntime(state => {
-  state.setFiberRefs(f(state.id(), state.unsafeGetFiberRefs()));
+  state.setFiberRefs(f(state.id(), state.getFiberRefs()));
   return core_unit;
 });
 /* @internal */
@@ -33591,7 +33019,7 @@ const effect_fromNullable = value => value == null ? core_fail(NoSuchElementExce
 /* @internal */
 const optionFromOptional = self => catchAll(core_map(self, mjs_Option_some), error => isNoSuchElementException(error) ? succeedNone : core_fail(error));
 //# sourceMappingURL=effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/MutableHashMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/MutableHashMap.mjs
 /**
  * @since 1.0.0
  */
@@ -33608,12 +33036,12 @@ const MutableHashMapProto = {
     return this.backingMap.current[Symbol.iterator]();
   },
   toString() {
-    return `MutableHashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "MutableHashMap",
-      values: Array.from(this)
+      _id: "MutableHashMap",
+      values: Array.from(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -33697,7 +33125,7 @@ const MutableHashMap_set = /*#__PURE__*/Function_dual(3, (self, key, value) => {
  */
 const MutableHashMap_size = self => mjs_HashMap_size(MutableRef_get(self.backingMap));
 //# sourceMappingURL=MutableHashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Exit.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Exit.mjs
 
 /**
  * Returns `true` if the specified value is an `Exit`, `false` otherwise.
@@ -33960,7 +33388,7 @@ const zipParRight = exitZipParRight;
  */
 const Exit_zipWith = exitZipWith;
 //# sourceMappingURL=Exit.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/executionStrategy.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/executionStrategy.mjs
 
 /** @internal */
 const executionStrategy_OP_SEQUENTIAL = "Sequential";
@@ -34005,7 +33433,7 @@ const executionStrategy_match = /*#__PURE__*/(/* unused pure expression or super
   }
 })));
 //# sourceMappingURL=executionStrategy.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberStatus.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberStatus.mjs
 var fiberStatus_a, fiberStatus_b, fiberStatus_c;
 
 
@@ -34075,7 +33503,7 @@ const isRunning = self => self._tag === OP_RUNNING;
 /** @internal */
 const isSuspended = self => self._tag === OP_SUSPENDED;
 //# sourceMappingURL=fiberStatus.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/FiberStatus.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberStatus.mjs
 
 /**
  * @since 1.0.0
@@ -34128,7 +33556,7 @@ const FiberStatus_isRunning = isRunning;
  */
 const FiberStatus_isSuspended = isSuspended;
 //# sourceMappingURL=FiberStatus.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberMessage.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberMessage.mjs
 /** @internal */
 const OP_INTERRUPT_SIGNAL = "InterruptSignal";
 /** @internal */
@@ -34157,7 +33585,7 @@ const fiberMessage_yieldNow = () => ({
   _tag: OP_YIELD_NOW
 });
 //# sourceMappingURL=fiberMessage.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberScope.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberScope.mjs
 var fiberScope_a, fiberScope_b;
 
 
@@ -34175,7 +33603,7 @@ class Global {
   }
   add(_runtimeFlags, child) {
     this.roots.add(child);
-    child.unsafeAddObserver(() => {
+    child.addObserver(() => {
       this.roots.delete(child);
     });
   }
@@ -34191,7 +33619,7 @@ class Local {
   add(_runtimeFlags, child) {
     this.parent.tell(stateful(parentFiber => {
       parentFiber.addChild(child);
-      child.unsafeAddObserver(() => {
+      child.addObserver(() => {
         parentFiber.removeChild(child);
       });
     }));
@@ -34205,7 +33633,7 @@ const fiberScope_unsafeMake = fiber => {
 /** @internal */
 const globalScope = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberScope/Global"), () => new Global());
 //# sourceMappingURL=fiberScope.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiber.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiber.mjs
 
 
 
@@ -34420,7 +33848,7 @@ const currentFiberURI = "@effect/io/FiberCurrent";
 /** @internal */
 const getCurrentFiber = () => fromNullable(globalThis[currentFiberURI]);
 //# sourceMappingURL=fiber.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Boolean.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Boolean.mjs
 /**
  * This module provides utility functions and type class instances for working with the `boolean` type in TypeScript.
  * It includes functions for basic boolean operations, as well as type class instances for
@@ -34635,7 +34063,7 @@ const Boolean_some = collection => {
   return false;
 };
 //# sourceMappingURL=Boolean.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Deferred.mjs
 
 
 /**
@@ -34797,7 +34225,7 @@ const Deferred_unsafeMake = deferredUnsafeMake;
  */
 const unsafeDone = deferredUnsafeDone;
 //# sourceMappingURL=Deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/FiberRefsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberRefsPatch.mjs
 
 /**
  * @since 1.0.0
@@ -34830,7 +34258,7 @@ const FiberRefsPatch_combine = patch_combine;
  */
 const FiberRefsPatch_patch = patch_patch;
 //# sourceMappingURL=FiberRefsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/blockedRequests.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/blockedRequests.mjs
 var blockedRequests_a, blockedRequests_b, blockedRequests_c;
 
 
@@ -35163,13 +34591,13 @@ const sequentialCollectionKeys = self => Array.from(HashMap_keys(self.map));
 /** @internal */
 const sequentialCollectionToChunk = self => Array.from(self.map);
 //# sourceMappingURL=blockedRequests.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/completedRequestMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/completedRequestMap.mjs
 
 
 /** @internal */
 const completedRequestMap_currentRequestMap = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentRequestMap"), () => fiberRefUnsafeMake(new Map()));
 //# sourceMappingURL=completedRequestMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/concurrency.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/concurrency.mjs
 
 /** @internal */
 const concurrency_match = (options, sequential, unbounded, bounded) => {
@@ -35214,7 +34642,7 @@ const matchSimple = (options, sequential, concurrent) => {
   }
 };
 //# sourceMappingURL=concurrency.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/logger.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/logger.mjs
 
 
 
@@ -35301,7 +34729,7 @@ const stringLogger = /*#__PURE__*/makeLogger(({
   }
   if (cause != null && cause != cause_empty) {
     output = output + " cause=";
-    output = appendQuoted(cause_pretty(cause), output);
+    output = appendQuoted(pretty(cause), output);
   }
   if (isCons(spans)) {
     output = output + " ";
@@ -35405,7 +34833,7 @@ const renderLogSpanLogfmt = now => self => {
   return `${label}=${now - self.startTime}ms`;
 };
 //# sourceMappingURL=logger.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/keyType.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/keyType.mjs
 var keyType_a, keyType_b, keyType_c, keyType_d, _e, _f, _g, _h, _j, _k;
 
 
@@ -35600,7 +35028,7 @@ const isSummaryKey = u => {
   return typeof u === "object" && u != null && SummaryKeyTypeTypeId in u;
 };
 //# sourceMappingURL=keyType.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/key.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/key.mjs
 var key_a;
 
 
@@ -35656,7 +35084,7 @@ const taggedWithLabels = /*#__PURE__*/(/* unused pure expression or super */ nul
 /** @internal */
 const taggedWithLabelSet = /*#__PURE__*/Function_dual(2, (self, extraTags) => mjs_HashSet_size(extraTags) === 0 ? self : new MetricKeyImpl(self.name, self.keyType, self.description, mjs_HashSet_union(extraTags)(self.tags)));
 //# sourceMappingURL=key.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/state.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/state.mjs
 var state_a, state_b, state_c, state_d, state_e, state_f, state_g, state_h, state_j, state_k;
 
 
@@ -35836,7 +35264,7 @@ const isSummaryState = u => {
   return typeof u === "object" && u != null && SummaryStateTypeId in u;
 };
 //# sourceMappingURL=state.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/hook.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/hook.mjs
 
 
 
@@ -36184,7 +35612,7 @@ const resolveQuantile = (error, sampleCount, current, consumed, quantile, rest) 
   throw new Error("BUG: MetricHook.resolveQuantiles - please report an issue at https://github.com/Effect-TS/io/issues");
 };
 //# sourceMappingURL=hook.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/pair.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/pair.mjs
 
 /** @internal */
 const MetricPairSymbolKey = "@effect/io/MetricPair";
@@ -36217,7 +35645,7 @@ const pair_unsafeMake = (metricKey, metricState) => {
   };
 };
 //# sourceMappingURL=pair.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/registry.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/registry.mjs
 var registry_a;
 
 
@@ -36327,7 +35755,7 @@ const registry_make = () => {
   return new MetricRegistryImpl();
 };
 //# sourceMappingURL=registry.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric.mjs
 
 
 
@@ -36415,7 +35843,7 @@ const metric_taggedWithLabels = /*#__PURE__*/Function_dual(2, (self, extraTagsIt
   return metric_make(self.keyType, (input, extraTags1) => self.unsafeUpdate(input, mjs_HashSet_union(extraTags1)(extraTags)), extraTags1 => self.unsafeValue(mjs_HashSet_union(extraTags1)(extraTags)));
 });
 /** @internal */
-const metric_timer = name => {
+const timer = name => {
   const boundaries = metricBoundaries.exponential({
     start: 1,
     factor: 2,
@@ -36490,7 +35918,7 @@ const unsafeSnapshot = () => globalMetricRegistry.snapshot();
 /** @internal */
 const snapshot = /*#__PURE__*/(/* unused pure expression or super */ null && (core.sync(unsafeSnapshot)));
 //# sourceMappingURL=metric.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/metric/boundaries.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/boundaries.mjs
 var boundaries_a;
 
 
@@ -36531,7 +35959,7 @@ const linear = options => fromChunk(Chunk.unsafeFromArray(ReadonlyArray.makeBy(o
 /** @internal */
 const exponential = options => fromChunk(unsafeFromArray(makeBy(options.count - 1, i => options.start * Math.pow(options.factor, i))));
 //# sourceMappingURL=boundaries.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/request.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/request.mjs
 
 
 
@@ -36607,7 +36035,7 @@ class Listeners {
  */
 const filterOutCompleted = requests => core.fiberRefGetWith(completedRequestMap.currentRequestMap, map => core.succeed(requests.filter(request => !(map.get(request)?.state.completed === true))));
 //# sourceMappingURL=request.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/supervisor.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/supervisor.mjs
 var supervisor_a, supervisor_b, supervisor_c, supervisor_d, supervisor_e;
 
 
@@ -36808,7 +36236,7 @@ const supervisor_none = /*#__PURE__*/supervisor_fromEffect(core_unit);
 /** @internal */
 const fibersIn = ref => core.sync(() => new FibersIn(ref));
 //# sourceMappingURL=supervisor.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/supervisor/patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/supervisor/patch.mjs
 
 
 
@@ -36933,8 +36361,304 @@ const patch_differ = /*#__PURE__*/mjs_Differ_make({
   diff: supervisor_patch_diff
 });
 //# sourceMappingURL=patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/fiberRuntime.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Scheduler.mjs
+/**
+ * @since 1.0.0
+ */
+
+
+
+/**
+ * @since 1.0.0
+ * @category utils
+ */
+class PriorityBuckets {
+  constructor() {
+    /**
+     * @since 1.0.0
+     */
+    this.buckets = [];
+  }
+  /**
+   * @since 1.0.0
+   */
+  scheduleTask(task, priority) {
+    let bucket = undefined;
+    let index;
+    for (index = 0; index < this.buckets.length; index++) {
+      if (this.buckets[index][0] <= priority) {
+        bucket = this.buckets[index];
+      } else {
+        break;
+      }
+    }
+    if (bucket) {
+      bucket[1].push(task);
+    } else {
+      const newBuckets = [];
+      for (let i = 0; i < index; i++) {
+        newBuckets.push(this.buckets[i]);
+      }
+      newBuckets.push([priority, [task]]);
+      for (let i = index; i < this.buckets.length; i++) {
+        newBuckets.push(this.buckets[i]);
+      }
+      this.buckets = newBuckets;
+    }
+  }
+}
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+class MixedScheduler {
+  constructor(
+  /**
+   * @since 1.0.0
+   */
+  maxNextTickBeforeTimer) {
+    this.maxNextTickBeforeTimer = maxNextTickBeforeTimer;
+    /**
+     * @since 1.0.0
+     */
+    this.running = false;
+    /**
+     * @since 1.0.0
+     */
+    this.tasks = new PriorityBuckets();
+  }
+  /**
+   * @since 1.0.0
+   */
+  starveInternal(depth) {
+    const tasks = this.tasks.buckets;
+    this.tasks.buckets = [];
+    for (const [_, toRun] of tasks) {
+      for (let i = 0; i < toRun.length; i++) {
+        toRun[i]();
+      }
+    }
+    if (this.tasks.buckets.length === 0) {
+      this.running = false;
+    } else {
+      this.starve(depth);
+    }
+  }
+  /**
+   * @since 1.0.0
+   */
+  starve(depth = 0) {
+    if (depth >= this.maxNextTickBeforeTimer) {
+      setTimeout(() => this.starveInternal(0), 0);
+    } else {
+      Promise.resolve(void 0).then(() => this.starveInternal(depth + 1));
+    }
+  }
+  /**
+   * @since 1.0.0
+   */
+  shouldYield(fiber) {
+    return fiber.currentOpCount > fiber.getFiberRef(currentMaxOpsBeforeYield) ? fiber.getFiberRef(currentSchedulingPriority) : false;
+  }
+  /**
+   * @since 1.0.0
+   */
+  scheduleTask(task, priority) {
+    this.tasks.scheduleTask(task, priority);
+    if (!this.running) {
+      this.running = true;
+      this.starve();
+    }
+  }
+}
+/**
+ * @since 1.0.0
+ * @category schedulers
+ */
+const defaultScheduler = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/Scheduler/defaultScheduler"), () => new MixedScheduler(2048));
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+class SyncScheduler {
+  constructor() {
+    /**
+     * @since 1.0.0
+     */
+    this.tasks = new PriorityBuckets();
+    /**
+     * @since 1.0.0
+     */
+    this.deferred = false;
+  }
+  /**
+   * @since 1.0.0
+   */
+  scheduleTask(task, priority) {
+    if (this.deferred) {
+      defaultScheduler.scheduleTask(task, priority);
+    } else {
+      this.tasks.scheduleTask(task, priority);
+    }
+  }
+  /**
+   * @since 1.0.0
+   */
+  shouldYield(fiber) {
+    return fiber.currentOpCount > fiber.getFiberRef(currentMaxOpsBeforeYield) ? fiber.getFiberRef(currentSchedulingPriority) : false;
+  }
+  /**
+   * @since 1.0.0
+   */
+  flush() {
+    while (this.tasks.buckets.length > 0) {
+      const tasks = this.tasks.buckets;
+      this.tasks.buckets = [];
+      for (const [_, toRun] of tasks) {
+        for (let i = 0; i < toRun.length; i++) {
+          toRun[i]();
+        }
+      }
+    }
+    this.deferred = true;
+  }
+}
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+class ControlledScheduler {
+  constructor() {
+    /**
+     * @since 1.0.0
+     */
+    this.tasks = new PriorityBuckets();
+    /**
+     * @since 1.0.0
+     */
+    this.deferred = false;
+  }
+  /**
+   * @since 1.0.0
+   */
+  scheduleTask(task, priority) {
+    if (this.deferred) {
+      defaultScheduler.scheduleTask(task, priority);
+    } else {
+      this.tasks.scheduleTask(task, priority);
+    }
+  }
+  /**
+   * @since 1.0.0
+   */
+  shouldYield(fiber) {
+    return fiber.currentOpCount > fiber.getFiberRef(core.currentMaxOpsBeforeYield) ? fiber.getFiberRef(core.currentSchedulingPriority) : false;
+  }
+  /**
+   * @since 1.0.0
+   */
+  step() {
+    const tasks = this.tasks.buckets;
+    this.tasks.buckets = [];
+    for (const [_, toRun] of tasks) {
+      for (let i = 0; i < toRun.length; i++) {
+        toRun[i]();
+      }
+    }
+  }
+}
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const makeMatrix = (...record) => {
+  const index = record.sort(([p0], [p1]) => p0 < p1 ? -1 : p0 > p1 ? 1 : 0);
+  return {
+    shouldYield(fiber) {
+      for (const scheduler of record) {
+        const priority = scheduler[1].shouldYield(fiber);
+        if (priority !== false) {
+          return priority;
+        }
+      }
+      return false;
+    },
+    scheduleTask(task, priority) {
+      let scheduler = undefined;
+      for (const i of index) {
+        if (priority >= i[0]) {
+          scheduler = i[1];
+        } else {
+          return (scheduler ?? defaultScheduler).scheduleTask(task, priority);
+        }
+      }
+      return (scheduler ?? defaultScheduler).scheduleTask(task, priority);
+    }
+  };
+};
+/**
+ * @since 1.0.0
+ * @category utilities
+ */
+const defaultShouldYield = fiber => {
+  return fiber.currentOpCount > fiber.getFiberRef(core.currentMaxOpsBeforeYield) ? fiber.getFiberRef(core.currentSchedulingPriority) : false;
+};
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const Scheduler_make = (scheduleTask, shouldYield = defaultShouldYield) => ({
+  scheduleTask,
+  shouldYield
+});
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const makeBatched = (callback, shouldYield = defaultShouldYield) => {
+  let running = false;
+  const tasks = new PriorityBuckets();
+  const starveInternal = () => {
+    const tasksToRun = tasks.buckets;
+    tasks.buckets = [];
+    for (const [_, toRun] of tasksToRun) {
+      for (let i = 0; i < toRun.length; i++) {
+        toRun[i]();
+      }
+    }
+    if (tasks.buckets.length === 0) {
+      running = false;
+    } else {
+      starve();
+    }
+  };
+  const starve = () => callback(starveInternal);
+  return Scheduler_make((task, priority) => {
+    tasks.scheduleTask(task, priority);
+    if (!running) {
+      running = true;
+      starve();
+    }
+  }, shouldYield);
+};
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const Scheduler_timer = (ms, shouldYield = defaultShouldYield) => Scheduler_make(task => setTimeout(task, ms), shouldYield);
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+const timerBatched = (ms, shouldYield = defaultShouldYield) => makeBatched(task => setTimeout(task, ms), shouldYield);
+/** @internal */
+const currentScheduler = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentScheduler"), () => fiberRefUnsafeMake(defaultScheduler));
+/** @internal */
+const withScheduler = /*#__PURE__*/Function_dual(2, (self, scheduler) => fiberRefLocally(self, currentScheduler, scheduler));
+//# sourceMappingURL=Scheduler.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRuntime.mjs
 var fiberRuntime_a, fiberRuntime_b;
+
 
 
 
@@ -37081,6 +36805,7 @@ class FiberRuntime {
     this._asyncBlockingOn = null;
     this._exitValue = null;
     this._steps = [false];
+    this.currentOpCount = 0;
     this.run = () => {
       this.drainQueueOnCurrentThread();
     };
@@ -37088,6 +36813,7 @@ class FiberRuntime {
     this._fiberId = fiberId;
     this._fiberRefs = fiberRefs0;
     this._supervisor = this.getFiberRef(currentSupervisor);
+    this._scheduler = this.getFiberRef(currentScheduler);
     if (runtimeMetrics(runtimeFlags0)) {
       const tags = this.getFiberRef(currentMetricLabels);
       fiberStarted.unsafeUpdate(1, tags);
@@ -37162,7 +36888,7 @@ class FiberRuntime {
    * Retrieves the whole set of fiber refs.
    */
   fiberRefs() {
-    return this.ask(fiber => fiber.unsafeGetFiberRefs());
+    return this.ask(fiber => fiber.getFiberRefs());
   }
   /**
    * Returns an effect that will contain information computed from the fiber
@@ -37197,20 +36923,20 @@ class FiberRuntime {
         if (fiber._exitValue !== null) {
           cb(this._exitValue);
         } else {
-          fiber.unsafeAddObserver(cb);
+          fiber.addObserver(cb);
         }
       }));
       return sync(() => this.tell(stateful((fiber, _) => {
-        fiber.unsafeRemoveObserver(cb);
+        fiber.removeObserver(cb);
       })));
     }, this.id());
   }
   inheritAll() {
     return withFiberRuntime((parentFiber, parentStatus) => {
       const parentFiberId = parentFiber.id();
-      const parentFiberRefs = parentFiber.unsafeGetFiberRefs();
+      const parentFiberRefs = parentFiber.getFiberRefs();
       const parentRuntimeFlags = parentStatus.runtimeFlags;
-      const childFiberRefs = this.unsafeGetFiberRefs();
+      const childFiberRefs = this.getFiberRefs();
       const updatedFiberRefs = joinAs(parentFiberRefs, parentFiberId, childFiberRefs);
       parentFiber.setFiberRefs(updatedFiberRefs);
       const updatedRuntimeFlags = parentFiber.getFiberRef(currentRuntimeFlags);
@@ -37245,7 +36971,7 @@ class FiberRuntime {
    *
    * **NOTE**: This method must be invoked by the fiber itself.
    */
-  unsafeAddObserver(observer) {
+  addObserver(observer) {
     if (this._exitValue !== null) {
       observer(this._exitValue);
     } else {
@@ -37258,7 +36984,7 @@ class FiberRuntime {
    *
    * **NOTE**: This method must be invoked by the fiber itself.
    */
-  unsafeRemoveObserver(observer) {
+  removeObserver(observer) {
     this._observers = this._observers.filter(o => o !== observer);
   }
   /**
@@ -37268,7 +36994,7 @@ class FiberRuntime {
    * on this fiber, then values derived from the fiber's state (including the
    * log annotations and log level) may not be up-to-date.
    */
-  unsafeGetFiberRefs() {
+  getFiberRefs() {
     this.setFiberRef(currentRuntimeFlags, this._runtimeFlags);
     return this._fiberRefs;
   }
@@ -37309,6 +37035,7 @@ class FiberRuntime {
   refreshRefCache() {
     this._tracer = mjs_Context_get(this.getFiberRef(currentServices), tracerTag);
     this._supervisor = this.getFiberRef(currentSupervisor);
+    this._scheduler = this.getFiberRef(currentScheduler);
   }
   /**
    * Wholesale replaces all fiber refs of this fiber.
@@ -37382,7 +37109,7 @@ class FiberRuntime {
    * **NOTE**: This method must be invoked by the fiber itself.
    */
   drainQueueLaterOnExecutor() {
-    this.getFiberRef(currentScheduler).scheduleTask(this.run, this.getFiberRef(currentSchedulingPriority));
+    this._scheduler.scheduleTask(this.run, this.getFiberRef(currentSchedulingPriority));
   }
   /**
    * Drains the fiber's message queue while the fiber is actively running,
@@ -37528,7 +37255,7 @@ class FiberRuntime {
     const spans = this.getFiberRef(currentLogSpan);
     const annotations = this.getFiberRef(currentLogAnnotations);
     const loggers = this.getLoggers();
-    const contextMap = this.unsafeGetFiberRefs();
+    const contextMap = this.getFiberRefs();
     if (mjs_HashSet_size(loggers) > 0) {
       const clockService = mjs_Context_get(this.getFiberRef(currentServices), clock_clockTag);
       const date = new Date(clockService.unsafeCurrentTimeMillis());
@@ -37969,7 +37696,7 @@ class FiberRuntime {
    */
   runLoop(effect0) {
     let cur = effect0;
-    let ops = 0;
+    this.currentOpCount = 0;
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if ((this._runtimeFlags & OpSupervision) !== 0) {
@@ -37978,11 +37705,14 @@ class FiberRuntime {
       if (this._queue.length > 0) {
         cur = this.drainQueueWhileRunning(this._runtimeFlags, cur);
       }
-      ops += 1;
-      if (ops >= this.getFiberRef(currentMaxFiberOps)) {
-        ops = 0;
+      this.currentOpCount += 1;
+      const shouldYield = this._scheduler.shouldYield(this);
+      if (shouldYield !== false) {
+        this.currentOpCount = 0;
         const oldCur = cur;
-        cur = core_flatMap(yieldNow(), () => oldCur);
+        cur = core_flatMap(yieldNow({
+          priority: shouldYield
+        }), () => oldCur);
       }
       try {
         if (!(cur._tag in this)) {
@@ -38059,7 +37789,7 @@ const tracerLogger = /*#__PURE__*/makeLogger(({
   attributes["effect.fiberId"] = FiberId_threadName(fiberId);
   attributes["effect.logLevel"] = logLevel.label;
   if (cause !== null && cause !== cause_empty) {
-    attributes["effect.cause"] = cause_pretty(cause);
+    attributes["effect.cause"] = pretty(cause);
   }
   span.value.event(String(message), clockService.value.unsafeCurrentTimeNanos(), attributes);
 });
@@ -38076,14 +37806,14 @@ const acquireReleaseInterruptible = /*#__PURE__*/Function_dual(args => isEffect(
 });
 /* @internal */
 const addFinalizer = finalizer => withFiberRuntime(runtime => {
-  const acquireRefs = runtime.unsafeGetFiberRefs();
+  const acquireRefs = runtime.getFiberRefs();
   return core_flatMap(scope, scope => scopeAddFinalizerExit(scope, exit => withFiberRuntime(runtimeFinalizer => {
-    const pre = runtimeFinalizer.unsafeGetFiberRefs();
+    const pre = runtimeFinalizer.getFiberRefs();
     const patch = FiberRefsPatch_diff(pre, acquireRefs);
     const inverse = FiberRefsPatch_diff(acquireRefs, pre);
     runtimeFinalizer.setFiberRefs(FiberRefsPatch_patch(patch, runtimeFinalizer.id(), acquireRefs));
     return ensuring(finalizer(exit), sync(() => {
-      runtimeFinalizer.setFiberRefs(FiberRefsPatch_patch(inverse, runtimeFinalizer.id(), runtimeFinalizer.unsafeGetFiberRefs()));
+      runtimeFinalizer.setFiberRefs(FiberRefsPatch_patch(inverse, runtimeFinalizer.id(), runtimeFinalizer.getFiberRefs()));
     }));
   })));
 });
@@ -38198,7 +37928,7 @@ const fiberRuntime_replicate = /*#__PURE__*/Function_dual(2, (self, n) => Array.
   length: n
 }, () => self));
 /* @internal */
-const replicateEffect = /*#__PURE__*/Function_dual(args => isEffect(args[0]), (self, n, options) => fiberRuntime_all(fiberRuntime_replicate(n)(self), options));
+const replicateEffect = /*#__PURE__*/Function_dual(args => isEffect(args[0]), (self, n, options) => fiberRuntime_all(fiberRuntime_replicate(self, n), options));
 // @ts-expect-error
 const forEachOptions = /*#__PURE__*/Function_dual(args => isIterable(args[0]), (self, f, options) => withFiberRuntime(r => {
   const requestBatchingEnabled = options?.batching === true || options?.batching === "inherit" && r.getFiberRef(currentRequestBatching);
@@ -38263,7 +37993,7 @@ const forEachParUnboundedDiscard = (self, f, batching) => suspend(() => {
     const residual = [];
     const joinOrder = [];
     const process = transplant(graft => forEachSequential(as, (a, i) => core_map(fiber => {
-      fiber.unsafeAddObserver(() => {
+      fiber.addObserver(() => {
         joinOrder.push(fiber);
       });
       return fiber;
@@ -38389,13 +38119,13 @@ const unsafeFork = (effect, parentFiber, parentRuntimeFlags, overrideScope = nul
 /** @internal */
 const unsafeMakeChildFiber = (effect, parentFiber, parentRuntimeFlags, overrideScope = null) => {
   const childId = FiberId_unsafeMake();
-  const parentFiberRefs = parentFiber.unsafeGetFiberRefs();
+  const parentFiberRefs = parentFiber.getFiberRefs();
   const childFiberRefs = forkAs(parentFiberRefs, childId);
   const childFiber = new FiberRuntime(childId, childFiberRefs, parentRuntimeFlags);
   const childContext = getOrDefault(childFiberRefs, currentContext);
   const supervisor = childFiber._supervisor;
   supervisor.onStart(childContext, effect, mjs_Option_some(parentFiber), childFiber);
-  childFiber.unsafeAddObserver(exit => supervisor.onEnd(exit, childFiber));
+  childFiber.addObserver(exit => supervisor.onEnd(exit, childFiber));
   const parentScope = overrideScope !== null ? overrideScope : getOrElse(() => parentFiber.scope())(parentFiber.getFiberRef(currentForkScopeOverride));
   parentScope.add(parentRuntimeFlags, childFiber);
   return childFiber;
@@ -38675,8 +38405,8 @@ const raceFibersWith = /*#__PURE__*/Function_dual(3, (self, other, options) => w
   const leftFiber = unsafeMakeChildFiber(self, parentFiber, parentRuntimeFlags, options.selfScope);
   const rightFiber = unsafeMakeChildFiber(other, parentFiber, parentRuntimeFlags, options.otherScope);
   return core_async(cb => {
-    leftFiber.unsafeAddObserver(() => completeRace(leftFiber, rightFiber, options.onSelfWin, raceIndicator, cb));
-    rightFiber.unsafeAddObserver(() => completeRace(rightFiber, leftFiber, options.onOtherWin, raceIndicator, cb));
+    leftFiber.addObserver(() => completeRace(leftFiber, rightFiber, options.onSelfWin, raceIndicator, cb));
+    rightFiber.addObserver(() => completeRace(rightFiber, leftFiber, options.onOtherWin, raceIndicator, cb));
     leftFiber.startFork(self);
     rightFiber.startFork(other);
   }, FiberId_combine(leftFiber.id(), rightFiber.id()));
@@ -38703,7 +38433,7 @@ const invokeWithInterrupt = (dataSource, all) => fiberIdWith(id => core_flatMap(
       cb(interruptFiber(processing));
     }
   };
-  processing.unsafeAddObserver(exit => {
+  processing.addObserver(exit => {
     cleanup.forEach(f => f());
     cb(exit);
   });
@@ -38743,7 +38473,7 @@ const withTracerScoped = value => fiberRefLocallyScopedWith(currentServices, Con
 /* @internal */
 const withParentSpanScoped = span => fiberRefLocallyScopedWith(currentTracerSpan, List_prepend(span));
 //# sourceMappingURL=fiberRuntime.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Random.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Random.mjs
 
 
 /**
@@ -38804,7 +38534,7 @@ const Random_shuffle = shuffle;
  */
 const Random_randomWith = randomWith;
 //# sourceMappingURL=Random.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/schedule/interval.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/interval.mjs
 
 
 
@@ -38875,7 +38605,7 @@ const before = endMilliseconds => {
   return interval_make(Number.NEGATIVE_INFINITY, endMilliseconds);
 };
 //# sourceMappingURL=interval.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/ScheduleInterval.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleInterval.mjs
 
 /**
  * @since 1.0.0
@@ -38976,7 +38706,7 @@ const ScheduleInterval_after = after;
  */
 const ScheduleInterval_before = before;
 //# sourceMappingURL=ScheduleInterval.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/schedule/intervals.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/intervals.mjs
 
 
 
@@ -39098,7 +38828,7 @@ const intervals_isNonEmpty = self => {
 /** @internal */
 const intervals_max = /*#__PURE__*/Function_dual(2, (self, that) => intervals_lessThan(self, that) ? that : self);
 //# sourceMappingURL=intervals.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/ScheduleIntervals.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleIntervals.mjs
 
 /**
  * @since 1.0.0
@@ -39177,7 +38907,7 @@ const ScheduleIntervals_isNonEmpty = intervals_isNonEmpty;
  */
 const ScheduleIntervals_max = intervals_max;
 //# sourceMappingURL=ScheduleIntervals.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/schedule/decision.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/decision.mjs
 
 
 /** @internal */
@@ -39211,7 +38941,7 @@ const decision_isDone = self => {
   return self._tag === decision_OP_DONE;
 };
 //# sourceMappingURL=decision.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/ScheduleDecision.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleDecision.mjs
 /**
  * @since 1.0.0
  */
@@ -39239,7 +38969,7 @@ const ScheduleDecision_isContinue = isContinue;
  */
 const ScheduleDecision_isDone = decision_isDone;
 //# sourceMappingURL=ScheduleDecision.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/schedule.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule.mjs
 var schedule_a, schedule_b;
 
 
@@ -39950,8 +39680,9 @@ const schedule_once = /*#__PURE__*/schedule_asUnit( /*#__PURE__*/recurs(1));
 /** @internal */
 const stop = /*#__PURE__*/schedule_asUnit( /*#__PURE__*/recurs(0));
 //# sourceMappingURL=schedule.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/effect/circular.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/effect/circular.mjs
 var circular_a, circular_b, circular_c;
+
 
 
 
@@ -40228,7 +39959,7 @@ const zipWithFiber = /*#__PURE__*/Function_dual(3, (self, that, f) => ({
   }
 }));
 //# sourceMappingURL=circular.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/opCodes/layer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/layer.mjs
 /** @internal */
 const OP_EXTEND_SCOPE = "ExtendScope";
 /** @internal */
@@ -40248,7 +39979,7 @@ const layer_OP_ZIP_WITH = "ZipWith";
 /** @internal */
 const OP_ZIP_WITH_PAR = "ZipWithPar";
 //# sourceMappingURL=layer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/synchronizedRef.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/synchronizedRef.mjs
 
 
 
@@ -40293,7 +40024,7 @@ const updateSomeEffect = /*#__PURE__*/(/* unused pure expression or super */ nul
   }
 }))));
 //# sourceMappingURL=synchronizedRef.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/layer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/layer.mjs
 
 
 
@@ -40741,7 +40472,7 @@ const provideLayer = /*#__PURE__*/Function_dual(2, (self, layer) => acquireUseRe
 /** @internal */
 const provideSomeLayer = /*#__PURE__*/Function_dual(2, (self, layer) => provideLayer(self, layer_merge(layer_context(), layer)));
 //# sourceMappingURL=layer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/layer/circular.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/layer/circular.mjs
 
 
 
@@ -40801,7 +40532,7 @@ const setSpan = (name, options) => scopedDiscard(withSpanScoped(name, options));
 /** @internal */
 const setTracer = tracer => scopedDiscard(withTracerScoped(tracer));
 //# sourceMappingURL=circular.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/MutableList.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/MutableList.mjs
 /**
  * @since 1.0.0
  */
@@ -40842,12 +40573,12 @@ const MutableListProto = {
     };
   },
   toString() {
-    return `MutableList(${Array.from(this).map(String).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "MutableList",
-      values: Array.from(this)
+      _id: "MutableList",
+      values: Array.from(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -41044,7 +40775,7 @@ const MutableList_remove = (self, node) => {
   }
 };
 //# sourceMappingURL=MutableList.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/MutableQueue.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/MutableQueue.mjs
 /**
  * @since 1.0.0
  */
@@ -41065,12 +40796,12 @@ const MutableQueueProto = {
     return Array.from(this.queue)[Symbol.iterator]();
   },
   toString() {
-    return `MutableQueue(${Array.from(this).map(String).join(", ")})`;
+    return Inspectable_toString(this.toJSON());
   },
   toJSON() {
     return {
-      _tag: "MutableQueue",
-      values: Array.from(this)
+      _id: "MutableQueue",
+      values: Array.from(this).map(toJSON)
     };
   },
   [NodeInspectSymbol]() {
@@ -41204,7 +40935,7 @@ const pollUpTo = /*#__PURE__*/(/* unused pure expression or super */ null && (Du
   return Chunk.reverse(result);
 })));
 //# sourceMappingURL=MutableQueue.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/cache.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/cache.mjs
 var cache_a, cache_b;
 
 
@@ -41664,7 +41395,7 @@ const makeWith = options => core.map(fiberRuntime.all([core.context(), core.fibe
 /** @internal */
 const unsafeMakeWith = (capacity, lookup, timeToLive) => new CacheImpl(capacity, mjs_Context_empty(), fiberId_none, lookup, exit => decode(timeToLive(exit)));
 //# sourceMappingURL=cache.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/query.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/query.mjs
 
 
 
@@ -41758,7 +41489,7 @@ const withRequestCache = /*#__PURE__*/Function_dual(2,
 // @ts-expect-error
 (self, cache) => fiberRefLocally(self, currentCache, cache));
 //# sourceMappingURL=query.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Fiber.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Fiber.mjs
 
 
 
@@ -42099,7 +41830,8 @@ const Fiber_zipRight = zipRightFiber;
  */
 const Fiber_zipWith = zipWithFiber;
 //# sourceMappingURL=Fiber.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/internal/runtime.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtime.mjs
+
 
 
 
@@ -42140,7 +41872,7 @@ const runtime_unsafeFork = runtime => (self, options) => {
   const supervisor = fiberRuntime._supervisor;
   if (supervisor !== supervisor_none) {
     supervisor.onStart(runtime.context, effect, Option_none(), fiberRuntime);
-    fiberRuntime.unsafeAddObserver(exit => supervisor.onEnd(exit, fiberRuntime));
+    fiberRuntime.addObserver(exit => supervisor.onEnd(exit, fiberRuntime));
   }
   globalScope.add(runtime.runtimeFlags, fiberRuntime);
   fiberRuntime.start(effect);
@@ -42150,7 +41882,7 @@ const runtime_unsafeFork = runtime => (self, options) => {
 const unsafeRunCallback = runtime => (effect, onExit) => {
   const fiberRuntime = runtime_unsafeFork(runtime)(effect);
   if (onExit) {
-    fiberRuntime.unsafeAddObserver(exit => {
+    fiberRuntime.addObserver(exit => {
       onExit(exit);
     });
   }
@@ -42188,7 +41920,7 @@ const asyncFiberException = fiber => {
         return () => message;
       }
     },
-    [NodePrint]: {
+    [NodeInspectSymbol]: {
       get() {
         return () => message;
       }
@@ -42203,26 +41935,31 @@ const FiberFailureId = /*#__PURE__*/Symbol.for("@effect/io/Runtime/FiberFailure"
 /** @internal */
 const FiberFailureCauseId = /*#__PURE__*/Symbol.for("@effect/io/Runtime/FiberFailure/Cause");
 /** @internal */
-const NodePrint = /*#__PURE__*/Symbol.for("nodejs.util.inspect.custom");
-/** @internal */
 const fiberFailure = cause => {
   const limit = Error.stackTraceLimit;
   Error.stackTraceLimit = 0;
   const error = new Error();
   Error.stackTraceLimit = limit;
-  const pretty = prettyErrors(cause);
-  if (pretty.length > 0) {
-    error.name = pretty[0].message.split(":")[0];
-    error.message = pretty[0].message.substring(error.name.length + 2);
-    error.stack = `${error.name}: ${error.message}\n${pretty[0].stack}`;
+  const prettyErrors = cause_prettyErrors(cause);
+  if (prettyErrors.length > 0) {
+    const head = prettyErrors[0];
+    error.name = head.message.split(":")[0];
+    error.message = head.message.substring(error.name.length + 2);
+    error.stack = `${error.name}: ${error.message}\n${head.stack}`;
   }
   error[FiberFailureId] = FiberFailureId;
   error[FiberFailureCauseId] = cause;
-  error.toString = () => {
-    return cause_pretty(cause);
+  error.toJSON = () => {
+    return {
+      _id: "FiberFailure",
+      cause: cause.toJSON()
+    };
   };
-  error[NodePrint] = () => {
-    return error.toString();
+  error.toString = () => {
+    return Inspectable_toString(error.toJSON());
+  };
+  error[NodeInspectSymbol] = () => {
+    return error.toJSON();
   };
   return error;
 };
@@ -42292,7 +42029,7 @@ const unsafeRunPromiseExit = runtime => effect => new Promise(resolve => {
   if (op) {
     resolve(op);
   }
-  runtime_unsafeFork(runtime)(effect).unsafeAddObserver(exit => {
+  runtime_unsafeFork(runtime)(effect).addObserver(exit => {
     resolve(exit);
   });
 });
@@ -42308,15 +42045,15 @@ class RuntimeImpl {
   }
 }
 /** @internal */
-const runtime_make = options => new RuntimeImpl(options.context, options.flags, options.fiberRefs);
+const runtime_make = options => new RuntimeImpl(options.context, options.runtimeFlags, options.fiberRefs);
 /** @internal */
-const runtime_runtime = () => withFiberRuntime((state, status) => succeed(new RuntimeImpl(state.getFiberRef(currentContext), status.runtimeFlags, state.unsafeGetFiberRefs())));
+const runtime_runtime = () => withFiberRuntime((state, status) => succeed(new RuntimeImpl(state.getFiberRef(currentContext), status.runtimeFlags, state.getFiberRefs())));
 /** @internal */
 const defaultRuntimeFlags = /*#__PURE__*/runtimeFlags_make(Interruption, CooperativeYielding, RuntimeMetrics);
 /** @internal */
 const defaultRuntime = /*#__PURE__*/runtime_make({
   context: /*#__PURE__*/mjs_Context_empty(),
-  flags: defaultRuntimeFlags,
+  runtimeFlags: defaultRuntimeFlags,
   fiberRefs: /*#__PURE__*/FiberRefs_unsafeMake( /*#__PURE__*/new Map())
 });
 /** @internal */
@@ -42335,7 +42072,8 @@ const unsafeRunSyncExitEffect = /*#__PURE__*/unsafeRunSyncExit(defaultRuntime);
 /** @internal */
 const asyncEffect = register => core_flatMap(deferredMake(), deferred => core_flatMap(runtime_runtime(), runtime => uninterruptibleMask(restore => core_zipRight(fork(restore(catchAllCause(register(cb => unsafeRunCallback(runtime)(intoDeferred(cb, deferred))), cause => deferredFailCause(deferred, cause)))), restore(deferredAwait(deferred))))));
 //# sourceMappingURL=runtime.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Effect.mjs
+
 
 
 
@@ -43624,14 +43362,7 @@ const Effect_withConcurrency = withConcurrency;
  * @since 1.0.0
  * @category scheduler
  */
-const setScheduler = scheduler => layer.scopedDiscard(fiberRuntime.fiberRefLocallyScoped(core.currentScheduler, scheduler));
-/**
- * Sets the child effect's maximum number of ops before yield
- *
- * @since 1.0.0
- * @category scheduler
- */
-const Effect_withMaxFiberOps = withMaxFiberOps;
+const setScheduler = scheduler => layer.scopedDiscard(fiberRuntime.fiberRefLocallyScoped(Scheduler.currentScheduler, scheduler));
 /**
  * Sets the provided scheduler for usage in the wrapped effect
  *
@@ -43646,6 +43377,13 @@ const Effect_withScheduler = withScheduler;
  * @category utils
  */
 const Effect_withSchedulingPriority = withSchedulingPriority;
+/**
+ * Sets the maximum number of operations before yield by the default schedulers
+ *
+ * @since 1.0.0
+ * @category utils
+ */
+const Effect_withMaxOpsBeforeYield = withMaxOpsBeforeYield;
 // ---------------------------------------------------------------------------------------
 // clock
 // ---------------------------------------------------------------------------------------
@@ -45029,7 +44767,7 @@ const Effect_optionFromOptional = optionFromOptional;
 const utils_logInfo = (message) => Effect_sync(() => lib_core.info(message));
 const utils_logDebug = (message) => Effect_sync(() => lib_core.debug(`-- ${message}`));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.4/node_modules/@effect/data/mjs/Brand.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Brand.mjs
 /**
  * This module provides types and utility functions to create and work with branded types,
  * which are TypeScript types with an added type tag to prevent accidental usage of a value in the wrong context.
@@ -45200,7 +44938,7 @@ const Brand_all = (...brands) => {
   });
 };
 //# sourceMappingURL=Brand.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.4_@effect+io@0.39.1/node_modules/@effect/schema/mjs/internal/common.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/internal/common.mjs
 /**
  * @since 1.0.0
  */
@@ -45249,7 +44987,7 @@ const memoizeThunk = f => {
   };
 };
 //# sourceMappingURL=common.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.4_@effect+io@0.39.1/node_modules/@effect/schema/mjs/ParseResult.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/ParseResult.mjs
 /**
  * @since 1.0.0
  */
@@ -45335,7 +45073,7 @@ const failure = e => Either_left(parseError([e]));
  * @category constructors
  * @since 1.0.0
  */
-const ParseResult_failures = es => Either_left(parseError(es));
+const failures = es => Either_left(parseError(es));
 /**
  * @category optimisation
  * @since 1.0.0
@@ -45375,7 +45113,7 @@ const ParseResult_map = (self, f) => {
   return Effect_map(self, f);
 };
 //# sourceMappingURL=ParseResult.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.4_@effect+io@0.39.1/node_modules/@effect/schema/mjs/AST.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/AST.mjs
 /**
  * @since 1.0.0
  */
@@ -46264,7 +46002,7 @@ const _keyof = ast => {
   }
 };
 //# sourceMappingURL=AST.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.4_@effect+io@0.39.1/node_modules/@effect/schema/mjs/TreeFormatter.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/TreeFormatter.mjs
 /**
  * @since 1.0.0
  */
@@ -46390,7 +46128,7 @@ const go = e => {
   }
 };
 //# sourceMappingURL=TreeFormatter.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.4_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Parser.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/Parser.mjs
 /**
  * @since 1.0.0
  */
@@ -46670,7 +46408,7 @@ const Parser_go = (ast, isBoundary = true) => {
                 es.push([stepKey++, e]);
                 continue;
               } else {
-                return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                return failures(mutableAppend(sortByIndex(es), e));
               }
             }
           }
@@ -46698,7 +46436,7 @@ const Parser_go = (ast, isBoundary = true) => {
                     es.push([stepKey++, e]);
                     continue;
                   } else {
-                    return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                    return failures(mutableAppend(sortByIndex(es), e));
                   }
                 }
                 output.push([stepKey++, eu.right]);
@@ -46719,7 +46457,7 @@ const Parser_go = (ast, isBoundary = true) => {
                       es.push([nk, e]);
                       return Effect_unit;
                     } else {
-                      return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                      return failures(mutableAppend(sortByIndex(es), e));
                     }
                   }
                   output.push([nk, t.right]);
@@ -46744,7 +46482,7 @@ const Parser_go = (ast, isBoundary = true) => {
                     es.push([stepKey++, e]);
                     continue;
                   } else {
-                    return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                    return failures(mutableAppend(sortByIndex(es), e));
                   }
                 } else {
                   output.push([stepKey++, eu.right]);
@@ -46765,7 +46503,7 @@ const Parser_go = (ast, isBoundary = true) => {
                       es.push([nk, e]);
                       return Effect_unit;
                     } else {
-                      return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                      return failures(mutableAppend(sortByIndex(es), e));
                     }
                   } else {
                     output.push([nk, t.right]);
@@ -46792,7 +46530,7 @@ const Parser_go = (ast, isBoundary = true) => {
                       es.push([stepKey++, e]);
                       continue;
                     } else {
-                      return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                      return failures(mutableAppend(sortByIndex(es), e));
                     }
                   }
                   output.push([stepKey++, eu.right]);
@@ -46813,7 +46551,7 @@ const Parser_go = (ast, isBoundary = true) => {
                         es.push([nk, e]);
                         return Effect_unit;
                       } else {
-                        return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                        return failures(mutableAppend(sortByIndex(es), e));
                       }
                     }
                     output.push([nk, t.right]);
@@ -46829,7 +46567,7 @@ const Parser_go = (ast, isBoundary = true) => {
           const computeResult = ({
             es,
             output
-          }) => ReadonlyArray_isNonEmptyArray(es) ? ParseResult_failures(sortByIndex(es)) : success(sortByIndex(output));
+          }) => ReadonlyArray_isNonEmptyArray(es) ? failures(sortByIndex(es)) : success(sortByIndex(output));
           if (queue && queue.length > 0) {
             const cqueue = queue;
             return Effect_suspend(() => {
@@ -46883,7 +46621,7 @@ const Parser_go = (ast, isBoundary = true) => {
                     es.push([stepKey++, e]);
                     continue;
                   } else {
-                    return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                    return failures(mutableAppend(sortByIndex(es), e));
                   }
                 }
               }
@@ -46909,7 +46647,7 @@ const Parser_go = (ast, isBoundary = true) => {
                     es.push([stepKey++, e]);
                     continue;
                   } else {
-                    return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                    return failures(mutableAppend(sortByIndex(es), e));
                   }
                 }
                 output[name] = eu.right;
@@ -46930,7 +46668,7 @@ const Parser_go = (ast, isBoundary = true) => {
                       es.push([nk, e]);
                       return Effect_unit;
                     } else {
-                      return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                      return failures(mutableAppend(sortByIndex(es), e));
                     }
                   }
                   output[index] = t.right;
@@ -46974,7 +46712,7 @@ const Parser_go = (ast, isBoundary = true) => {
                     es.push([stepKey++, e]);
                     continue;
                   } else {
-                    return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                    return failures(mutableAppend(sortByIndex(es), e));
                   }
                 }
               }
@@ -46991,7 +46729,7 @@ const Parser_go = (ast, isBoundary = true) => {
                     es.push([stepKey++, e]);
                     continue;
                   } else {
-                    return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                    return failures(mutableAppend(sortByIndex(es), e));
                   }
                 } else {
                   output[key] = veu.right;
@@ -47012,7 +46750,7 @@ const Parser_go = (ast, isBoundary = true) => {
                       es.push([nk, e]);
                       return Effect_unit;
                     } else {
-                      return ParseResult_failures(mutableAppend(sortByIndex(es), e));
+                      return failures(mutableAppend(sortByIndex(es), e));
                     }
                   } else {
                     output[key] = tv.right;
@@ -47028,7 +46766,7 @@ const Parser_go = (ast, isBoundary = true) => {
           const computeResult = ({
             es,
             output
-          }) => ReadonlyArray_isNonEmptyArray(es) ? ParseResult_failures(sortByIndex(es)) : success(output);
+          }) => ReadonlyArray_isNonEmptyArray(es) ? failures(sortByIndex(es)) : success(output);
           if (queue && queue.length > 0) {
             const cqueue = queue;
             return Effect_suspend(() => {
@@ -47126,7 +46864,7 @@ const Parser_go = (ast, isBoundary = true) => {
           // ---------------------------------------------
           // compute output
           // ---------------------------------------------
-          const computeResult = es => ReadonlyArray_isNonEmptyArray(es) ? ParseResult_failures(sortByIndex(es)) :
+          const computeResult = es => ReadonlyArray_isNonEmptyArray(es) ? failures(sortByIndex(es)) :
           // this should never happen
           failure(ParseResult_type(neverKeyword, input));
           if (queue && queue.length > 0) {
@@ -47282,7 +47020,7 @@ const Parser_reverse = ast => {
   return ast;
 };
 //# sourceMappingURL=Parser.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.4_@effect+io@0.39.1/node_modules/@effect/schema/mjs/Schema.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/Schema.mjs
 /**
  * @since 1.0.0
  */
@@ -49199,7 +48937,7 @@ const debugVariables = () => {
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.39.1_@effect+data@0.18.4/node_modules/@effect/io/mjs/Schedule.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Schedule.mjs
 
 /**
  * @since 1.0.0
