@@ -28,6 +28,7 @@ export class Inputs extends Data.TaggedClass("Inputs")<{
   cmd: Chunk.Chunk<NES>
   outputFilePath: NES
   workdir: Option.Option<NES>
+  zeklinServerUrl: NES
 }> {}
 
 const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
@@ -65,6 +66,7 @@ const unsafeParseInputs: () => Either.Either<Error, Inputs> = () => {
         outputFilePath: unsafeRequiredInput("output-file-path"),
         cmd: unsafeRequiredMultilineInput("cmd"),
         workdir: optionalInput("workdir"),
+        zeklinServerUrl: Option.getOrElse(optionalInput("zeklin-server-url"), () => NES.unsafe("https://api.zeklin.io")),
       }),
     )
   } catch (error) {

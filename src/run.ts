@@ -165,25 +165,26 @@ const findResults: (inputs: Inputs) => Effect.Effect<never, Error, JSON> = (inpu
     Effect.tap((data) => logDebug(`Found results: ${JSON.stringify(data, null, 2)}`)),
   )
 
-const pingServer: Effect.Effect<never, Error, void> = pipe(
-  Effect.tryPromise({
-    try: (signal) => {
-      return fetch(`${envvars.ZEKLIN_SERVER_URL}/ping`, {
-        method: "GET",
-        headers: {
-          "User-Agent": "zeklin-action",
-        },
-        signal: signal,
-      }).then((response) => {
-        if (!response.ok) {
-          Promise.reject(Error(`Failed to ping Zeklin servers: ${response.status} ${response.statusText}`))
-        }
-      })
-    },
-    catch: (_) => _ as Error,
-  }),
-  Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
-)
+const pingServer: (inputs: Inputs) => Effect.Effect<never, Error, void> = (inputs) =>
+  pipe(
+    Effect.tryPromise({
+      try: (signal) => {
+        return fetch(`${inputs.zeklinServerUrl}/ping`, {
+          method: "GET",
+          headers: {
+            "User-Agent": "zeklin-action",
+          },
+          signal: signal,
+        }).then((response) => {
+          if (!response.ok) {
+            Promise.reject(Error(`Failed to ping Zeklin servers: ${response.status} ${response.statusText}`))
+          }
+        })
+      },
+      catch: (_) => _ as Error,
+    }),
+    Effect.retry(Schedule.intersect(Schedule.recurs(3), Schedule.spaced(Duration.seconds(1)))),
+  )
 
 const uploadResults: (
   inputs: Inputs,
@@ -200,7 +201,7 @@ const uploadResults: (
         const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8")
         const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64")
 
-        return fetch(`${envvars.ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+        return fetch(`${inputs.zeklinServerUrl}/api/runs/jmh`, {
           method: "POST",
           body: buff,
           headers: {
@@ -237,6 +238,6 @@ export const run: (inputs: Inputs, before: NES, after: NES, commitMessage: strin
         : Effect.fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`)),
     ),
     Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt] as const))),
-    Effect.flatMap((data) => pingServer.pipe(Effect.as(data))),
+    Effect.flatMap((data) => pingServer(inputs).pipe(Effect.as(data))),
     Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)),
   )
