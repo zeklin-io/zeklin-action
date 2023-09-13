@@ -50,8 +50,6 @@ const RunnerArch = {
 // Documentation of GitHub envvars: https://docs.github.com/en/actions/learn-github-actions/variables
 //
 
-export const ZEKLIN_SERVER_URL: NES = NES.unsafeFromString(process.env["ZEKLIN_SERVER_URL"] ?? "https://api.zeklin.io")
-
 /**
  * A unique number for each workflow run within a repository.
  * This number does not change if you re-run the workflow run.
@@ -126,7 +124,6 @@ export const GITHUB_ACTOR: NES = NES.unsafeFromString(process.env.GITHUB_ACTOR!)
 export const GITHUB_ACTOR_ID: number = Number(process.env.GITHUB_ACTOR_ID!)
 
 export const debugVariables = () => {
-  core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`)
   core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`)
   core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`)
   core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`)

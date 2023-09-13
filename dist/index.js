@@ -48858,7 +48858,6 @@ const RunnerArch = {
 //
 // Documentation of GitHub envvars: https://docs.github.com/en/actions/learn-github-actions/variables
 //
-const ZEKLIN_SERVER_URL = NES.unsafeFromString(process.env["ZEKLIN_SERVER_URL"] ?? "https://api.zeklin.io");
 /**
  * A unique number for each workflow run within a repository.
  * This number does not change if you re-run the workflow run.
@@ -48923,7 +48922,6 @@ const GITHUB_ACTOR = NES.unsafeFromString(process.env.GITHUB_ACTOR);
  */
 const GITHUB_ACTOR_ID = Number(process.env.GITHUB_ACTOR_ID);
 const debugVariables = () => {
-    lib_core.debug(`ZEKLIN_SERVER_URL: ${ZEKLIN_SERVER_URL}`);
     lib_core.debug(`GITHUB_RUN_ID: ${GITHUB_RUN_ID}`);
     lib_core.debug(`GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}`);
     lib_core.debug(`GITHUB_RUNNER_NAME: ${RUNNER_NAME}`);
@@ -52004,9 +52002,9 @@ const findResults = (inputs) => Function_pipe(Effect_tryPromise({
     try: () => JSON.parse(data),
     catch: (_) => _,
 })), Effect_tap((data) => utils_logDebug(`Found results: ${JSON.stringify(data, null, 2)}`)));
-const pingServer = Function_pipe(Effect_tryPromise({
+const pingServer = (inputs) => Function_pipe(Effect_tryPromise({
     try: (signal) => {
-        return fetch(`${ZEKLIN_SERVER_URL}/ping`, {
+        return fetch(`${inputs.zeklinServerUrl}/ping`, {
             method: "GET",
             headers: {
                 "User-Agent": "zeklin-action",
@@ -52025,7 +52023,7 @@ const uploadResults = (inputs, results, computedAt, before, after, commitMessage
         const body = PostJmhResultBody.unsafeFrom(github.context, results, computedAt, commitMessage, before, after);
         const buff = Buffer.from(JSON.stringify(body, null, 0), "utf-8");
         const credentials = Buffer.from(`${inputs.apikeyId}:${inputs.apikey}`).toString("base64");
-        return fetch(`${ZEKLIN_SERVER_URL}/api/runs/jmh`, {
+        return fetch(`${inputs.zeklinServerUrl}/api/runs/jmh`, {
             method: "POST",
             body: buff,
             headers: {
@@ -52047,7 +52045,7 @@ const uploadResults = (inputs, results, computedAt, before, after, commitMessage
  */
 const run_run = (inputs, before, after, commitMessage) => Function_pipe(execCommands(inputs), Effect_flatMap((exitCode) => exitCode === lib_core.ExitCode.Success
     ? utils_logInfo(`🎉 '${inputs.cmd}' ran successfully!`).pipe(Effect_as(new Date()))
-    : Effect_fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect_flatMap((computedAt) => findResults(inputs).pipe(Effect_map((_) => [_, computedAt]))), Effect_flatMap((data) => pingServer.pipe(Effect_as(data))), Effect_flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)));
+    : Effect_fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect_flatMap((computedAt) => findResults(inputs).pipe(Effect_map((_) => [_, computedAt]))), Effect_flatMap((data) => pingServer(inputs).pipe(Effect_as(data))), Effect_flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)));
 
 ;// CONCATENATED MODULE: ./src/index.ts
 
@@ -52102,6 +52100,7 @@ const unsafeParseInputs = () => {
             outputFilePath: unsafeRequiredInput("output-file-path"),
             cmd: unsafeRequiredMultilineInput("cmd"),
             workdir: optionalInput("workdir"),
+            zeklinServerUrl: getOrElse(optionalInput("zeklin-server-url"), () => NES.unsafe("https://api.zeklin.io")),
         }));
     }
     catch (error) {

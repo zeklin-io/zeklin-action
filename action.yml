@@ -22,6 +22,10 @@ inputs:
   workdir:
     description: 'The directory to run your cmd in'
     required: false
+  zeklin-server-url:
+    description: "The URL of your Zeklin server. Only useful to Zeklin's developers"
+    required: false
+    default: 'https://api.zeklin.io'
 
 # Define your outputs here.
 outputs:

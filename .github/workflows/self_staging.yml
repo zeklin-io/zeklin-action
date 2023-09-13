@@ -1,4 +1,4 @@
-name: Integration Tests
+name: Integration Tests - Staging
 
 on:
   pull_request:
@@ -6,9 +6,6 @@ on:
     branches:
       - main
       - 'releases/*'
-
-env:
-  ZEKLIN_SERVER_URL: ${{ secrets.STAGING_ZEKLIN_SERVER_URL }}
 
 jobs:
   test-action:
@@ -22,20 +19,19 @@ jobs:
       - run: env
       - uses: actions/checkout@v4.0.0
 
-      - name: Test Action
-        id: test-action
+      - name: Staging - Test Action
         uses: ./
         with:
           api-key: ${{ secrets.STAGING_ZEKLIN_API_KEY }}
           api-key-id: ${{ secrets.STAGING_ZEKLIN_API_KEY_ID }}
           output-file-path: 'jmh_samples_all.json'
           workdir: "."
+          zeklin-server-url: ${{ secrets.STAGING_ZEKLIN_SERVER_URL }}
           cmd: |
             echo 'hello world'
             ls
 
       - name: Test Failing Action
-        id: test-failing-action
         continue-on-error: true
         uses: ./
         with:
