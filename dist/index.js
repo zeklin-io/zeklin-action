@@ -52596,8 +52596,8 @@ const uploadResults = (inputs, results, computedAt, before, after, commitMessage
  * The main function for the action.
  */
 const run_run = (inputs, before, after, commitMessage) => Function_pipe(execCommands(inputs), Effect_flatMap((exitCode) => exitCode === lib_core.ExitCode.Success
-    ? utils_logInfo(`🎉 '${inputs.cmd}' ran successfully!`).pipe(Effect_as(new Date()))
-    : Effect_fail(new Error(`❌ '${inputs.cmd}' exited with non-zero exit code: ${exitCode}`))), Effect_flatMap((computedAt) => findResults(inputs).pipe(Effect_map((_) => [_, computedAt]))), Effect_flatMap((data) => pingServer(inputs).pipe(Effect_as(data))), Effect_flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)));
+    ? utils_logInfo(`🎉 zeklin-action ran successfully!`).pipe(Effect_as(new Date()))
+    : Effect_fail(new Error(`❌ Your command exited with non-zero exit code: ${exitCode}`))), Effect_flatMap((computedAt) => findResults(inputs).pipe(Effect_map((_) => [_, computedAt]))), Effect_flatMap((data) => pingServer(inputs).pipe(Effect_as(data))), Effect_flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)));
 
 ;// CONCATENATED MODULE: ./src/index.ts
 
