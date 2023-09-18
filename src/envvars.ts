@@ -4,7 +4,7 @@ import * as core from "@actions/core"
 
 const NESBrand = Symbol.for("NonEmptyString")
 const NESSchema = pipe(S.string, S.trim, S.nonEmpty(), S.brand(NESBrand))
-export type NES = S.To<typeof NESSchema>
+export type NES = S.Schema.To<typeof NESSchema>
 export const NES = {
   unsafe: (s: string): NES => s as NES,
   fromString: (s: string): Option.Option<NES> => S.parseOption(NESSchema)(s),

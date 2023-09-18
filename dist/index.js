@@ -16410,7 +16410,7 @@ const mapInput = /*#__PURE__*/(/* unused pure expression or super */ null && (du
  * @category guards
  * @since 1.0.0
  */
-const Predicate_isString = input => typeof input === "string";
+const isString = input => typeof input === "string";
 /**
  * Tests if a value is a `number`.
  *
@@ -16426,7 +16426,7 @@ const Predicate_isString = input => typeof input === "string";
  * @category guards
  * @since 1.0.0
  */
-const Predicate_isNumber = input => typeof input === "number";
+const isNumber = input => typeof input === "number";
 /**
  * Tests if a value is a `boolean`.
  *
@@ -16474,7 +16474,7 @@ const isBigint = input => typeof input === "bigint";
  * @category guards
  * @since 1.0.0
  */
-const Predicate_isSymbol = input => typeof input === "symbol";
+const isSymbol = input => typeof input === "symbol";
 /**
  * Tests if a value is a `function`.
  *
@@ -16611,7 +16611,7 @@ const isUnknown = _ => true;
  * @category guards
  * @since 1.0.0
  */
-const Predicate_isObject = input => typeof input === "object" && input != null || Predicate_isFunction(input);
+const isObject = input => typeof input === "object" && input != null || Predicate_isFunction(input);
 /**
  * Tests if a value is an `object` with a property `_tag` that matches the given tag.
  *
@@ -16631,7 +16631,7 @@ const Predicate_isObject = input => typeof input === "object" && input != null |
  * @category guards
  * @since 1.0.0
  */
-const isTagged = /*#__PURE__*/Function_dual(2, (self, tag) => Predicate_isObject(self) && "_tag" in self && self["_tag"] === tag);
+const isTagged = /*#__PURE__*/Function_dual(2, (self, tag) => isObject(self) && "_tag" in self && self["_tag"] === tag);
 /**
  * A guard that succeeds when the input is `null` or `undefined`.
  *
@@ -16736,7 +16736,7 @@ const isDate = input => input instanceof Date;
  * @category guards
  * @since 1.0.0
  */
-const isIterable = input => Predicate_isObject(input) && Symbol.iterator in input;
+const isIterable = input => isObject(input) && Symbol.iterator in input;
 /**
  * A guard that succeeds when the input is a record.
  *
@@ -16756,7 +16756,7 @@ const isIterable = input => Predicate_isObject(input) && Symbol.iterator in inpu
  * @category guards
  * @since 1.0.0
  */
-const isRecord = input => Predicate_isObject(input) && !Array.isArray(input);
+const isRecord = input => isObject(input) && !Array.isArray(input);
 /**
  * A guard that succeeds when the input is a readonly record.
  *
@@ -18105,7 +18105,7 @@ const between = O => dual(3, (self, minimum, maximum) => !lessThan(O)(self, mini
  * @category guards
  * @since 1.0.0
  */
-const Number_isNumber = Predicate_isNumber;
+const Number_isNumber = isNumber;
 /**
  * Provides an addition operation on `number`s.
  *
@@ -21300,7 +21300,7 @@ const makeChunk = backing => {
  * @category constructors
  * @since 1.0.0
  */
-const isChunk = u => Predicate_isObject(u) && Chunk_TypeId in u;
+const isChunk = u => isObject(u) && Chunk_TypeId in u;
 const _empty = /*#__PURE__*/makeChunk({
   _tag: "IEmpty"
 });
@@ -22426,12 +22426,12 @@ const Either_getOrUndefined = /*#__PURE__*/(/* unused pure expression or super *
  * @category getters
  * @since 1.0.0
  */
-const Either_getOrThrowWith = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, onLeft) => {
+const Either_getOrThrowWith = /*#__PURE__*/Function_dual(2, (self, onLeft) => {
   if (Either_isRight(self)) {
     return self.right;
   }
   throw onLeft(self.left);
-})));
+});
 /**
  * Extracts the value of an `Either` or throws if the `Either` is `Left`.
  *
@@ -22449,7 +22449,7 @@ const Either_getOrThrowWith = /*#__PURE__*/(/* unused pure expression or super *
  * @category getters
  * @since 1.0.0
  */
-const Either_getOrThrow = /*#__PURE__*/(/* unused pure expression or super */ null && (Either_getOrThrowWith(() => new Error("getOrThrow called on a Left"))));
+const Either_getOrThrow = /*#__PURE__*/Either_getOrThrowWith(() => new Error("getOrThrow called on a Left"));
 /**
  * @category combining
  * @since 1.0.0
@@ -22918,12 +22918,12 @@ const mjs_is = is;
  * @category predicates
  * @since 1.0.0
  */
-const mjs_string = Predicate_isString;
+const mjs_string = isString;
 /**
  * @category predicates
  * @since 1.0.0
  */
-const mjs_number = Predicate_isNumber;
+const mjs_number = isNumber;
 /**
  * @category predicates
  * @since 1.0.0
@@ -24179,7 +24179,7 @@ const HashMap_fromIterable = entries => {
   return endMutation(map);
 };
 /** @internal */
-const isHashMap = u => Predicate_isObject(u) && HashMapTypeId in u;
+const isHashMap = u => isObject(u) && HashMapTypeId in u;
 /** @internal */
 const HashMap_isEmpty = self => self && isEmptyNode(self._root);
 /** @internal */
@@ -24417,7 +24417,7 @@ const HashSet_makeImpl = keyMap => {
   return set;
 };
 /** @internal */
-const isHashSet = u => Predicate_isObject(u) && HashSetTypeId in u;
+const isHashSet = u => isObject(u) && HashSetTypeId in u;
 const HashSet_empty = /*#__PURE__*/HashSet_makeImpl( /*#__PURE__*/internal_HashMap_empty());
 /** @internal */
 const internal_HashSet_empty = () => HashSet_empty;
@@ -25784,7 +25784,7 @@ const _Nil = /*#__PURE__*/Object.create(NilProto);
  * @since 1.0.0
  * @category refinements
  */
-const isList = u => Predicate_isObject(u) && List_TypeId in u;
+const isList = u => isObject(u) && List_TypeId in u;
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
  *
@@ -26502,7 +26502,7 @@ const updateAndGet = /*#__PURE__*/Function_dual(2, (self, f) => setAndGet(self, 
  */
 const MutableRef_toggle = self => MutableRef_update(self, _ => !_);
 //# sourceMappingURL=MutableRef.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberId.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberId.mjs
 var _a, _b, _c;
 
 
@@ -26718,7 +26718,7 @@ const fiberId_unsafeMake = () => {
   return new Runtime(id, new Date().getTime());
 };
 //# sourceMappingURL=fiberId.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberId.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberId.mjs
 
 /**
  * @since 1.0.0
@@ -26834,7 +26834,7 @@ const FiberId_toSet = toSet;
  */
 const FiberId_unsafeMake = fiberId_unsafeMake;
 //# sourceMappingURL=FiberId.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/cause.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/cause.mjs
 /** @internal */
 const OP_DIE = "Die";
 /** @internal */
@@ -26850,7 +26850,7 @@ const OP_PARALLEL = "Parallel";
 /** @internal */
 const OP_SEQUENTIAL = "Sequential";
 //# sourceMappingURL=cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/cause.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/cause.mjs
 
 
 
@@ -27919,13 +27919,13 @@ const cause_prettyErrors = cause => reduceWithContext(cause, void 0, {
   annotatedCase: (_, renderErrors, annotation) => isSpanAnnotation(annotation) ? renderErrors.map(error => new PrettyError(error.message, error.stack, error.span ?? annotation.span)) : renderErrors
 });
 //# sourceMappingURL=cause.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/deferred.mjs
 /** @internal */
 const OP_STATE_PENDING = "Pending";
 /** @internal */
 const OP_STATE_DONE = "Done";
 //# sourceMappingURL=deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/deferred.mjs
 
 /** @internal */
 const DeferredSymbolKey = "@effect/io/Deferred";
@@ -27951,7 +27951,7 @@ const done = effect => {
   };
 };
 //# sourceMappingURL=deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/effect.mjs
 /** @internal */
 const OP_ASYNC = "Async";
 /** @internal */
@@ -27983,7 +27983,7 @@ const OP_YIELD = "Yield";
 /** @internal */
 const OP_REVERT_FLAGS = "RevertFlags";
 //# sourceMappingURL=effect.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtimeFlagsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtimeFlagsPatch.mjs
 
 /** @internal */
 const BIT_MASK = 0xff;
@@ -28022,7 +28022,7 @@ const inverse = patch => runtimeFlagsPatch_make(enabled(patch), invert(active(pa
 /** @internal */
 const invert = n => ~n >>> 0 & BIT_MASK;
 //# sourceMappingURL=runtimeFlagsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtimeFlags.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtimeFlags.mjs
 
 
 
@@ -28130,7 +28130,7 @@ const differ = /*#__PURE__*/mjs_Differ_make({
   patch: (_patch, oldValue) => runtimeFlags_patch(oldValue, _patch)
 });
 //# sourceMappingURL=runtimeFlags.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/RuntimeFlagsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/RuntimeFlagsPatch.mjs
 /**
  * @since 1.0.0
  */
@@ -28265,7 +28265,7 @@ const RuntimeFlagsPatch_disabledSet = disabledSet;
  */
 const RuntimeFlagsPatch_render = renderPatch;
 //# sourceMappingURL=RuntimeFlagsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/core.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/core.mjs
 var core_a, core_b, core_c, _d;
 
 
@@ -29760,7 +29760,7 @@ const DURATION_REGEX = /^(-?\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minute
 const decode = input => {
   if (isDuration(input)) {
     return input;
-  } else if (Predicate_isNumber(input)) {
+  } else if (isNumber(input)) {
     return millis(input);
   } else if (isBigint(input)) {
     return Duration_nanos(input);
@@ -29840,7 +29840,7 @@ const DurationProto = {
 };
 const Duration_make = input => {
   const duration = Object.create(DurationProto);
-  if (Predicate_isNumber(input)) {
+  if (isNumber(input)) {
     if (isNaN(input) || input < 0) {
       duration.value = zeroValue;
     } else if (!Number.isFinite(input)) {
@@ -30112,7 +30112,7 @@ const Duration_greaterThanOrEqualTo = /*#__PURE__*/Function_dual(2, (self, that)
  */
 const Duration_equals = /*#__PURE__*/Function_dual(2, (self, that) => Duration_Equivalence(decode(self), decode(that)));
 //# sourceMappingURL=Duration.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/clock.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/clock.mjs
 var clock_a;
 
 
@@ -30190,7 +30190,7 @@ clock_a = ClockTypeId;
 /** @internal */
 const clock_make = () => new ClockImpl();
 //# sourceMappingURL=clock.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/configError.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/configError.mjs
 /** @internal */
 const OP_AND = "And";
 /** @internal */
@@ -30204,7 +30204,7 @@ const OP_SOURCE_UNAVAILABLE = "SourceUnavailable";
 /** @internal */
 const OP_UNSUPPORTED = "Unsupported";
 //# sourceMappingURL=configError.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configError.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configError.mjs
 
 
 
@@ -30454,7 +30454,7 @@ const configError_reduceWithContext = /*#__PURE__*/(/* unused pure expression or
 /** @internal */
 const isMissingDataOnly = self => configError_reduceWithContext(self, void 0, IsMissingDataOnlyReducer);
 //# sourceMappingURL=configError.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/config.mjs
 
 
 
@@ -30765,7 +30765,7 @@ const config_zipWith = /*#__PURE__*/(/* unused pure expression or super */ null 
   return zipWith;
 })));
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configProvider/pathPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configProvider/pathPatch.mjs
 
 
 
@@ -30842,7 +30842,7 @@ const pathPatch_patch = /*#__PURE__*/Function_dual(2, (path, patch) => {
   return Either_right(output);
 });
 //# sourceMappingURL=pathPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/config.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/config.mjs
 /** @internal */
 const OP_CONSTANT = "Constant";
 /** @internal */
@@ -30866,7 +30866,7 @@ const OP_HASHMAP = "HashMap";
 /** @internal */
 const OP_ZIP_WITH = "ZipWith";
 //# sourceMappingURL=config.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configProvider.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/configProvider.mjs
 
 
 
@@ -31210,7 +31210,7 @@ const parseInteger = str => {
   return Number.isNaN(parsedIndex) ? Option_none() : mjs_Option_some(parsedIndex);
 };
 //# sourceMappingURL=configProvider.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/defaultServices/console.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/defaultServices/console.mjs
 
 
 /** @internal */
@@ -31303,7 +31303,7 @@ const defaultConsole = {
   unsafe: console
 };
 //# sourceMappingURL=console.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/random.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/random.mjs
 var random_a;
 
 
@@ -31359,7 +31359,7 @@ const swap = (buffer, index1, index2) => {
 };
 const random_make = seed => new RandomImpl(seed);
 //# sourceMappingURL=random.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/tracer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/tracer.mjs
 /**
  * @since 1.0.0
  */
@@ -31415,7 +31415,7 @@ const nativeTracer = /*#__PURE__*/tracer_make({
   context: f => f()
 });
 //# sourceMappingURL=tracer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/defaultServices.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/defaultServices.mjs
 
 
 
@@ -31478,7 +31478,7 @@ const tracerWith = f => fiberRefGetWith(currentServices, services => f(mjs_Conte
 /** @internal */
 const withTracer = /*#__PURE__*/Function_dual(2, (effect, value) => fiberRefLocallyWith(currentServices, Context_add(tracerTag, value))(effect));
 //# sourceMappingURL=defaultServices.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Clock.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Clock.mjs
 
 
 /**
@@ -31517,7 +31517,7 @@ const Clock_clockWith = clockWith;
  */
 const Clock_Clock = clock_clockTag;
 //# sourceMappingURL=Clock.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRefs.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRefs.mjs
 var fiberRefs_a;
 
 
@@ -31529,6 +31529,10 @@ var fiberRefs_a;
 /** @internal */
 function fiberRefs_unsafeMake(fiberRefLocals) {
   return new FiberRefsImpl(fiberRefLocals);
+}
+/** @internal */
+function fiberRefs_empty() {
+  return fiberRefs_unsafeMake(new Map());
 }
 /** @internal */
 const FiberRefsSym = /*#__PURE__*/Symbol.for("@effect/io/FiberRefs");
@@ -31671,7 +31675,7 @@ const updatedAs = /*#__PURE__*/Function_dual(2, (self, {
   return new FiberRefsImpl(locals.set(fiberRef, newStack));
 });
 //# sourceMappingURL=fiberRefs.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberRefs.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberRefs.mjs
 
 /**
  * @since 1.0.0
@@ -31742,8 +31746,15 @@ const FiberRefs_updatedAs = updatedAs;
  * @category unsafe
  */
 const FiberRefs_unsafeMake = fiberRefs_unsafeMake;
+/**
+ * The empty collection of `FiberRef` values.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+const FiberRefs_empty = fiberRefs_empty;
 //# sourceMappingURL=FiberRefs.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRefs/patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRefs/patch.mjs
 
 
 
@@ -31851,7 +31862,7 @@ const patch_patch = /*#__PURE__*/Function_dual(3, (self, fiberId, oldValue) => {
   return fiberRefs;
 });
 //# sourceMappingURL=patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/label.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/label.mjs
 var label_a;
 
 
@@ -31886,7 +31897,7 @@ const isMetricLabel = u => {
   return typeof u === "object" && u != null && MetricLabelTypeId in u;
 };
 //# sourceMappingURL=label.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/singleShotGen.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/singleShotGen.mjs
 /** @internal */
 class SingleShotGen {
   constructor(self) {
@@ -31916,7 +31927,7 @@ class SingleShotGen {
   }
 }
 //# sourceMappingURL=singleShotGen.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/LogLevel.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/LogLevel.mjs
 /**
  * @since 1.0.0
  */
@@ -32043,7 +32054,7 @@ const fromLiteral = _ => {
   }
 };
 //# sourceMappingURL=LogLevel.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/logSpan.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/logSpan.mjs
 /** @internal */
 const logSpan_make = (label, startTime) => ({
   label,
@@ -32057,7 +32068,7 @@ const logSpan_render = now => {
   };
 };
 //# sourceMappingURL=logSpan.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/LogSpan.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/LogSpan.mjs
 /**
  * @since 1.0.0
  */
@@ -32073,7 +32084,7 @@ const LogSpan_make = logSpan_make;
  */
 const LogSpan_render = logSpan_render;
 //# sourceMappingURL=LogSpan.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/ref.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/ref.mjs
 var ref_a;
 
 
@@ -32179,7 +32190,7 @@ const updateSomeAndGet = /*#__PURE__*/Function_dual(2, (self, pf) => self.modify
 /** @internal */
 const ref_unsafeGet = self => MutableRef.get(self.ref);
 //# sourceMappingURL=ref.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Ref.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Ref.mjs
 
 /**
  * @since 1.0.0
@@ -32257,7 +32268,7 @@ const Ref_updateSomeAndGet = updateSomeAndGet;
  */
 const Ref_unsafeMake = ref_unsafeMake;
 //# sourceMappingURL=Ref.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Tracer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Tracer.mjs
 
 
 /**
@@ -32280,7 +32291,7 @@ const Tracer_make = tracer_make;
  */
 const Tracer_tracerWith = tracerWith;
 //# sourceMappingURL=Tracer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/effect.mjs
 
 
 
@@ -32409,7 +32420,7 @@ const catchTags = /*#__PURE__*/Function_dual(2, (self, cases) => {
   let keys;
   return catchIf(self, e => {
     keys ??= Object.keys(cases);
-    return Predicate_isObject(e) && "_tag" in e && keys.includes(e["_tag"]);
+    return isObject(e) && "_tag" in e && keys.includes(e["_tag"]);
   }, e => cases[e["_tag"]](e));
 });
 /* @internal */
@@ -33125,7 +33136,7 @@ const MutableHashMap_set = /*#__PURE__*/Function_dual(3, (self, key, value) => {
  */
 const MutableHashMap_size = self => mjs_HashMap_size(MutableRef_get(self.backingMap));
 //# sourceMappingURL=MutableHashMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Exit.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Exit.mjs
 
 /**
  * Returns `true` if the specified value is an `Exit`, `false` otherwise.
@@ -33388,7 +33399,7 @@ const zipParRight = exitZipParRight;
  */
 const Exit_zipWith = exitZipWith;
 //# sourceMappingURL=Exit.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/executionStrategy.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/executionStrategy.mjs
 
 /** @internal */
 const executionStrategy_OP_SEQUENTIAL = "Sequential";
@@ -33433,7 +33444,7 @@ const executionStrategy_match = /*#__PURE__*/(/* unused pure expression or super
   }
 })));
 //# sourceMappingURL=executionStrategy.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberStatus.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberStatus.mjs
 var fiberStatus_a, fiberStatus_b, fiberStatus_c;
 
 
@@ -33503,7 +33514,7 @@ const isRunning = self => self._tag === OP_RUNNING;
 /** @internal */
 const isSuspended = self => self._tag === OP_SUSPENDED;
 //# sourceMappingURL=fiberStatus.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberStatus.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberStatus.mjs
 
 /**
  * @since 1.0.0
@@ -33556,7 +33567,7 @@ const FiberStatus_isRunning = isRunning;
  */
 const FiberStatus_isSuspended = isSuspended;
 //# sourceMappingURL=FiberStatus.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberMessage.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberMessage.mjs
 /** @internal */
 const OP_INTERRUPT_SIGNAL = "InterruptSignal";
 /** @internal */
@@ -33585,7 +33596,7 @@ const fiberMessage_yieldNow = () => ({
   _tag: OP_YIELD_NOW
 });
 //# sourceMappingURL=fiberMessage.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberScope.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberScope.mjs
 var fiberScope_a, fiberScope_b;
 
 
@@ -33633,7 +33644,7 @@ const fiberScope_unsafeMake = fiber => {
 /** @internal */
 const globalScope = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberScope/Global"), () => new Global());
 //# sourceMappingURL=fiberScope.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiber.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiber.mjs
 
 
 
@@ -34063,7 +34074,7 @@ const Boolean_some = collection => {
   return false;
 };
 //# sourceMappingURL=Boolean.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Deferred.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Deferred.mjs
 
 
 /**
@@ -34225,7 +34236,7 @@ const Deferred_unsafeMake = deferredUnsafeMake;
  */
 const unsafeDone = deferredUnsafeDone;
 //# sourceMappingURL=Deferred.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberRefsPatch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/FiberRefsPatch.mjs
 
 /**
  * @since 1.0.0
@@ -34258,7 +34269,7 @@ const FiberRefsPatch_combine = patch_combine;
  */
 const FiberRefsPatch_patch = patch_patch;
 //# sourceMappingURL=FiberRefsPatch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/blockedRequests.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/blockedRequests.mjs
 var blockedRequests_a, blockedRequests_b, blockedRequests_c;
 
 
@@ -34591,13 +34602,13 @@ const sequentialCollectionKeys = self => Array.from(HashMap_keys(self.map));
 /** @internal */
 const sequentialCollectionToChunk = self => Array.from(self.map);
 //# sourceMappingURL=blockedRequests.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/completedRequestMap.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/completedRequestMap.mjs
 
 
 /** @internal */
 const completedRequestMap_currentRequestMap = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@effect/io/FiberRef/currentRequestMap"), () => fiberRefUnsafeMake(new Map()));
 //# sourceMappingURL=completedRequestMap.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/concurrency.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/concurrency.mjs
 
 /** @internal */
 const concurrency_match = (options, sequential, unbounded, bounded) => {
@@ -34642,7 +34653,7 @@ const matchSimple = (options, sequential, concurrent) => {
   }
 };
 //# sourceMappingURL=concurrency.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/logger.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/logger.mjs
 
 
 
@@ -34833,7 +34844,7 @@ const renderLogSpanLogfmt = now => self => {
   return `${label}=${now - self.startTime}ms`;
 };
 //# sourceMappingURL=logger.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/keyType.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/keyType.mjs
 var keyType_a, keyType_b, keyType_c, keyType_d, _e, _f, _g, _h, _j, _k;
 
 
@@ -35028,7 +35039,7 @@ const isSummaryKey = u => {
   return typeof u === "object" && u != null && SummaryKeyTypeTypeId in u;
 };
 //# sourceMappingURL=keyType.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/key.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/key.mjs
 var key_a;
 
 
@@ -35084,7 +35095,7 @@ const taggedWithLabels = /*#__PURE__*/(/* unused pure expression or super */ nul
 /** @internal */
 const taggedWithLabelSet = /*#__PURE__*/Function_dual(2, (self, extraTags) => mjs_HashSet_size(extraTags) === 0 ? self : new MetricKeyImpl(self.name, self.keyType, self.description, mjs_HashSet_union(extraTags)(self.tags)));
 //# sourceMappingURL=key.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/state.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/state.mjs
 var state_a, state_b, state_c, state_d, state_e, state_f, state_g, state_h, state_j, state_k;
 
 
@@ -35264,7 +35275,7 @@ const isSummaryState = u => {
   return typeof u === "object" && u != null && SummaryStateTypeId in u;
 };
 //# sourceMappingURL=state.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/hook.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/hook.mjs
 
 
 
@@ -35612,7 +35623,7 @@ const resolveQuantile = (error, sampleCount, current, consumed, quantile, rest) 
   throw new Error("BUG: MetricHook.resolveQuantiles - please report an issue at https://github.com/Effect-TS/io/issues");
 };
 //# sourceMappingURL=hook.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/pair.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/pair.mjs
 
 /** @internal */
 const MetricPairSymbolKey = "@effect/io/MetricPair";
@@ -35645,7 +35656,7 @@ const pair_unsafeMake = (metricKey, metricState) => {
   };
 };
 //# sourceMappingURL=pair.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/registry.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/registry.mjs
 var registry_a;
 
 
@@ -35755,7 +35766,7 @@ const registry_make = () => {
   return new MetricRegistryImpl();
 };
 //# sourceMappingURL=registry.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric.mjs
 
 
 
@@ -35918,7 +35929,7 @@ const unsafeSnapshot = () => globalMetricRegistry.snapshot();
 /** @internal */
 const snapshot = /*#__PURE__*/(/* unused pure expression or super */ null && (core.sync(unsafeSnapshot)));
 //# sourceMappingURL=metric.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/boundaries.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/metric/boundaries.mjs
 var boundaries_a;
 
 
@@ -35959,7 +35970,7 @@ const linear = options => fromChunk(Chunk.unsafeFromArray(ReadonlyArray.makeBy(o
 /** @internal */
 const exponential = options => fromChunk(unsafeFromArray(makeBy(options.count - 1, i => options.start * Math.pow(options.factor, i))));
 //# sourceMappingURL=boundaries.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/request.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/request.mjs
 
 
 
@@ -36035,7 +36046,7 @@ class Listeners {
  */
 const filterOutCompleted = requests => core.fiberRefGetWith(completedRequestMap.currentRequestMap, map => core.succeed(requests.filter(request => !(map.get(request)?.state.completed === true))));
 //# sourceMappingURL=request.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/supervisor.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/supervisor.mjs
 var supervisor_a, supervisor_b, supervisor_c, supervisor_d, supervisor_e;
 
 
@@ -36236,7 +36247,7 @@ const supervisor_none = /*#__PURE__*/supervisor_fromEffect(core_unit);
 /** @internal */
 const fibersIn = ref => core.sync(() => new FibersIn(ref));
 //# sourceMappingURL=supervisor.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/supervisor/patch.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/supervisor/patch.mjs
 
 
 
@@ -36361,7 +36372,7 @@ const patch_differ = /*#__PURE__*/mjs_Differ_make({
   diff: supervisor_patch_diff
 });
 //# sourceMappingURL=patch.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Scheduler.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Scheduler.mjs
 /**
  * @since 1.0.0
  */
@@ -36656,7 +36667,7 @@ const currentScheduler = /*#__PURE__*/globalValue( /*#__PURE__*/Symbol.for("@eff
 /** @internal */
 const withScheduler = /*#__PURE__*/Function_dual(2, (self, scheduler) => fiberRefLocally(self, currentScheduler, scheduler));
 //# sourceMappingURL=Scheduler.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRuntime.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/fiberRuntime.mjs
 var fiberRuntime_a, fiberRuntime_b;
 
 
@@ -38473,7 +38484,7 @@ const withTracerScoped = value => fiberRefLocallyScopedWith(currentServices, Con
 /* @internal */
 const withParentSpanScoped = span => fiberRefLocallyScopedWith(currentTracerSpan, List_prepend(span));
 //# sourceMappingURL=fiberRuntime.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Random.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Random.mjs
 
 
 /**
@@ -38534,7 +38545,7 @@ const Random_shuffle = shuffle;
  */
 const Random_randomWith = randomWith;
 //# sourceMappingURL=Random.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/interval.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/interval.mjs
 
 
 
@@ -38605,7 +38616,7 @@ const before = endMilliseconds => {
   return interval_make(Number.NEGATIVE_INFINITY, endMilliseconds);
 };
 //# sourceMappingURL=interval.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleInterval.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleInterval.mjs
 
 /**
  * @since 1.0.0
@@ -38706,7 +38717,7 @@ const ScheduleInterval_after = after;
  */
 const ScheduleInterval_before = before;
 //# sourceMappingURL=ScheduleInterval.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/intervals.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/intervals.mjs
 
 
 
@@ -38828,7 +38839,7 @@ const intervals_isNonEmpty = self => {
 /** @internal */
 const intervals_max = /*#__PURE__*/Function_dual(2, (self, that) => intervals_lessThan(self, that) ? that : self);
 //# sourceMappingURL=intervals.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleIntervals.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleIntervals.mjs
 
 /**
  * @since 1.0.0
@@ -38907,7 +38918,7 @@ const ScheduleIntervals_isNonEmpty = intervals_isNonEmpty;
  */
 const ScheduleIntervals_max = intervals_max;
 //# sourceMappingURL=ScheduleIntervals.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/decision.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule/decision.mjs
 
 
 /** @internal */
@@ -38941,7 +38952,7 @@ const decision_isDone = self => {
   return self._tag === decision_OP_DONE;
 };
 //# sourceMappingURL=decision.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleDecision.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/ScheduleDecision.mjs
 /**
  * @since 1.0.0
  */
@@ -38969,7 +38980,7 @@ const ScheduleDecision_isContinue = isContinue;
  */
 const ScheduleDecision_isDone = decision_isDone;
 //# sourceMappingURL=ScheduleDecision.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/schedule.mjs
 var schedule_a, schedule_b;
 
 
@@ -39680,7 +39691,7 @@ const schedule_once = /*#__PURE__*/schedule_asUnit( /*#__PURE__*/recurs(1));
 /** @internal */
 const stop = /*#__PURE__*/schedule_asUnit( /*#__PURE__*/recurs(0));
 //# sourceMappingURL=schedule.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/effect/circular.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/effect/circular.mjs
 var circular_a, circular_b, circular_c;
 
 
@@ -39959,7 +39970,7 @@ const zipWithFiber = /*#__PURE__*/Function_dual(3, (self, that, f) => ({
   }
 }));
 //# sourceMappingURL=circular.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/layer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/opCodes/layer.mjs
 /** @internal */
 const OP_EXTEND_SCOPE = "ExtendScope";
 /** @internal */
@@ -39979,7 +39990,7 @@ const layer_OP_ZIP_WITH = "ZipWith";
 /** @internal */
 const OP_ZIP_WITH_PAR = "ZipWithPar";
 //# sourceMappingURL=layer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/synchronizedRef.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/synchronizedRef.mjs
 
 
 
@@ -40024,7 +40035,7 @@ const updateSomeEffect = /*#__PURE__*/(/* unused pure expression or super */ nul
   }
 }))));
 //# sourceMappingURL=synchronizedRef.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/layer.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/layer.mjs
 
 
 
@@ -40472,7 +40483,7 @@ const provideLayer = /*#__PURE__*/Function_dual(2, (self, layer) => acquireUseRe
 /** @internal */
 const provideSomeLayer = /*#__PURE__*/Function_dual(2, (self, layer) => provideLayer(self, layer_merge(layer_context(), layer)));
 //# sourceMappingURL=layer.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/layer/circular.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/layer/circular.mjs
 
 
 
@@ -40935,7 +40946,7 @@ const pollUpTo = /*#__PURE__*/(/* unused pure expression or super */ null && (Du
   return Chunk.reverse(result);
 })));
 //# sourceMappingURL=MutableQueue.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/cache.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/cache.mjs
 var cache_a, cache_b;
 
 
@@ -41395,7 +41406,7 @@ const makeWith = options => core.map(fiberRuntime.all([core.context(), core.fibe
 /** @internal */
 const unsafeMakeWith = (capacity, lookup, timeToLive) => new CacheImpl(capacity, mjs_Context_empty(), fiberId_none, lookup, exit => decode(timeToLive(exit)));
 //# sourceMappingURL=cache.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/query.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/query.mjs
 
 
 
@@ -41489,7 +41500,7 @@ const withRequestCache = /*#__PURE__*/Function_dual(2,
 // @ts-expect-error
 (self, cache) => fiberRefLocally(self, currentCache, cache));
 //# sourceMappingURL=query.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Fiber.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Fiber.mjs
 
 
 
@@ -41830,7 +41841,7 @@ const Fiber_zipRight = zipRightFiber;
  */
 const Fiber_zipWith = zipWithFiber;
 //# sourceMappingURL=Fiber.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtime.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/internal/runtime.mjs
 
 
 
@@ -42054,7 +42065,7 @@ const defaultRuntimeFlags = /*#__PURE__*/runtimeFlags_make(Interruption, Coopera
 const defaultRuntime = /*#__PURE__*/runtime_make({
   context: /*#__PURE__*/mjs_Context_empty(),
   runtimeFlags: defaultRuntimeFlags,
-  fiberRefs: /*#__PURE__*/FiberRefs_unsafeMake( /*#__PURE__*/new Map())
+  fiberRefs: /*#__PURE__*/FiberRefs_empty()
 });
 /** @internal */
 const unsafeRunEffect = /*#__PURE__*/unsafeRunCallback(defaultRuntime);
@@ -42072,7 +42083,7 @@ const unsafeRunSyncExitEffect = /*#__PURE__*/unsafeRunSyncExit(defaultRuntime);
 /** @internal */
 const asyncEffect = register => core_flatMap(deferredMake(), deferred => core_flatMap(runtime_runtime(), runtime => uninterruptibleMask(restore => core_zipRight(fork(restore(catchAllCause(register(cb => unsafeRunCallback(runtime)(intoDeferred(cb, deferred))), cause => deferredFailCause(deferred, cause)))), restore(deferredAwait(deferred))))));
 //# sourceMappingURL=runtime.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Effect.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Effect.mjs
 
 
 
@@ -44938,7 +44949,261 @@ const Brand_all = (...brands) => {
   });
 };
 //# sourceMappingURL=Brand.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/internal/common.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Common.mjs
+/** @internal */
+const DecodeExceptionTypeId = /*#__PURE__*/Symbol.for("@effect/data/Encoding/errors/Decode");
+/** @internal */
+const DecodeException = (input, message) => ({
+  _tag: "DecodeException",
+  [DecodeExceptionTypeId]: DecodeExceptionTypeId,
+  input,
+  message
+});
+/** @internal */
+const isDecodeException = u => typeof u === "object" && u != null && DecodeExceptionTypeId in u;
+/** @interal */
+const encoder = /*#__PURE__*/new TextEncoder();
+/** @interal */
+const decoder = /*#__PURE__*/new TextDecoder();
+//# sourceMappingURL=Common.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Base64.mjs
+
+
+/** @internal */
+const encode = bytes => {
+  const length = bytes.length;
+  let result = "";
+  let i;
+  for (i = 2; i < length; i += 3) {
+    result += base64abc[bytes[i - 2] >> 2];
+    result += base64abc[(bytes[i - 2] & 0x03) << 4 | bytes[i - 1] >> 4];
+    result += base64abc[(bytes[i - 1] & 0x0f) << 2 | bytes[i] >> 6];
+    result += base64abc[bytes[i] & 0x3f];
+  }
+  if (i === length + 1) {
+    // 1 octet yet to write
+    result += base64abc[bytes[i - 2] >> 2];
+    result += base64abc[(bytes[i - 2] & 0x03) << 4];
+    result += "==";
+  }
+  if (i === length) {
+    // 2 octets yet to write
+    result += base64abc[bytes[i - 2] >> 2];
+    result += base64abc[(bytes[i - 2] & 0x03) << 4 | bytes[i - 1] >> 4];
+    result += base64abc[(bytes[i - 1] & 0x0f) << 2];
+    result += "=";
+  }
+  return result;
+};
+/** @internal */
+const Base64_decode = str => {
+  const length = str.length;
+  if (length % 4 !== 0) {
+    return Either_left(DecodeException(str, `Length must be a multiple of 4, but is ${length}`));
+  }
+  const index = str.indexOf("=");
+  if (index !== -1 && (index < length - 2 || index === length - 2 && str[length - 1] !== "=")) {
+    return Either_left(DecodeException(str, "Found a '=' character, but it is not at the end"));
+  }
+  try {
+    const missingOctets = str.endsWith("==") ? 2 : str.endsWith("=") ? 1 : 0;
+    const result = new Uint8Array(3 * (length / 4));
+    for (let i = 0, j = 0; i < length; i += 4, j += 3) {
+      const buffer = getBase64Code(str.charCodeAt(i)) << 18 | getBase64Code(str.charCodeAt(i + 1)) << 12 | getBase64Code(str.charCodeAt(i + 2)) << 6 | getBase64Code(str.charCodeAt(i + 3));
+      result[j] = buffer >> 16;
+      result[j + 1] = buffer >> 8 & 0xff;
+      result[j + 2] = buffer & 0xff;
+    }
+    return Either_right(result.subarray(0, result.length - missingOctets));
+  } catch (e) {
+    return Either_left(DecodeException(str, e instanceof Error ? e.message : "Invalid input"));
+  }
+};
+/** @internal */
+function getBase64Code(charCode) {
+  if (charCode >= base64codes.length) {
+    throw new TypeError(`Invalid character ${String.fromCharCode(charCode)}`);
+  }
+  const code = base64codes[charCode];
+  if (code === 255) {
+    throw new TypeError(`Invalid character ${String.fromCharCode(charCode)}`);
+  }
+  return code;
+}
+/** @internal */
+const base64abc = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "/"];
+/** @internal */
+const base64codes = [255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 0, 255, 255, 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255, 255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
+//# sourceMappingURL=Base64.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Base64Url.mjs
+
+
+
+/** @internal */
+const Base64Url_encode = data => encode(data).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+/** @internal */
+const Base64Url_decode = str => {
+  const length = str.length;
+  if (length % 4 === 1) {
+    return Either_left(DecodeException(str, `Length should be a multiple of 4, but is ${length}`));
+  }
+  if (!/^[-_A-Z0-9]*?={0,2}$/i.test(str)) {
+    return Either_left(DecodeException(str, "Invalid input"));
+  }
+  // Some variants allow or require omitting the padding '=' signs
+  let sanitized = length % 4 === 2 ? `${str}==` : length % 4 === 3 ? `${str}=` : str;
+  sanitized = sanitized.replace(/-/g, "+").replace(/_/g, "/");
+  return Base64_decode(sanitized);
+};
+//# sourceMappingURL=Base64Url.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Hex.mjs
+
+
+/** @internal */
+const Hex_encode = bytes => {
+  let result = "";
+  for (let i = 0; i < bytes.length; ++i) {
+    result += bytesToHex[bytes[i]];
+  }
+  return result;
+};
+/** @internal */
+const Hex_decode = str => {
+  const bytes = new TextEncoder().encode(str);
+  if (bytes.length % 2 !== 0) {
+    return Either_left(DecodeException(str, `Length must be a multiple of 2, but is ${bytes.length}`));
+  }
+  try {
+    const length = bytes.length / 2;
+    const result = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      const a = fromHexChar(bytes[i * 2]);
+      const b = fromHexChar(bytes[i * 2 + 1]);
+      result[i] = a << 4 | b;
+    }
+    return Either_right(result);
+  } catch (e) {
+    return Either_left(DecodeException(str, e instanceof Error ? e.message : "Invalid input"));
+  }
+};
+/** @internal */
+const bytesToHex = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3a", "3b", "3c", "3d", "3e", "3f", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4a", "4b", "4c", "4d", "4e", "4f", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5a", "5b", "5c", "5d", "5e", "5f", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6a", "6b", "6c", "6d", "6e", "6f", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7a", "7b", "7c", "7d", "7e", "7f", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9a", "9b", "9c", "9d", "9e", "9f", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "aa", "ab", "ac", "ad", "ae", "af", "b0", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "ba", "bb", "bc", "bd", "be", "bf", "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "ca", "cb", "cc", "cd", "ce", "cf", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "da", "db", "dc", "dd", "de", "df", "e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "ea", "eb", "ec", "ed", "ee", "ef", "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe", "ff"];
+/** @internal */
+const fromHexChar = byte => {
+  // '0' <= byte && byte <= '9'
+  if (48 <= byte && byte <= 57) {
+    return byte - 48;
+  }
+  // 'a' <= byte && byte <= 'f'
+  if (97 <= byte && byte <= 102) {
+    return byte - 97 + 10;
+  }
+  // 'A' <= byte && byte <= 'F'
+  if (65 <= byte && byte <= 70) {
+    return byte - 65 + 10;
+  }
+  throw new TypeError("Invalid input");
+};
+//# sourceMappingURL=Hex.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Encoding.mjs
+/**
+ * This module provides encoding & decoding functionality for:
+ *
+ * - base64 (RFC4648)
+ * - base64 (URL)
+ * - hex
+ *
+ * @since 1.0.0
+ */
+
+
+
+
+
+/**
+ * Encodes the given value into a base64 (RFC4648) `string`.
+ *
+ * @category encoding
+ * @since 1.0.0
+ */
+const encodeBase64 = input => typeof input === "string" ? encode(encoder.encode(input)) : encode(input);
+/**
+ * Decodes a base64 (RFC4648) encoded `string` into a `Uint8Array`.
+ *
+ * @category decoding
+ * @since 1.0.0
+ */
+const decodeBase64 = str => Base64_decode(str);
+/**
+ * Decodes a base64 (RFC4648) encoded `string` into a UTF-8 `string`.
+ *
+ * @category decoding
+ * @since 1.0.0
+ */
+const decodeBase64String = str => Either.map(decodeBase64(str), _ => Common.decoder.decode(_));
+/**
+ * Encodes the given value into a base64 (URL) `string`.
+ *
+ * @category encoding
+ * @since 1.0.0
+ */
+const encodeBase64Url = input => typeof input === "string" ? Base64Url_encode(encoder.encode(input)) : Base64Url_encode(input);
+/**
+ * Decodes a base64 (URL) encoded `string` into a `Uint8Array`.
+ *
+ * @category decoding
+ * @since 1.0.0
+ */
+const decodeBase64Url = str => Base64Url_decode(str);
+/**
+ * Decodes a base64 (URL) encoded `string` into a UTF-8 `string`.
+ *
+ * @category decoding
+ * @since 1.0.0
+ */
+const decodeBase64UrlString = str => Either.map(decodeBase64Url(str), _ => Common.decoder.decode(_));
+/**
+ * Encodes the given value into a hex `string`.
+ *
+ * @category encoding
+ * @since 1.0.0
+ */
+const encodeHex = input => typeof input === "string" ? Hex_encode(encoder.encode(input)) : Hex_encode(input);
+/**
+ * Decodes a hex encoded `string` into a `Uint8Array`.
+ *
+ * @category decoding
+ * @since 1.0.0
+ */
+const decodeHex = str => Hex_decode(str);
+/**
+ * Decodes a hex encoded `string` into a UTF-8 `string`.
+ *
+ * @category decoding
+ * @since 1.0.0
+ */
+const decodeHexString = str => Either.map(decodeHex(str), _ => Common.decoder.decode(_));
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+const Encoding_DecodeExceptionTypeId = DecodeExceptionTypeId;
+/**
+ * Creates a checked exception which occurs when decoding fails.
+ *
+ * @since 1.0.0
+ * @category errors
+ */
+const Encoding_DecodeException = DecodeException;
+/**
+ * Returns `true` if the specified value is an `DecodeException`, `false` otherwise.
+ *
+ * @since 1.0.0
+ * @category refinements
+ */
+const Encoding_isDecodeException = isDecodeException;
+//# sourceMappingURL=Encoding.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/internal/common.mjs
 /**
  * @since 1.0.0
  */
@@ -44946,9 +45211,9 @@ const Brand_all = (...brands) => {
 // hooks
 // ---------------------------------------------
 /** @internal */
-const ArbitraryHookId = "@effect/schema/ArbitraryHookId";
+const ArbitraryHookId = /*#__PURE__*/Symbol.for("@effect/schema/ArbitraryHookId");
 /** @internal */
-const PrettyHookId = "@effect/schema/PrettyHookId";
+const PrettyHookId = /*#__PURE__*/Symbol.for("@effect/schema/PrettyHookId");
 // ---------------------------------------------
 // Schema APIs
 // ---------------------------------------------
@@ -44987,138 +45252,10 @@ const memoizeThunk = f => {
   };
 };
 //# sourceMappingURL=common.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/ParseResult.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/AST.mjs
 /**
  * @since 1.0.0
  */
-
-
-
-/**
- * @since 1.0.0
- */
-const parseError = errors => ({
-  _tag: "ParseError",
-  errors
-});
-/**
- * @category constructors
- * @since 1.0.0
- */
-const ParseResult_type = (expected, actual, message) => ({
-  _tag: "Type",
-  expected,
-  actual,
-  message: fromNullable(message)
-});
-/**
- * @category constructors
- * @since 1.0.0
- */
-const forbidden = {
-  _tag: "Forbidden"
-};
-/**
- * @category constructors
- * @since 1.0.0
- */
-const ParseResult_index = (index, errors) => ({
-  _tag: "Index",
-  index,
-  errors
-});
-/**
- * @category constructors
- * @since 1.0.0
- */
-const ParseResult_key = (key, errors) => ({
-  _tag: "Key",
-  key,
-  errors
-});
-/**
- * @category constructors
- * @since 1.0.0
- */
-const missing = {
-  _tag: "Missing"
-};
-/**
- * @category constructors
- * @since 1.0.0
- */
-const unexpected = actual => ({
-  _tag: "Unexpected",
-  actual
-});
-/**
- * @category constructors
- * @since 1.0.0
- */
-const unionMember = errors => ({
-  _tag: "UnionMember",
-  errors
-});
-/**
- * @category constructors
- * @since 1.0.0
- */
-const success = Either_right;
-/**
- * @category constructors
- * @since 1.0.0
- */
-const failure = e => Either_left(parseError([e]));
-/**
- * @category constructors
- * @since 1.0.0
- */
-const failures = es => Either_left(parseError(es));
-/**
- * @category optimisation
- * @since 1.0.0
- */
-const eitherOrUndefined = self => {
-  const s = self;
-  if (s["_tag"] === "Left" || s["_tag"] === "Right") {
-    return s;
-  }
-};
-/**
- * @category optimisation
- * @since 1.0.0
- */
-const ParseResult_flatMap = (self, f) => {
-  const s = self;
-  if (s["_tag"] === "Left") {
-    return s;
-  }
-  if (s["_tag"] === "Right") {
-    return f(s.right);
-  }
-  return Effect_flatMap(self, f);
-};
-/**
- * @category optimisation
- * @since 1.0.0
- */
-const ParseResult_map = (self, f) => {
-  const s = self;
-  if (s["_tag"] === "Left") {
-    return s;
-  }
-  if (s["_tag"] === "Right") {
-    return Either_right(f(s.right));
-  }
-  return Effect_map(self, f);
-};
-//# sourceMappingURL=ParseResult.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/AST.mjs
-/**
- * @since 1.0.0
- */
-
-
 
 
 
@@ -45130,48 +45267,49 @@ const ParseResult_map = (self, f) => {
  * @category annotations
  * @since 1.0.0
  */
-const BrandAnnotationId = "@effect/schema/BrandAnnotationId";
+const BrandAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Brand");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const TypeAnnotationId = "@effect/schema/TypeAnnotationId";
+const TypeAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Type");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const MessageAnnotationId = "@effect/schema/MessageAnnotationId";
+const MessageAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Message");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const IdentifierAnnotationId = "@effect/schema/IdentifierAnnotationId";
+const IdentifierAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Identifier");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const TitleAnnotationId = "@effect/schema/TitleAnnotationId";
+const TitleAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Title");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const DescriptionAnnotationId = "@effect/schema/DescriptionAnnotationId";
+const DescriptionAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Description");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const ExamplesAnnotationId = "@effect/schema/ExamplesAnnotationId";
+const ExamplesAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Examples");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const JSONSchemaAnnotationId = "@effect/schema/JSONSchemaAnnotationId";
+const JSONSchemaAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/JSONSchema");
 /**
  * @category annotations
  * @since 1.0.0
  */
-const DocumentationAnnotationId = "@effect/schema/DocumentationAnnotationId";
+const DocumentationAnnotationId = /*#__PURE__*/Symbol.for("@effect/schema/annotation/Documentation");
 /**
+ * @category annotations
  * @since 1.0.0
  */
 const getAnnotation = key => annotated => Object.prototype.hasOwnProperty.call(annotated.annotations, key) ? mjs_Option_some(annotated.annotations[key]) : Option_none();
@@ -45301,7 +45439,8 @@ const isAnyKeyword = ast => ast._tag === "AnyKeyword";
 const stringKeyword = {
   _tag: "StringKeyword",
   annotations: {
-    [TitleAnnotationId]: "string"
+    [TitleAnnotationId]: "string",
+    [DescriptionAnnotationId]: "a string"
   }
 };
 /**
@@ -45316,7 +45455,8 @@ const isStringKeyword = ast => ast._tag === "StringKeyword";
 const numberKeyword = {
   _tag: "NumberKeyword",
   annotations: {
-    [TitleAnnotationId]: "number"
+    [TitleAnnotationId]: "number",
+    [DescriptionAnnotationId]: "a number"
   }
 };
 /**
@@ -45331,7 +45471,8 @@ const isNumberKeyword = ast => ast._tag === "NumberKeyword";
 const booleanKeyword = {
   _tag: "BooleanKeyword",
   annotations: {
-    [TitleAnnotationId]: "boolean"
+    [TitleAnnotationId]: "boolean",
+    [DescriptionAnnotationId]: "a boolean"
   }
 };
 /**
@@ -45346,7 +45487,8 @@ const isBooleanKeyword = ast => ast._tag === "BooleanKeyword";
 const bigIntKeyword = {
   _tag: "BigIntKeyword",
   annotations: {
-    [TitleAnnotationId]: "bigint"
+    [TitleAnnotationId]: "bigint",
+    [DescriptionAnnotationId]: "a bigint"
   }
 };
 /**
@@ -45361,7 +45503,8 @@ const isBigIntKeyword = ast => ast._tag === "BigIntKeyword";
 const symbolKeyword = {
   _tag: "SymbolKeyword",
   annotations: {
-    [TitleAnnotationId]: "symbol"
+    [TitleAnnotationId]: "symbol",
+    [DescriptionAnnotationId]: "a symbol"
   }
 };
 /**
@@ -45376,7 +45519,8 @@ const isSymbolKeyword = ast => ast._tag === "SymbolKeyword";
 const objectKeyword = {
   _tag: "ObjectKeyword",
   annotations: {
-    [TitleAnnotationId]: "object"
+    [TitleAnnotationId]: "object",
+    [DescriptionAnnotationId]: "an object"
   }
 };
 /**
@@ -45402,7 +45546,7 @@ const isEnums = ast => ast._tag === "Enums";
  * @category constructors
  * @since 1.0.0
  */
-const createTemplateLiteral = (head, spans) => RA.isNonEmptyReadonlyArray(spans) ? {
+const createTemplateLiteral = (head, spans) => ReadonlyArray.isNonEmptyReadonlyArray(spans) ? {
   _tag: "TemplateLiteral",
   head,
   spans,
@@ -45519,26 +45663,24 @@ const createTypeLiteral = (propertySignatures, indexSignatures, annotations = {}
  * @since 1.0.0
  */
 const isTypeLiteral = ast => ast._tag === "TypeLiteral";
+const isMembers = as => as.length > 1;
 /**
  * @category constructors
  * @since 1.0.0
  */
 const createUnion = (candidates, annotations = {}) => {
   const types = unify(candidates);
-  switch (types.length) {
-    case 0:
-      return neverKeyword;
-    case 1:
-      return types[0];
-    default:
-      {
-        return {
-          _tag: "Union",
-          types: sortUnionMembers(types),
-          annotations
-        };
-      }
+  if (isMembers(types)) {
+    return {
+      _tag: "Union",
+      types: sortUnionMembers(types),
+      annotations
+    };
   }
+  if (isNonEmptyReadonlyArray(types)) {
+    return types[0];
+  }
+  return neverKeyword;
 };
 /**
  * @category guards
@@ -45563,77 +45705,112 @@ const isLazy = ast => ast._tag === "Lazy";
  * @category constructors
  * @since 1.0.0
  */
-const createRefinement = (from, decode, isReversed, annotations = {}) => ({
-  _tag: "Refinement",
-  from,
-  decode,
-  isReversed,
-  annotations
-});
+const createRefinement = (from, filter, annotations = {}) => {
+  if (isTransform(from)) {
+    // recurse right
+    return createTransform(from.from, createRefinement(from.to, filter, annotations), from.transformation, from.annotations);
+  }
+  return {
+    _tag: "Refinement",
+    from,
+    filter,
+    annotations
+  };
+};
 /**
  * @category guards
  * @since 1.0.0
  */
 const isRefinement = ast => ast._tag === "Refinement";
 /**
- * @category constructors
+ * @category model
  * @since 1.0.0
  */
-const createPropertySignatureTransformation = (from, to, decode, encode) => ({
-  from,
-  to,
-  decode,
-  encode
-});
-/** @internal */
-const _createTransform = (from, to, decode, encode, propertySignatureTransformations, annotations = {}) => ({
+const createTransform = (from, to, transformation, annotations = {}) => ({
   _tag: "Transform",
   from,
   to,
-  decode,
-  encode,
-  propertySignatureTransformations,
+  transformation,
   annotations
 });
-/**
- * @category constructors
- * @since 1.0.0
- */
-const createTransform = (from, to, decode, encode, annotations = {}) => _createTransform(from, to, decode, encode, [], annotations);
-/**
- * @category constructors
- * @since 1.0.0
- */
-const createTransformByPropertySignatureTransformations = (from, to, propertySignatureTransformations, annotations = {}) => _createTransform(from, to, input => {
-  for (let i = 0; i < propertySignatureTransformations.length; i++) {
-    const t = propertySignatureTransformations[i];
-    const name = t.from;
-    const from = Object.prototype.hasOwnProperty.call(input, name) ? mjs_Option_some(input[name]) : Option_none();
-    delete input[name];
-    const to = t.decode(from);
-    if (Option_isSome(to)) {
-      input[t.to] = to.value;
-    }
-  }
-  return success(input);
-}, input => {
-  for (let i = 0; i < propertySignatureTransformations.length; i++) {
-    const t = propertySignatureTransformations[i];
-    const name = t.to;
-    const from = Object.prototype.hasOwnProperty.call(input, name) ? mjs_Option_some(input[name]) : Option_none();
-    delete input[name];
-    const to = t.encode(from);
-    if (Option_isSome(to)) {
-      input[t.from] = to.value;
-    }
-  }
-  return success(input);
-}, propertySignatureTransformations, annotations);
 /**
  * @category guards
  * @since 1.0.0
  */
 const isTransform = ast => ast._tag === "Transform";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const createFinalTransformation = (decode, encode) => ({
+  _tag: "FinalTransformation",
+  decode,
+  encode
+});
+/**
+ * @category guard
+ * @since 1.0.0
+ */
+const isFinalTransformation = ast => ast._tag === "FinalTransformation";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const composeTransformation = {
+  _tag: "ComposeTransformation"
+};
+/**
+ * @category guard
+ * @since 1.0.0
+ */
+const isComposeTransformation = ast => ast._tag === "ComposeTransformation";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const createFinalPropertySignatureTransformation = (decode, encode) => ({
+  _tag: "FinalPropertySignatureTransformation",
+  decode,
+  encode
+});
+/**
+ * @category guard
+ * @since 1.0.0
+ */
+const isFinalPropertySignatureTransformation = ast => ast._tag === "FinalPropertySignatureTransformation";
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const createPropertySignatureTransform = (from, to, propertySignatureTransformation) => ({
+  from,
+  to,
+  propertySignatureTransformation
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const createTypeLiteralTransformation = propertySignatureTransformations => {
+  // check for duplicate property signature transformations
+  const keys = {};
+  for (const pst of propertySignatureTransformations) {
+    const key = pst.from;
+    if (keys[key]) {
+      throw new Error(`Duplicate property signature transformation ${String(key)}`);
+    }
+    keys[key] = true;
+  }
+  return {
+    _tag: "TypeLiteralTransformation",
+    propertySignatureTransformations
+  };
+};
+/**
+ * @category guard
+ * @since 1.0.0
+ */
+const isTypeLiteralTransformation = ast => ast._tag === "TypeLiteralTransformation";
 // -------------------------------------------------------------------------------------
 // API
 // -------------------------------------------------------------------------------------
@@ -45654,11 +45831,11 @@ const mergeAnnotations = (ast, annotations) => ({
  *
  * @since 1.0.0
  */
-const setAnnotation = (ast, id, value) => ({
+const setAnnotation = (ast, sym, value) => ({
   ...ast,
   annotations: {
     ...ast.annotations,
-    [id]: value
+    [sym]: value
   }
 });
 /**
@@ -45667,11 +45844,11 @@ const setAnnotation = (ast, id, value) => ({
  * @since 1.0.0
  */
 const appendRestElement = (ast, restElement) => {
-  if (O.isSome(ast.rest)) {
+  if (Option.isSome(ast.rest)) {
     // example: `type A = [...string[], ...number[]]` is illegal
     throw new Error("A rest element cannot follow another rest element. ts(1265)");
   }
-  return createTuple(ast.elements, O.some([restElement]), ast.isReadonly);
+  return createTuple(ast.elements, Option.some([restElement]), ast.isReadonly);
 };
 /**
  * Appends an element to a tuple or throws an exception in the following cases:
@@ -45684,13 +45861,13 @@ const appendElement = (ast, newElement) => {
   if (ast.elements.some(e => e.isOptional) && !newElement.isOptional) {
     throw new Error("A required element cannot follow an optional element. ts(1257)");
   }
-  return pipe(ast.rest, O.match({
-    onNone: () => createTuple([...ast.elements, newElement], O.none(), ast.isReadonly),
+  return pipe(ast.rest, Option.match({
+    onNone: () => createTuple([...ast.elements, newElement], Option.none(), ast.isReadonly),
     onSome: rest => {
       if (newElement.isOptional) {
         throw new Error("An optional element cannot follow a rest element. ts(1266)");
       }
-      return createTuple(ast.elements, O.some([...rest, newElement.type]), ast.isReadonly);
+      return createTuple(ast.elements, Option.some([...rest, newElement.type]), ast.isReadonly);
     }
   }));
 };
@@ -45731,7 +45908,7 @@ const createRecord = (key, value, isReadonly) => {
         indexSignatures.push(createIndexSignature(key, value, isReadonly));
         break;
       case "Literal":
-        if (isString(key.literal) || isNumber(key.literal)) {
+        if (Predicate.isString(key.literal) || Predicate.isNumber(key.literal)) {
           propertySignatures.push(createPropertySignature(key.literal, value, false, isReadonly));
         } else {
           throw new Error(`createRecord: unsupported literal ${String(key.literal)}`);
@@ -45744,7 +45921,7 @@ const createRecord = (key, value, isReadonly) => {
         key.types.forEach(go);
         break;
       default:
-        throw new Error(`createRecord: unsupported key ${key._tag}`);
+        throw new Error(`createRecord: unsupported key schema (${key._tag})`);
     }
   };
   go(key);
@@ -45770,7 +45947,7 @@ const AST_omit = (ast, keys) => createTypeLiteral(getPropertySignatures(ast).fil
 const partial = ast => {
   switch (ast._tag) {
     case "Tuple":
-      return createTuple(ast.elements.map(e => createElement(e.type, true)), pipe(ast.rest, O.map(rest => [createUnion([...rest, undefinedKeyword])])), ast.isReadonly);
+      return createTuple(ast.elements.map(e => createElement(e.type, true)), pipe(ast.rest, Option.map(rest => [createUnion([...rest, undefinedKeyword])])), ast.isReadonly);
     case "TypeLiteral":
       return createTypeLiteral(ast.propertySignatures.map(f => createPropertySignature(f.name, f.type, true, f.isReadonly, f.annotations)), ast.indexSignatures);
     case "Union":
@@ -45795,9 +45972,9 @@ const partial = ast => {
 const required = ast => {
   switch (ast._tag) {
     case "Tuple":
-      return createTuple(ast.elements.map(e => createElement(e.type, false)), pipe(ast.rest, O.map(rest => {
+      return createTuple(ast.elements.map(e => createElement(e.type, false)), pipe(ast.rest, Option.map(rest => {
         const u = createUnion([...rest]);
-        return RA.mapNonEmpty(rest, () => u);
+        return ReadonlyArray.mapNonEmpty(rest, () => u);
       })), ast.isReadonly);
     case "TypeLiteral":
       return createTypeLiteral(ast.propertySignatures.map(f => createPropertySignature(f.name, f.type, false, f.isReadonly, f.annotations)), ast.indexSignatures);
@@ -45842,7 +46019,7 @@ const AST_to = ast => {
     case "Lazy":
       return createLazy(() => AST_to(ast.f()), ast.annotations);
     case "Refinement":
-      return createRefinement(AST_to(ast.from), ast.decode, false, ast.annotations);
+      return createRefinement(AST_to(ast.from), ast.filter, ast.annotations);
     case "Transform":
       return AST_to(ast.to);
   }
@@ -45994,7 +46171,7 @@ const _keyof = ast => {
     case "Declaration":
       return _keyof(ast.type);
     case "TypeLiteral":
-      return ast.propertySignatures.map(p => isSymbol(p.name) ? createUniqueSymbol(p.name) : createLiteral(p.name)).concat(ast.indexSignatures.map(is => getParameterBase(is.parameter)));
+      return ast.propertySignatures.map(p => Predicate.isSymbol(p.name) ? createUniqueSymbol(p.name) : createLiteral(p.name)).concat(ast.indexSignatures.map(is => getParameterBase(is.parameter)));
     case "Lazy":
       return _keyof(ast.f());
     default:
@@ -46002,7 +46179,169 @@ const _keyof = ast => {
   }
 };
 //# sourceMappingURL=AST.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/TreeFormatter.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/ParseResult.mjs
+/**
+ * @since 1.0.0
+ */
+
+
+
+/**
+ * @since 1.0.0
+ */
+const parseError = errors => ({
+  _tag: "ParseError",
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const ParseResult_type = (expected, actual, message) => ({
+  _tag: "Type",
+  expected,
+  actual,
+  message: fromNullable(message)
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const forbidden = {
+  _tag: "Forbidden"
+};
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const ParseResult_index = (index, errors) => ({
+  _tag: "Index",
+  index,
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const ParseResult_key = (key, errors) => ({
+  _tag: "Key",
+  key,
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const missing = {
+  _tag: "Missing"
+};
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const unexpected = actual => ({
+  _tag: "Unexpected",
+  actual
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const unionMember = errors => ({
+  _tag: "UnionMember",
+  errors
+});
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const success = Either_right;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const ParseResult_fail = Either_left;
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const failure = e => ParseResult_fail(parseError([e]));
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+const failures = es => Either_left(parseError(es));
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+const eitherOrUndefined = self => {
+  const s = self;
+  if (s["_tag"] === "Left" || s["_tag"] === "Right") {
+    return s;
+  }
+};
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+const ParseResult_flatMap = (self, f) => {
+  const s = self;
+  if (s["_tag"] === "Left") {
+    return s;
+  }
+  if (s["_tag"] === "Right") {
+    return f(s.right);
+  }
+  return Effect_flatMap(self, f);
+};
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+const ParseResult_map = (self, f) => {
+  const s = self;
+  if (s["_tag"] === "Left") {
+    return s;
+  }
+  if (s["_tag"] === "Right") {
+    return Either_right(f(s.right));
+  }
+  return Effect_map(self, f);
+};
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+const ParseResult_mapLeft = (self, f) => {
+  const s = self;
+  if (s["_tag"] === "Left") {
+    return Either.left(f(s.left));
+  }
+  if (s["_tag"] === "Right") {
+    s;
+  }
+  return Effect.mapError(self, f);
+};
+/**
+ * @category optimisation
+ * @since 1.0.0
+ */
+const bimap = (self, f, g) => {
+  const s = self;
+  if (s["_tag"] === "Left") {
+    return Either.left(f(s.left));
+  }
+  if (s["_tag"] === "Right") {
+    return Either.right(g(s.right));
+  }
+  return Effect.mapBoth(self, {
+    onFailure: f,
+    onSuccess: g
+  });
+};
+//# sourceMappingURL=ParseResult.mjs.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/TreeFormatter.mjs
 /**
  * @since 1.0.0
  */
@@ -46094,9 +46433,10 @@ const formatExpected = ast => {
     case "Refinement":
       return getOrElse(getExpected(ast), () => "<anonymous refinement schema>");
     case "Transform":
-      return getOrElse(getExpected(ast), () => `${formatExpected(ast.from)} -> ${formatExpected(ast.to)}`);
+      return getOrElse(getExpected(ast), () => `${formatExpected(ast.from)} <-> ${formatExpected(ast.to)}`);
   }
 };
+const isCollapsible = (es, errors) => es.length === 1 && es[0].forest.length !== 0 && errors[0]._tag !== "UnionMember";
 const go = e => {
   switch (e._tag) {
     case "Type":
@@ -46106,7 +46446,7 @@ const go = e => {
     case "Index":
       {
         const es = e.errors.map(go);
-        if (es.length === 1 && es[0].forest.length !== 0) {
+        if (isCollapsible(es, e.errors)) {
           return TreeFormatter_make(`[${e.index}]${es[0].value}`, es[0].forest);
         }
         return TreeFormatter_make(`[${e.index}]`, es);
@@ -46116,7 +46456,7 @@ const go = e => {
     case "Key":
       {
         const es = e.errors.map(go);
-        if (es.length === 1 && es[0].forest.length !== 0) {
+        if (isCollapsible(es, e.errors)) {
           return TreeFormatter_make(`[${formatActual(e.key)}]${es[0].value}`, es[0].forest);
         }
         return TreeFormatter_make(`[${formatActual(e.key)}]`, es);
@@ -46128,7 +46468,7 @@ const go = e => {
   }
 };
 //# sourceMappingURL=TreeFormatter.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/Parser.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/Parser.mjs
 /**
  * @since 1.0.0
  */
@@ -46142,8 +46482,8 @@ const go = e => {
 
 
 
-const getSync = ast => {
-  const parser = Parser_go(ast);
+const getSync = (ast, isDecoding) => {
+  const parser = Parser_go(ast, isDecoding);
   return (input, options) => {
     const result = parser(input, options);
     // @ts-expect-error
@@ -46154,23 +46494,23 @@ const getSync = ast => {
     return result.right;
   };
 };
-const Parser_getOption = ast => {
-  const parser = getEither(ast);
+const Parser_getOption = (ast, isDecoding) => {
+  const parser = getEither(ast, isDecoding);
   return (input, options) => Option_getRight(parser(input, options));
 };
-const getEither = ast => {
-  const parser = Parser_go(ast);
+const getEither = (ast, isDecoding) => {
+  const parser = Parser_go(ast, isDecoding);
   return (input, options) => parser(input, options);
 };
-const getPromise = ast => {
-  const parser = Parser_go(ast);
+const getPromise = (ast, isDecoding) => {
+  const parser = Parser_go(ast, isDecoding);
   return (input, options) => Effect.runPromise(parser(input, {
     ...options,
     isEffectAllowed: true
   }));
 };
-const getEffect = ast => {
-  const parser = Parser_go(ast);
+const getEffect = (ast, isDecoding) => {
+  const parser = Parser_go(ast, isDecoding);
   return (input, options) => parser(input, {
     ...options,
     isEffectAllowed: true
@@ -46180,32 +46520,32 @@ const getEffect = ast => {
  * @category parsing
  * @since 1.0.0
  */
-const parseSync = schema => getSync(schema.ast);
+const parseSync = schema => getSync(schema.ast, true);
 /**
  * @category parsing
  * @since 1.0.0
  */
-const parseOption = schema => Parser_getOption(schema.ast);
+const parseOption = schema => Parser_getOption(schema.ast, true);
 /**
  * @category parsing
  * @since 1.0.0
  */
-const parseEither = schema => getEither(schema.ast);
+const parseEither = schema => getEither(schema.ast, true);
 /**
  * @category parsing
  * @since 1.0.0
  */
-const parseResult = schema => Parser_go(schema.ast);
+const parseResult = schema => Parser_go(schema.ast, true);
 /**
  * @category parsing
  * @since 1.0.0
  */
-const parsePromise = schema => getPromise(schema.ast);
+const parsePromise = schema => getPromise(schema.ast, true);
 /**
  * @category parsing
  * @since 1.0.0
  */
-const parse = schema => getEffect(schema.ast);
+const parse = schema => getEffect(schema.ast, true);
 /**
  * @category decoding
  * @since 1.0.0
@@ -46240,32 +46580,32 @@ const Parser_decode = (/* unused pure expression or super */ null && (parse));
  * @category validation
  * @since 1.0.0
  */
-const validateSync = schema => getSync(AST_to(schema.ast));
+const Parser_validateSync = schema => getSync(AST_to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
  */
-const Parser_validateOption = schema => Parser_getOption(AST_to(schema.ast));
+const Parser_validateOption = schema => Parser_getOption(AST_to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
  */
-const Parser_validateEither = schema => getEither(AST_to(schema.ast));
+const Parser_validateEither = schema => getEither(AST_to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
  */
-const validateResult = schema => Parser_go(AST.to(schema.ast));
+const validateResult = schema => Parser_go(AST.to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
  */
-const validatePromise = schema => getPromise(AST.to(schema.ast));
+const validatePromise = schema => getPromise(AST.to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
  */
-const Parser_validate = schema => getEffect(AST.to(schema.ast));
+const Parser_validate = schema => getEffect(AST.to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
@@ -46279,7 +46619,7 @@ const Parser_is = schema => {
  * @since 1.0.0
  */
 const asserts = schema => {
-  const get = validateSync(schema);
+  const get = Parser_validateSync(schema);
   return (a, options) => {
     get(a, options);
   };
@@ -46288,55 +46628,63 @@ const asserts = schema => {
  * @category encoding
  * @since 1.0.0
  */
-const encodeSync = schema => getSync(Parser_reverse(schema.ast));
+const encodeSync = schema => getSync(schema.ast, false);
 /**
  * @category encoding
  * @since 1.0.0
  */
-const encodeOption = schema => Parser_getOption(Parser_reverse(schema.ast));
+const encodeOption = schema => Parser_getOption(schema.ast, false);
 /**
  * @category encoding
  * @since 1.0.0
  */
-const encodeEither = schema => getEither(Parser_reverse(schema.ast));
+const encodeEither = schema => getEither(schema.ast, false);
 /**
  * @category encoding
  * @since 1.0.0
  */
-const encodeResult = schema => Parser_go(Parser_reverse(schema.ast));
+const encodeResult = schema => Parser_go(schema.ast, false);
 /**
  * @category encoding
  * @since 1.0.0
  */
-const encodePromise = schema => getPromise(Parser_reverse(schema.ast));
+const encodePromise = schema => getPromise(schema.ast, false);
 /**
  * @category encoding
  * @since 1.0.0
  */
-const encode = schema => getEffect(Parser_reverse(schema.ast));
-const Parser_go = (ast, isBoundary = true) => {
+const Parser_encode = schema => getEffect(schema.ast, false);
+/**
+ * @since 1.0.0"
+ */
+const defaultParseOption = {};
+const Parser_go = (ast, isDecoding) => {
   switch (ast._tag) {
     case "Refinement":
       {
-        if (ast.isReversed) {
-          const from = Parser_go(AST_to(ast), isBoundary);
-          const to = Parser_go(Parser_reverse(dropRightRefinement(ast.from)), false);
-          return (i, options) => handleForbidden(ParseResult_flatMap(from(i, options), a => to(a, options)), options);
+        if (isDecoding) {
+          const from = Parser_go(ast.from, true);
+          return (i, options) => handleForbidden(ParseResult_flatMap(from(i, options), a => match(ast.filter(a, options ?? defaultParseOption, ast), {
+            onNone: () => success(a),
+            onSome: ParseResult_fail
+          })), options);
         } else {
-          const from = Parser_go(ast.from, isBoundary);
-          return (i, options) => handleForbidden(ParseResult_flatMap(from(i, options), a => ast.decode(a, options)), options);
+          const from = Parser_go(AST_to(ast), true);
+          const to = Parser_go(dropRightRefinement(ast.from), false);
+          return (i, options) => handleForbidden(ParseResult_flatMap(from(i, options), a => to(a, options)), options);
         }
       }
     case "Transform":
       {
-        const from = Parser_go(ast.from, isBoundary);
-        const to = Parser_go(ast.to, false);
-        return (i1, options) => handleForbidden(ParseResult_flatMap(from(i1, options), a => ParseResult_flatMap(ast.decode(a, options), i2 => to(i2, options))), options);
+        const transform = getFinalTransformation(ast.transformation, isDecoding);
+        const from = isDecoding ? Parser_go(ast.from, true) : Parser_go(ast.to, false);
+        const to = isDecoding ? Parser_go(ast.to, true) : Parser_go(ast.from, false);
+        return (i1, options) => handleForbidden(ParseResult_flatMap(from(i1, options), a => ParseResult_flatMap(transform(a, options ?? defaultParseOption, ast), i2 => to(i2, options))), options);
       }
     case "Declaration":
       {
-        const decode = ast.decode(...ast.typeParameters);
-        return (i, options) => handleForbidden(decode(i, options), options);
+        const parse = ast.decode(isDecoding, ...ast.typeParameters);
+        return (i, options) => handleForbidden(parse(i, options ?? defaultParseOption, ast), options);
       }
     case "Literal":
       return fromRefinement(ast, u => u === ast.literal);
@@ -46352,28 +46700,28 @@ const Parser_go = (ast, isBoundary = true) => {
     case "AnyKeyword":
       return success;
     case "StringKeyword":
-      return fromRefinement(ast, Predicate_isString);
+      return fromRefinement(ast, isString);
     case "NumberKeyword":
-      return fromRefinement(ast, Predicate_isNumber);
+      return fromRefinement(ast, isNumber);
     case "BooleanKeyword":
       return fromRefinement(ast, isBoolean);
     case "BigIntKeyword":
       return fromRefinement(ast, isBigint);
     case "SymbolKeyword":
-      return fromRefinement(ast, Predicate_isSymbol);
+      return fromRefinement(ast, isSymbol);
     case "ObjectKeyword":
-      return fromRefinement(ast, Predicate_isObject);
+      return fromRefinement(ast, isObject);
     case "Enums":
       return fromRefinement(ast, u => ast.enums.some(([_, value]) => value === u));
     case "TemplateLiteral":
       {
         const regex = getTemplateLiteralRegex(ast);
-        return fromRefinement(ast, u => Predicate_isString(u) && regex.test(u));
+        return fromRefinement(ast, u => isString(u) && regex.test(u));
       }
     case "Tuple":
       {
-        const elements = ast.elements.map(e => Parser_go(e.type, isBoundary));
-        const rest = Function_pipe(ast.rest, map(mapNonEmpty(ast => Parser_go(ast))));
+        const elements = ast.elements.map(e => Parser_go(e.type, isDecoding));
+        const rest = Function_pipe(ast.rest, map(mapNonEmpty(ast => Parser_go(ast, isDecoding))));
         let requiredLen = ast.elements.filter(e => !e.isOptional).length;
         if (Option_isSome(ast.rest)) {
           requiredLen += ast.rest.value.length - 1;
@@ -46592,12 +46940,22 @@ const Parser_go = (ast, isBoundary = true) => {
         if (ast.propertySignatures.length === 0 && ast.indexSignatures.length === 0) {
           return fromRefinement(ast, isNotNullable);
         }
-        const propertySignatures = ast.propertySignatures.map(ps => Parser_go(ps.type, isBoundary));
-        const indexSignatures = ast.indexSignatures.map(is => [Parser_go(is.parameter, isBoundary), Parser_go(is.type, isBoundary)]);
-        const parameter = Parser_go(createUnion(ast.indexSignatures.map(is => getParameterBase(is.parameter))));
+        const propertySignatures = [];
         const expectedKeys = {};
-        for (let i = 0; i < propertySignatures.length; i++) {
-          expectedKeys[ast.propertySignatures[i].name] = null;
+        for (const ps of ast.propertySignatures) {
+          propertySignatures.push(Parser_go(ps.type, isDecoding));
+          expectedKeys[ps.name] = null;
+        }
+        const indexSignatures = [];
+        const expectedKeyTypes = {};
+        for (const is of ast.indexSignatures) {
+          indexSignatures.push([Parser_go(is.parameter, isDecoding), Parser_go(is.type, isDecoding)]);
+          const base = getParameterBase(is.parameter);
+          if (isSymbolKeyword(base)) {
+            expectedKeyTypes.symbol = true;
+          } else {
+            expectedKeyTypes.string = true;
+          }
         }
         return (input, options) => {
           if (!isRecord(input)) {
@@ -46613,9 +46971,7 @@ const Parser_go = (ast, isBoundary = true) => {
           if (onExcessPropertyError) {
             for (const key of common_ownKeys(input)) {
               if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
-                const te = parameter(key);
-                const eu = eitherOrUndefined(te);
-                if (eu && Either_isLeft(eu)) {
+                if (!(typeof key in expectedKeyTypes)) {
                   const e = ParseResult_key(key, [unexpected(input[key])]);
                   if (allErrors) {
                     es.push([stepKey++, e]);
@@ -46698,9 +47054,6 @@ const Parser_go = (ast, isBoundary = true) => {
             const type = indexSignatures[i][1];
             const keys = getKeysForIndexSignature(input, ast.indexSignatures[i].parameter);
             for (const key of keys) {
-              if (Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
-                continue;
-              }
               // ---------------------------------------------
               // handle keys
               // ---------------------------------------------
@@ -46732,7 +47085,9 @@ const Parser_go = (ast, isBoundary = true) => {
                     return failures(mutableAppend(sortByIndex(es), e));
                   }
                 } else {
-                  output[key] = veu.right;
+                  if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
+                    output[key] = veu.right;
+                  }
                 }
               } else {
                 const nk = stepKey++;
@@ -46753,7 +47108,9 @@ const Parser_go = (ast, isBoundary = true) => {
                       return failures(mutableAppend(sortByIndex(es), e));
                     }
                   } else {
-                    output[key] = tv.right;
+                    if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
+                      output[key] = tv.right;
+                    }
                     return Effect_unit;
                   }
                 }));
@@ -46793,9 +47150,8 @@ const Parser_go = (ast, isBoundary = true) => {
         const len = ownKeys.length;
         const map = new Map();
         for (let i = 0; i < ast.types.length; i++) {
-          map.set(ast.types[i], Parser_go(ast.types[i], true)); // <= this must be true
+          map.set(ast.types[i], Parser_go(ast.types[i], isDecoding));
         }
-
         return (input, options) => {
           const es = [];
           let stepKey = 0;
@@ -46889,7 +47245,7 @@ const Parser_go = (ast, isBoundary = true) => {
       }
     case "Lazy":
       {
-        const get = memoizeThunk(() => Parser_go(ast.f(), isBoundary));
+        const get = memoizeThunk(() => Parser_go(ast.f(), isDecoding));
         return (a, options) => get()(a, options);
       }
   }
@@ -46999,28 +47355,48 @@ const getTemplateLiteralRegex = ast => {
 function sortByIndex(es) {
   return es.sort(([a], [b]) => a > b ? 1 : a < b ? -1 : 0).map(([_, a]) => a);
 }
-/** @internal */
-const Parser_reverse = ast => {
-  switch (ast._tag) {
-    case "Declaration":
-      return createDeclaration(ast.typeParameters.map(Parser_reverse), ast.type, ast.decode, ast.annotations);
-    case "Tuple":
-      return createTuple(ast.elements.map(e => createElement(Parser_reverse(e.type), e.isOptional)), map(ast.rest, mapNonEmpty(Parser_reverse)), ast.isReadonly);
-    case "TypeLiteral":
-      return createTypeLiteral(ast.propertySignatures.map(ps => createPropertySignature(ps.name, Parser_reverse(ps.type), ps.isOptional, ps.isReadonly, ps.annotations)), ast.indexSignatures.map(is => createIndexSignature(is.parameter, Parser_reverse(is.type), is.isReadonly)));
-    case "Union":
-      return createUnion(ast.types.map(Parser_reverse));
-    case "Lazy":
-      return createLazy(() => Parser_reverse(ast.f()));
-    case "Refinement":
-      return createRefinement(ast.from, ast.decode, !ast.isReversed, ast.annotations);
-    case "Transform":
-      return _createTransform(Parser_reverse(ast.to), Parser_reverse(ast.from), ast.encode, ast.decode, ast.propertySignatureTransformations.map(t => createPropertySignatureTransformation(t.to, t.from, t.encode, t.decode)));
+// -------------------------------------------------------------------------------------
+// transformations interpreter
+// -------------------------------------------------------------------------------------
+const getFinalPropertySignatureTransformation = (transformation, isDecoding) => {
+  switch (transformation._tag) {
+    case "FinalPropertySignatureTransformation":
+      return isDecoding ? transformation.decode : transformation.encode;
   }
-  return ast;
+};
+/** @internal */
+const getFinalTransformation = (transformation, isDecoding) => {
+  switch (transformation._tag) {
+    case "FinalTransformation":
+      return isDecoding ? transformation.decode : transformation.encode;
+    case "ComposeTransformation":
+      return success;
+    case "TypeLiteralTransformation":
+      return input => {
+        let out = Either_right(input);
+        // ---------------------------------------------
+        // handle property signature transformations
+        // ---------------------------------------------
+        for (const pst of transformation.propertySignatureTransformations) {
+          const [from, to] = isDecoding ? [pst.from, pst.to] : [pst.to, pst.from];
+          const transform = getFinalPropertySignatureTransformation(pst.propertySignatureTransformation, isDecoding);
+          const f = input => {
+            const o = transform(Object.prototype.hasOwnProperty.call(input, from) ? mjs_Option_some(input[from]) : Option_none());
+            if (Option_isSome(o)) {
+              input[to] = o.value;
+            } else {
+              delete input[from];
+            }
+            return input;
+          };
+          out = ParseResult_map(out, f);
+        }
+        return out;
+      };
+  }
 };
 //# sourceMappingURL=Parser.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.34.0_@effect+data@0.18.5_@effect+io@0.40.1/node_modules/@effect/schema/mjs/Schema.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/Schema.mjs
 /**
  * @since 1.0.0
  */
@@ -47042,6 +47418,10 @@ const Parser_reverse = ast => {
 
 
 
+
+// ---------------------------------------------
+// model
+// ---------------------------------------------
 const Schema_TypeId = /*#__PURE__*/Symbol.for("@effect/schema/Schema");
 /**
  * @since 1.0.0
@@ -47051,17 +47431,32 @@ const Schema_from = schema => Schema_make(AST.from(schema.ast));
  * @since 1.0.0
  */
 const to = schema => Schema_make(AST_to(schema.ast));
+// ---------------------------------------------
+// decoding / encoding / parsing / validating / asserts / guards
+// ---------------------------------------------
 /* c8 ignore start */
 
 /* c8 ignore end */
 // ---------------------------------------------
+// guards
+// ---------------------------------------------
+/**
+ * Tests if a value is a `Schema`.
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+const isSchema = u => Predicate.isObject(u) && Schema_TypeId in u && "ast" in u && "pipe" in u;
+// ---------------------------------------------
 // constructors
 // ---------------------------------------------
+const Schema_variance = {
+  From: _ => _,
+  To: _ => _
+};
 class SchemaImpl {
   ast;
-  _id = Schema_TypeId;
-  From;
-  To;
+  [Schema_TypeId] = Schema_variance;
   constructor(ast) {
     this.ast = ast;
   }
@@ -47074,13 +47469,6 @@ class SchemaImpl {
  * @since 1.0.0
  */
 const Schema_make = ast => new SchemaImpl(ast);
-/**
- * Tests if a value is a `Schema`.
- *
- * @category guards
- * @since 1.0.0
- */
-const isSchema = input => isObject(input) && "_id" in input && input["_id"] === Schema_TypeId;
 const makeLiteral = value => Schema_make(createLiteral(value));
 /**
  * @category constructors
@@ -47104,7 +47492,7 @@ const enums = enums => Schema_make(AST.createEnums(Object.keys(enums).filter(key
 const templateLiteral = (...[head, ...tail]) => {
   let types = getTemplateLiterals(head.ast);
   for (const span of tail) {
-    types = RA.flatMap(types, a => getTemplateLiterals(span.ast).map(b => combineTemplateLiterals(a, b)));
+    types = ReadonlyArray.flatMap(types, a => getTemplateLiterals(span.ast).map(b => combineTemplateLiterals(a, b)));
   }
   return Schema_make(AST.createUnion(types));
 };
@@ -47113,12 +47501,12 @@ const combineTemplateLiterals = (a, b) => {
     return AST.isLiteral(b) ? AST.createLiteral(String(a.literal) + String(b.literal)) : AST.createTemplateLiteral(String(a.literal) + b.head, b.spans);
   }
   if (AST.isLiteral(b)) {
-    return AST.createTemplateLiteral(a.head, RA.modifyNonEmptyLast(a.spans, span => ({
+    return AST.createTemplateLiteral(a.head, ReadonlyArray.modifyNonEmptyLast(a.spans, span => ({
       ...span,
       literal: span.literal + String(b.literal)
     })));
   }
-  return AST.createTemplateLiteral(a.head, RA.appendAll(RA.modifyNonEmptyLast(a.spans, span => ({
+  return AST.createTemplateLiteral(a.head, ReadonlyArray.appendAll(ReadonlyArray.modifyNonEmptyLast(a.spans, span => ({
     ...span,
     literal: span.literal + String(b.head)
   })), b.spans));
@@ -47134,484 +47522,60 @@ const getTemplateLiterals = ast => {
         literal: ""
       }])];
     case "Union":
-      return RA.flatMap(ast.types, getTemplateLiterals);
+      return ReadonlyArray.flatMap(ast.types, getTemplateLiterals);
     default:
       throw new Error(`templateLiteral: unsupported template literal span ${ast._tag}`);
   }
 };
 /**
-  @category combinators
+  @category constructors
   @since 1.0.0
 */
-const declare = (typeParameters, type, decode, annotations) => Schema_make(createDeclaration(typeParameters.map(tp => tp.ast), type.ast, (...typeParameters) => decode(...typeParameters.map(Schema_make)), annotations));
-// ---------------------------------------------
-// combinators
-// ---------------------------------------------
+const declare = (typeParameters, type, decode, annotations) => Schema_make(createDeclaration(typeParameters.map(tp => tp.ast), type.ast, (isDecoding, ...typeParameters) => decode(isDecoding, ...typeParameters.map(Schema_make)), annotations));
 /**
- * @category combinators
+ * @category type id
  * @since 1.0.0
  */
-const Schema_union = (...members) => Schema_make(createUnion(members.map(m => m.ast)));
+const Schema_BrandTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/Brand")));
 /**
- * @category combinators
- * @since 1.0.0
- */
-const nullable = self => Schema_union(Schema_null, self);
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_keyof = schema => Schema_make(AST.keyof(schema.ast));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_tuple = (...elements) => Schema_make(AST.createTuple(elements.map(schema => AST.createElement(schema.ast, false)), O.none(), true));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const rest = rest => self => {
-  if (AST.isTuple(self.ast)) {
-    return Schema_make(AST.appendRestElement(self.ast, rest.ast));
-  }
-  throw new Error("`rest` is not supported on this schema");
-};
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_element = element => self => {
-  if (AST.isTuple(self.ast)) {
-    return Schema_make(AST.appendElement(self.ast, AST.createElement(element.ast, false)));
-  }
-  throw new Error("`element` is not supported on this schema");
-};
-/**
- * @category combinators
- * @since 1.0.0
- */
-const optionalElement = element => self => {
-  if (AST.isTuple(self.ast)) {
-    return Schema_make(AST.appendElement(self.ast, AST.createElement(element.ast, true)));
-  }
-  throw new Error("`optionalElement` is not supported on this schema");
-};
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_array = item => Schema_make(AST.createTuple([], O.some([item.ast]), true));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const nonEmptyArray = item => Schema_tuple(item).pipe(rest(item));
-class PropertySignatureImpl {
-  _from;
-  _annotations;
-  _optional;
-  From;
-  FromIsOptional;
-  To;
-  ToIsOptional;
-  constructor(_from, _annotations, _optional) {
-    this._from = _from;
-    this._annotations = _annotations;
-    this._optional = _optional;
-  }
-  optional() {
-    if (this._optional) {
-      throw new Error(`duplicate optional configuration`);
-    }
-    return new PropertySignatureImpl(this._from, this._annotations, {
-      to: "optional"
-    });
-  }
-  withDefault(value) {
-    if (this._optional && this._optional.to !== "optional") {
-      throw new Error(`duplicate optional configuration`);
-    }
-    return new PropertySignatureImpl(this._from, this._annotations, {
-      to: "default",
-      value
-    });
-  }
-  toOption() {
-    if (this._optional && this._optional.to !== "optional") {
-      throw new Error(`duplicate optional configuration`);
-    }
-    return new PropertySignatureImpl(this._from, this._annotations, {
-      to: "Option"
-    });
-  }
-}
-/**
- * @since 1.0.0
  * @category constructors
- */
-const propertySignature = (schema, annotations) => new PropertySignatureImpl(schema.ast, annotations);
-/**
  * @since 1.0.0
  */
-const optional = (schema, annotations) => propertySignature(schema, annotations).optional();
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_struct = fields => {
-  const ownKeys = common_ownKeys(fields);
-  const propertySignatures = [];
-  const fromPropertySignatures = [];
-  const toPropertySignatures = [];
-  const propertySignatureTransformations = [];
-  for (let i = 0; i < ownKeys.length; i++) {
-    const key = ownKeys[i];
-    const field = fields[key];
-    if (field instanceof PropertySignatureImpl) {
-      const optional = field._optional;
-      if (optional) {
-        switch (optional.to) {
-          case "optional":
-            {
-              propertySignatures.push(createPropertySignature(key, field._from, true, true, field._annotations));
-              fromPropertySignatures.push(createPropertySignature(key, field._from, true, true));
-              toPropertySignatures.push(createPropertySignature(key, AST_to(field._from), true, true, field._annotations));
-              break;
-            }
-          case "default":
-            {
-              fromPropertySignatures.push(createPropertySignature(key, field._from, true, true));
-              toPropertySignatures.push(createPropertySignature(key, AST_to(field._from), false, true, field._annotations));
-              propertySignatureTransformations.push(createPropertySignatureTransformation(key, key, orElse(() => mjs_Option_some(optional.value())), Function_identity));
-              break;
-            }
-          case "Option":
-            {
-              fromPropertySignatures.push(createPropertySignature(key, field._from, true, true));
-              toPropertySignatures.push(createPropertySignature(key, optionFromSelf(Schema_make(AST_to(field._from))).ast, false, true, field._annotations));
-              propertySignatureTransformations.push(createPropertySignatureTransformation(key, key, mjs_Option_some, flatten));
-              break;
-            }
-        }
-      } else {
-        propertySignatures.push(createPropertySignature(key, field._from, false, true, field._annotations));
-        fromPropertySignatures.push(createPropertySignature(key, field._from, false, true));
-        toPropertySignatures.push(createPropertySignature(key, AST_to(field._from), false, true, field._annotations));
+const fromBrand = (constructor, options) => self => {
+  return Schema_make(AST.createRefinement(self.ast, (a, _, ast) => {
+    const e = constructor.either(a);
+    return Either.isLeft(e) ? Option.some(ParseResult.parseError([ParseResult.type(ast, a, e.left.map(v => v.message).join(", "))])) : Option.none();
+  }, toAnnotations({
+    typeId: {
+      id: Schema_BrandTypeId,
+      params: {
+        constructor
       }
-    } else {
-      propertySignatures.push(createPropertySignature(key, field.ast, false, true));
-      fromPropertySignatures.push(createPropertySignature(key, field.ast, false, true));
-      toPropertySignatures.push(createPropertySignature(key, AST_to(field.ast), false, true));
-    }
-  }
-  if (propertySignatureTransformations.length > 0) {
-    return Schema_make(createTransformByPropertySignatureTransformations(createTypeLiteral(fromPropertySignatures, []), createTypeLiteral(toPropertySignatures, []), propertySignatureTransformations));
-  } else {
-    return Schema_make(createTypeLiteral(propertySignatures, []));
-  }
+    },
+    ...options
+  })));
 };
 /**
- * @category combinators
+ * @category type id
  * @since 1.0.0
  */
-const Schema_pick = (...keys) => self => {
-  const ast = self.ast;
-  if (AST.isTransform(ast) && ast.propertySignatureTransformations.length > 0) {
-    return Schema_make(AST.createTransformByPropertySignatureTransformations(AST.pick(ast.from, keys), AST.pick(ast.to, keys), ast.propertySignatureTransformations.filter(t => keys.includes(t.to))));
-  }
-  return Schema_make(AST.pick(ast, keys));
-};
+const InstanceOfTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/InstanceOf")));
 /**
- * @category combinators
+ * @category constructors
  * @since 1.0.0
  */
-const Schema_omit = (...keys) => self => {
-  const ast = self.ast;
-  if (AST.isTransform(ast) && ast.propertySignatureTransformations.length > 0) {
-    return Schema_make(AST.createTransformByPropertySignatureTransformations(AST.omit(ast.from, keys), AST.omit(ast.to, keys), ast.propertySignatureTransformations.filter(t => !keys.includes(t.to))));
-  }
-  return Schema_make(AST.omit(ast, keys));
-};
-/**
- * Returns a nominal branded schema by applying a brand to a given schema.
- *
- * ```
- * Schema<A> + B -> Schema<A & Brand<B>>
- * ```
- *
- * @param self - The input schema to be combined with the brand.
- * @param brand - The brand to apply.
- *
- * @example
- * import * as S from "@effect/schema/Schema"
- *
- * const Int = S.number.pipe(S.int(), S.brand("Int"))
- * type Int = S.To<typeof Int> // number & Brand<"Int">
- *
- * @category combinators
- * @since 1.0.0
- */
-const brand = (brand, options) => self => {
-  const annotations = toAnnotations(options);
-  annotations[BrandAnnotationId] = [...getBrands(self.ast), brand];
-  const ast = mergeAnnotations(self.ast, annotations);
-  const schema = Schema_make(ast);
-  const validate = validateSync(schema);
-  const validateOption = Parser_validateOption(schema);
-  const validateEither = Parser_validateEither(schema);
-  const is = Parser_is(schema);
-  const out = Object.assign(input => validate(input), {
-    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    _id: Schema_TypeId,
-    ast,
-    option: input => validateOption(input),
-    either: input => mapLeft(validateEither(input), e => [{
-      meta: input,
-      message: formatErrors(e.errors)
-    }]),
-    is: input => is(input),
-    pipe() {
-      return Pipeable_pipeArguments(this, arguments);
-    }
+const Schema_instanceOf = (constructor, options) => {
+  return declare([], Schema_struct({}), () => (input, _, ast) => input instanceof constructor ? ParseResult.success(input) : ParseResult.failure(ParseResult.type(ast, input)), {
+    [AST.TypeAnnotationId]: InstanceOfTypeId,
+    [InstanceOfTypeId]: {
+      constructor
+    },
+    [AST.DescriptionAnnotationId]: `an instance of ${constructor.name}`,
+    ...toAnnotations(options)
   });
-  return out;
 };
-const getBrands = ast => ast.annotations[BrandAnnotationId] || [];
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_partial = self => Schema_make(AST.partial(self.ast));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_required = self => Schema_make(AST.required(self.ast));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_record = (key, value) => Schema_make(AST.createRecord(key.ast, value.ast, true));
-const intersectUnionMembers = (xs, ys) => {
-  return AST.createUnion(xs.flatMap(x => {
-    return ys.map(y => {
-      if (AST.isTypeLiteral(x)) {
-        if (AST.isTypeLiteral(y)) {
-          // isTypeLiteral(x) && isTypeLiteral(y)
-          return AST.createTypeLiteral(x.propertySignatures.concat(y.propertySignatures), x.indexSignatures.concat(y.indexSignatures));
-        } else if (AST.isTransform(y) && y.propertySignatureTransformations.length > 0 && AST.isTypeLiteral(y.from) && AST.isTypeLiteral(y.to)) {
-          // isTypeLiteral(x) && isTransform(y)
-          const from = AST.createTypeLiteral(x.propertySignatures.concat(y.from.propertySignatures), x.indexSignatures.concat(y.from.indexSignatures));
-          const to = AST.createTypeLiteral(AST.getToPropertySignatures(x.propertySignatures).concat(y.to.propertySignatures), AST.getToIndexSignatures(x.indexSignatures).concat(y.to.indexSignatures));
-          return AST.createTransformByPropertySignatureTransformations(from, to, y.propertySignatureTransformations);
-        }
-      } else if (AST.isTransform(x) && x.propertySignatureTransformations.length > 0 && AST.isTypeLiteral(x.from) && AST.isTypeLiteral(x.to)) {
-        if (AST.isTypeLiteral(y)) {
-          // isTransform(x) && isTypeLiteral(y)
-          const from = AST.createTypeLiteral(x.from.propertySignatures.concat(y.propertySignatures), x.from.indexSignatures.concat(y.indexSignatures));
-          const to = AST.createTypeLiteral(x.to.propertySignatures.concat(AST.getToPropertySignatures(y.propertySignatures)), x.to.indexSignatures.concat(AST.getToIndexSignatures(y.indexSignatures)));
-          return AST.createTransformByPropertySignatureTransformations(from, to, x.propertySignatureTransformations);
-        } else if (AST.isTransform(y) && y.propertySignatureTransformations.length > 0 && AST.isTypeLiteral(y.from) && AST.isTypeLiteral(y.to)) {
-          // isTransform(x) && isTransform(y)
-          const from = AST.createTypeLiteral(x.from.propertySignatures.concat(y.from.propertySignatures), x.from.indexSignatures.concat(y.from.indexSignatures));
-          const to = AST.createTypeLiteral(x.to.propertySignatures.concat(y.to.propertySignatures), x.to.indexSignatures.concat(y.to.indexSignatures));
-          const propertySignatureTransformations = x.propertySignatureTransformations.concat(y.propertySignatureTransformations);
-          return AST.createTransformByPropertySignatureTransformations(from, to, propertySignatureTransformations);
-        }
-      }
-      throw new Error("`extend` can only handle type literals or unions of type literals");
-    });
-  }));
-};
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_extend = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, that) => Schema_make(intersectUnionMembers(AST.isUnion(self.ast) ? self.ast.types : [self.ast], AST.isUnion(that.ast) ? that.ast.types : [that.ast])))));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_compose = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (ab, cd) => Schema_transform(ab, cd, identity, identity))));
-/**
- * @category combinators
- * @since 1.0.0
- */
-const lazy = (f, annotations) => Schema_make(AST.createLazy(() => f().ast, annotations));
-const toAnnotations = options => {
-  const annotations = {};
-  if (options?.typeId !== undefined) {
-    const typeId = options?.typeId;
-    if (typeof typeId === "object") {
-      annotations[TypeAnnotationId] = typeId.id;
-      annotations[typeId.id] = typeId.params;
-    } else {
-      annotations[TypeAnnotationId] = typeId;
-    }
-  }
-  if (options?.message !== undefined) {
-    annotations[MessageAnnotationId] = options?.message;
-  }
-  if (options?.identifier !== undefined) {
-    annotations[IdentifierAnnotationId] = options?.identifier;
-  }
-  if (options?.title !== undefined) {
-    annotations[TitleAnnotationId] = options?.title;
-  }
-  if (options?.description !== undefined) {
-    annotations[DescriptionAnnotationId] = options?.description;
-  }
-  if (options?.examples !== undefined) {
-    annotations[ExamplesAnnotationId] = options?.examples;
-  }
-  if (options?.documentation !== undefined) {
-    annotations[DocumentationAnnotationId] = options?.documentation;
-  }
-  if (options?.jsonSchema !== undefined) {
-    annotations[JSONSchemaAnnotationId] = options?.jsonSchema;
-  }
-  if (options?.arbitrary !== undefined) {
-    annotations[ArbitraryHookId] = options?.arbitrary;
-  }
-  return annotations;
-};
-function Schema_filter(predicate, options) {
-  return self => {
-    const decode = a => predicate(a) ? success(a) : failure(ParseResult_type(ast, a));
-    const ast = createRefinement(self.ast, decode, false, toAnnotations(options));
-    return Schema_make(ast);
-  };
-}
-/**
-  Create a new `Schema` by transforming the input and output of an existing `Schema`
-  using the provided decoding functions.
-
-  @category combinators
-  @since 1.0.0
- */
-const transformResult = /*#__PURE__*/Function_dual(4, (from, to, decode, encode) => Schema_make(createTransform(from.ast, to.ast, decode, encode)));
-/**
-  Create a new `Schema` by transforming the input and output of an existing `Schema`
-  using the provided mapping functions.
-
-  @category combinators
-  @since 1.0.0
-*/
-const Schema_transform = /*#__PURE__*/Function_dual(4, (from, to, decode, encode) => transformResult(from, to, a => Either_right(decode(a)), b => Either_right(encode(b))));
-/**
- * Attaches a property signature with the specified key and value to the schema.
- * This API is useful when you want to add a property to your schema which doesn't describe the shape of the input,
- * but rather maps to another schema, for example when you want to add a discriminant to a simple union.
- *
- * @param self - The input schema.
- * @param key - The name of the property to add to the schema.
- * @param value - The value of the property to add to the schema.
- *
- * @example
- * import * as S from "@effect/schema/Schema"
- * import { pipe } from "@effect/data/Function"
- *
- * const Circle = S.struct({ radius: S.number })
- * const Square = S.struct({ sideLength: S.number })
- * const Shape = S.union(
- *   Circle.pipe(S.attachPropertySignature("kind", "circle")),
- *   Square.pipe(S.attachPropertySignature("kind", "square"))
- * )
- *
- * assert.deepStrictEqual(S.decodeSync(Shape)({ radius: 10 }), {
- *   kind: "circle",
- *   radius: 10
- * })
- *
- * @category combinators
- * @since 1.0.0
- */
-const attachPropertySignature = (key, value) => schema => Schema_make(AST.createTransformByPropertySignatureTransformations(schema.ast, to(schema).pipe(Schema_extend(Schema_struct({
-  [key]: literal(value)
-}))).ast, [AST.createPropertySignatureTransformation(key, key, () => O.some(value), () => O.none())]));
 // ---------------------------------------------
-// annotations
-// ---------------------------------------------
-/**
- * @category combinators
- * @since 1.0.0
- */
-const annotations = annotations => self => Schema_make(AST.mergeAnnotations(self.ast, annotations));
-/**
- * @category annotations
- * @since 1.0.0
- */
-const message = message => self => Schema_make(AST.setAnnotation(self.ast, AST.MessageAnnotationId, message));
-/**
- * @category annotations
- * @since 1.0.0
- */
-const identifier = identifier => self => Schema_make(AST.setAnnotation(self.ast, AST.IdentifierAnnotationId, identifier));
-/**
- * @category annotations
- * @since 1.0.0
- */
-const title = title => self => Schema_make(AST.setAnnotation(self.ast, AST.TitleAnnotationId, title));
-/**
- * @category annotations
- * @since 1.0.0
- */
-const description = description => self => Schema_make(AST.setAnnotation(self.ast, AST.DescriptionAnnotationId, description));
-/**
- * @category annotations
- * @since 1.0.0
- */
-const examples = examples => self => Schema_make(AST.setAnnotation(self.ast, AST.ExamplesAnnotationId, examples));
-/**
- * @category annotations
- * @since 1.0.0
- */
-const documentation = documentation => self => Schema_make(AST.setAnnotation(self.ast, AST.DocumentationAnnotationId, documentation));
-const makeClass = (selfSchema, selfFields, base) => {
-  const validator = P.validateSync(selfSchema);
-  const fn = function (props) {
-    Object.assign(this, validator(props));
-  };
-  fn.prototype = Object.create(base);
-  fn.schemaStruct = function schemaStruct() {
-    return selfSchema;
-  };
-  fn.schema = function schema() {
-    return Schema_transform(selfSchema, Schema_instanceOf(this), input => Object.assign(Object.create(this.prototype), input), input => ({
-      ...input
-    }));
-  };
-  fn.extend = function extend(fields) {
-    const newFields = {
-      ...selfFields,
-      ...fields
-    };
-    return makeClass(Schema_struct(newFields), newFields, this.prototype);
-  };
-  fn.transform = function transform(fields, decode, encode) {
-    const newFields = {
-      ...selfFields,
-      ...fields
-    };
-    return makeClass(transformResult(selfSchema, to(Schema_struct(newFields)), decode, encode), newFields, this.prototype);
-  };
-  fn.transformFrom = function transform(fields, decode, encode) {
-    const newFields = {
-      ...selfFields,
-      ...fields
-    };
-    return makeClass(transformResult(Schema_from(selfSchema), Schema_struct(newFields), decode, encode), newFields, this.prototype);
-  };
-  return fn;
-};
-/**
- * @category classes
- * @since 1.0.0
- */
-const Schema_Class = fields => makeClass(Schema_struct(fields), fields, D.Class.prototype);
-// ---------------------------------------------
-// data
+// primitives
 // ---------------------------------------------
 const Schema_undefined = /*#__PURE__*/Schema_make(undefinedKeyword);
 const _void = /*#__PURE__*/Schema_make(voidKeyword);
@@ -47651,903 +47615,460 @@ const Schema_boolean = /*#__PURE__*/Schema_make(booleanKeyword);
  * @category primitives
  * @since 1.0.0
  */
-const Schema_bigint = /*#__PURE__*/Schema_make(bigIntKeyword);
+const bigintFromSelf = /*#__PURE__*/Schema_make(bigIntKeyword);
 /**
  * @category primitives
  * @since 1.0.0
  */
-const Schema_symbol = /*#__PURE__*/Schema_make(symbolKeyword);
+const symbolFromSelf = /*#__PURE__*/Schema_make(symbolKeyword);
 /**
  * @category primitives
  * @since 1.0.0
  */
 const object = /*#__PURE__*/Schema_make(objectKeyword);
 // ---------------------------------------------
-// data/Bigint
+// combinators
 // ---------------------------------------------
-/**
- * @category type id
- * @since 1.0.0
- */
-const GreaterThanBigintTypeId = "@effect/schema/GreaterThanBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const greaterThanBigint = (min, options) => self => self.pipe(Schema_filter(a => a > min, {
-  typeId: GreaterThanBigintTypeId,
-  description: `a bigint greater than ${min}n`,
-  jsonSchema: {
-    exclusiveMinimum: min
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const GreaterThanOrEqualToBigintTypeId = "@effect/schema/GreaterThanOrEqualToBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const greaterThanOrEqualToBigint = (min, options) => self => self.pipe(Schema_filter(a => a >= min, {
-  typeId: GreaterThanOrEqualToBigintTypeId,
-  description: `a bigint greater than or equal to ${min}n`,
-  jsonSchema: {
-    minimum: min
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const LessThanBigintTypeId = "@effect/schema/LessThanBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const lessThanBigint = (max, options) => self => self.pipe(Schema_filter(a => a < max, {
-  typeId: LessThanBigintTypeId,
-  description: `a bigint less than ${max}n`,
-  jsonSchema: {
-    exclusiveMaximum: max
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const LessThanOrEqualToBigintTypeId = "@effect/schema/LessThanOrEqualToBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const lessThanOrEqualToBigint = (max, options) => self => self.pipe(Schema_filter(a => a <= max, {
-  typeId: LessThanOrEqualToBigintTypeId,
-  description: `a bigint less than or equal to ${max}n`,
-  jsonSchema: {
-    maximum: max
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const BetweenBigintTypeId = "@effect/schema/BetweenBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const betweenBigint = (min, max, options) => self => self.pipe(Schema_filter(a => a >= min && a <= max, {
-  typeId: BetweenBigintTypeId,
-  description: `a bigint between ${min}n and ${max}n`,
-  jsonSchema: {
-    maximum: max,
-    minimum: min
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const PositiveBigintTypeId = "@effect/schema/PositiveBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const positiveBigint = options => greaterThanBigint(0n, {
-  typeId: PositiveBigintTypeId,
-  description: "a positive bigint",
-  ...options
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const NegativeBigintTypeId = "@effect/schema/NegativeBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const negativeBigint = options => lessThanBigint(0n, {
-  typeId: NegativeBigintTypeId,
-  description: "a negative bigint",
-  ...options
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const NonNegativeBigintTypeId = "@effect/schema/NonNegativeBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const nonNegativeBigint = options => greaterThanOrEqualToBigint(0n, {
-  typeId: NonNegativeBigintTypeId,
-  description: "a non-negative bigint",
-  ...options
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const NonPositiveBigintTypeId = "@effect/schema/NonPositiveBigintTypeId";
-/**
- * @category bigint
- * @since 1.0.0
- */
-const nonPositiveBigint = options => lessThanOrEqualToBigint(0n, {
-  typeId: NonPositiveBigintTypeId,
-  description: "a non-positive bigint",
-  ...options
-});
-/**
- * Clamps a bigint between a minimum and a maximum value.
- *
- * @category bigint
- * @since 1.0.0
- */
-const clampBigint = (min, max) => self => Schema_transform(self, self.pipe(to, betweenBigint(min, max)), self => B.clamp(self, min, max),
-// this is safe because `self.pipe(to, betweenBigint(min, max))` will check its input anyway
-identity);
-/**
- * This combinator transforms a `string` into a `bigint` by parsing the string using the `BigInt` function.
- *
- * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
- *
- * @param self - The schema representing the input string
- *
- * @category bigint
- * @since 1.0.0
- */
-const bigintFromString = self => {
-  const schema = transformResult(self, Schema_bigint, s => {
-    if (s.trim() === "") {
-      return PR.failure(PR.type(schema.ast, s));
-    }
-    try {
-      return PR.success(BigInt(s));
-    } catch (_) {
-      return PR.failure(PR.type(schema.ast, s));
-    }
-  }, n => PR.success(String(n)) // this is safe because `self` will check its input anyway
-  );
-
-  return schema;
-};
-/**
- * This schema transforms a `string` into a `bigint` by parsing the string using the `BigInt` function.
- *
- * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
- *
- * @category bigint
- * @since 1.0.0
- */
-const BigintFromString = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromString(Schema_string)));
-/**
- * This combinator transforms a `number` into a `bigint` by parsing the number using the `BigInt` function.
- *
- * It returns an error if the value can't be safely encoded as a `number` due to being out of range.
- *
- * @param self - The schema representing the input number
- *
- * @category bigint
- * @since 1.0.0
- */
-const bigintFromNumber = self => {
-  const schema = transformResult(self, Schema_bigint, n => {
-    try {
-      return PR.success(BigInt(n));
-    } catch (_) {
-      return PR.failure(PR.type(schema.ast, n));
-    }
-  }, b => {
-    if (b > I.maxSafeInteger || b < I.minSafeInteger) {
-      return PR.failure(PR.type(schema.ast, b));
-    }
-    return PR.success(Number(b));
-  });
-  return schema;
-};
-/**
- * This schema transforms a `number` into a `bigint` by parsing the number using the `BigInt` function.
- *
- * It returns an error if the value can't be safely encoded as a `number` due to being out of range.
- *
- * @category bigint
- * @since 1.0.0
- */
-const BigintFromNumber = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromNumber(Schema_number)));
-// ---------------------------------------------
-// data/Boolean
-// ---------------------------------------------
-/**
- * Negates a boolean value
- *
- * @category boolean
- * @since 1.0.0
- */
-const Schema_not = self => Schema_transform(self, to(self), self => !self, self => !self);
-// ---------------------------------------------
-// data/Brand
-// ---------------------------------------------
-/**
- * @category type id
- * @since 1.0.0
- */
-const Schema_BrandTypeId = "@effect/schema/BrandTypeId";
 /**
  * @category combinators
  * @since 1.0.0
  */
-const fromBrand = (constructor, options) => self => {
-  const decode = a => E.mapLeft(constructor.either(a), brandErrors => PR.parseError([PR.type(ast, a, brandErrors.map(v => v.message).join(", "))]));
-  const ast = AST.createRefinement(self.ast, decode, false, toAnnotations({
-    typeId: Schema_BrandTypeId,
-    ...options
+const Schema_union = (...members) => Schema_make(createUnion(members.map(m => m.ast)));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const nullable = self => Schema_union(Schema_null, self);
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_keyof = schema => Schema_make(AST.keyof(schema.ast));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_tuple = (...elements) => Schema_make(AST.createTuple(elements.map(schema => AST.createElement(schema.ast, false)), Option.none(), true));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const rest = rest => self => {
+  if (AST.isTuple(self.ast)) {
+    return Schema_make(AST.appendRestElement(self.ast, rest.ast));
+  }
+  throw new Error("`rest` is not supported on this schema");
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_element = element => self => {
+  if (AST.isTuple(self.ast)) {
+    return Schema_make(AST.appendElement(self.ast, AST.createElement(element.ast, false)));
+  }
+  throw new Error("`element` is not supported on this schema");
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const optionalElement = element => self => {
+  if (AST.isTuple(self.ast)) {
+    return Schema_make(AST.appendElement(self.ast, AST.createElement(element.ast, true)));
+  }
+  throw new Error("`optionalElement` is not supported on this schema");
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_array = item => Schema_make(createTuple([], mjs_Option_some([item.ast]), true));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const nonEmptyArray = item => Schema_tuple(item).pipe(rest(item));
+/** @internal */
+class PropertySignatureImpl {
+  config;
+  [Schema_TypeId] = Schema_variance;
+  FromIsOptional;
+  ToIsOptional;
+  constructor(config) {
+    this.config = config;
+  }
+  withDefault(value) {
+    return new PropertySignatureImpl({
+      _tag: "Default",
+      ast: this.config.ast,
+      value,
+      annotations: this.config.annotations
+    });
+  }
+  toOption() {
+    return new PropertySignatureImpl({
+      _tag: "Option",
+      ast: this.config.ast,
+      annotations: this.config.annotations
+    });
+  }
+}
+/**
+ * @since 1.0.0
+ */
+const propertySignature = (schema, options) => new PropertySignatureImpl({
+  _tag: "PropertySignature",
+  ast: schema.ast,
+  annotations: toAnnotations(options)
+});
+/**
+ * @since 1.0.0
+ */
+const optional = (schema, options) => new PropertySignatureImpl({
+  _tag: "Optional",
+  ast: schema.ast,
+  annotations: toAnnotations(options)
+});
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_struct = fields => {
+  const ownKeys = common_ownKeys(fields);
+  const pss = [];
+  const froms = [];
+  const tos = [];
+  const propertySignatureTransformations = [];
+  for (let i = 0; i < ownKeys.length; i++) {
+    const key = ownKeys[i];
+    const field = fields[key];
+    if ("config" in field) {
+      const config = field.config;
+      const from = config.ast;
+      const to = AST_to(from);
+      const annotations = config.annotations;
+      switch (config._tag) {
+        case "PropertySignature":
+          pss.push(createPropertySignature(key, from, false, true, annotations));
+          froms.push(createPropertySignature(key, from, false, true));
+          tos.push(createPropertySignature(key, to, false, true, annotations));
+          break;
+        case "Optional":
+          pss.push(createPropertySignature(key, from, true, true, annotations));
+          froms.push(createPropertySignature(key, from, true, true));
+          tos.push(createPropertySignature(key, to, true, true, annotations));
+          break;
+        case "Default":
+          froms.push(createPropertySignature(key, from, true, true));
+          tos.push(createPropertySignature(key, to, false, true, annotations));
+          propertySignatureTransformations.push(createPropertySignatureTransform(key, key, createFinalPropertySignatureTransformation(orElse(() => mjs_Option_some(config.value())), Function_identity)));
+          break;
+        case "Option":
+          froms.push(createPropertySignature(key, from, true, true));
+          tos.push(createPropertySignature(key, optionFromSelf(Schema_make(to)).ast, false, true, annotations));
+          propertySignatureTransformations.push(createPropertySignatureTransform(key, key, createFinalPropertySignatureTransformation(mjs_Option_some, flatten)));
+          break;
+      }
+    } else {
+      pss.push(createPropertySignature(key, field.ast, false, true));
+      froms.push(createPropertySignature(key, field.ast, false, true));
+      tos.push(createPropertySignature(key, AST_to(field.ast), false, true));
+    }
+  }
+  if (isNonEmptyReadonlyArray(propertySignatureTransformations)) {
+    return Schema_make(createTransform(createTypeLiteral(froms, []), createTypeLiteral(tos, []), createTypeLiteralTransformation(propertySignatureTransformations)));
+  }
+  return Schema_make(createTypeLiteral(pss, []));
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_pick = (...keys) => self => {
+  const ast = self.ast;
+  if (AST.isTransform(ast)) {
+    if (AST.isTypeLiteralTransformation(ast.transformation)) {
+      const propertySignatureTransformations = ast.transformation.propertySignatureTransformations.filter(t => keys.includes(t.to));
+      if (ReadonlyArray.isNonEmptyReadonlyArray(propertySignatureTransformations)) {
+        return Schema_make(AST.createTransform(AST.pick(ast.from, keys), AST.pick(ast.to, keys), AST.createTypeLiteralTransformation(propertySignatureTransformations)));
+      } else {
+        return Schema_make(AST.pick(ast.from, keys));
+      }
+    }
+    throw new Error(`pick: cannot handle this kind of transformation`);
+  }
+  return Schema_make(AST.pick(ast, keys));
+};
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_omit = (...keys) => self => {
+  const ast = self.ast;
+  if (AST.isTransform(ast)) {
+    if (AST.isTypeLiteralTransformation(ast.transformation)) {
+      const propertySignatureTransformations = ast.transformation.propertySignatureTransformations.filter(t => !keys.includes(t.to));
+      if (ReadonlyArray.isNonEmptyReadonlyArray(propertySignatureTransformations)) {
+        return Schema_make(AST.createTransform(AST.omit(ast.from, keys), AST.omit(ast.to, keys), AST.createTypeLiteralTransformation(propertySignatureTransformations)));
+      } else {
+        return Schema_make(AST.omit(ast.from, keys));
+      }
+    }
+    throw new Error(`omit: cannot handle this kind of transformation`);
+  }
+  return Schema_make(AST.omit(ast, keys));
+};
+const appendBrandAnnotation = (ast, brand, options) => {
+  if (isTransform(ast)) {
+    return createTransform(ast.from, appendBrandAnnotation(ast.to, brand, options), ast.transformation, ast.annotations);
+  }
+  const annotations = toAnnotations(options);
+  annotations[BrandAnnotationId] = [...getBrands(ast), brand];
+  return mergeAnnotations(ast, annotations);
+};
+/**
+ * Returns a nominal branded schema by applying a brand to a given schema.
+ *
+ * ```
+ * Schema<A> + B -> Schema<A & Brand<B>>
+ * ```
+ *
+ * @param self - The input schema to be combined with the brand.
+ * @param brand - The brand to apply.
+ *
+ * @example
+ * import * as Schema from "@effect/schema/Schema"
+ *
+ * const Int = Schema.number.pipe(Schema.int(), Schema.brand("Int"))
+ * type Int = Schema.Schema.To<typeof Int> // number & Brand<"Int">
+ *
+ * @category combinators
+ * @since 1.0.0
+ */
+const brand = (brand, options) => self => {
+  const ast = appendBrandAnnotation(self.ast, brand, options);
+  const schema = Schema_make(ast);
+  const validateSync = Parser_validateSync(schema);
+  const validateOption = Parser_validateOption(schema);
+  const validateEither = Parser_validateEither(schema);
+  const is = Parser_is(schema);
+  const out = Object.assign(input => validateSync(input), {
+    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
+    [Schema_TypeId]: Schema_variance,
+    ast,
+    option: input => validateOption(input),
+    either: input => mapLeft(validateEither(input), e => [{
+      meta: input,
+      message: formatErrors(e.errors)
+    }]),
+    is: input => is(input),
+    pipe() {
+      return Pipeable_pipeArguments(this, arguments);
+    }
+  });
+  return out;
+};
+const getBrands = ast => ast.annotations[BrandAnnotationId] || [];
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_partial = self => Schema_make(AST.partial(self.ast));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_required = self => Schema_make(AST.required(self.ast));
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+const Schema_record = (key, value) => Schema_make(AST.createRecord(key.ast, value.ast, true));
+/** @internal */
+const intersectUnionMembers = (xs, ys) => {
+  return AST.createUnion(xs.flatMap(x => {
+    return ys.map(y => {
+      if (AST.isTypeLiteral(x)) {
+        if (AST.isTypeLiteral(y)) {
+          // isTypeLiteral(x) && isTypeLiteral(y)
+          return AST.createTypeLiteral(x.propertySignatures.concat(y.propertySignatures), x.indexSignatures.concat(y.indexSignatures));
+        } else if (AST.isTransform(y) && AST.isTypeLiteralTransformation(y.transformation) && AST.isTypeLiteral(y.from) && AST.isTypeLiteral(y.to)) {
+          // isTypeLiteral(x) && isTransform(y)
+          const from = AST.createTypeLiteral(x.propertySignatures.concat(y.from.propertySignatures), x.indexSignatures.concat(y.from.indexSignatures));
+          const to = AST.createTypeLiteral(AST.getToPropertySignatures(x.propertySignatures).concat(y.to.propertySignatures), AST.getToIndexSignatures(x.indexSignatures).concat(y.to.indexSignatures));
+          return AST.createTransform(from, to, AST.createTypeLiteralTransformation(y.transformation.propertySignatureTransformations));
+        }
+      } else if (AST.isTransform(x) && AST.isTypeLiteralTransformation(x.transformation) && AST.isTypeLiteral(x.from) && AST.isTypeLiteral(x.to)) {
+        if (AST.isTypeLiteral(y)) {
+          // isTransform(x) && isTypeLiteral(y)
+          const from = AST.createTypeLiteral(x.from.propertySignatures.concat(y.propertySignatures), x.from.indexSignatures.concat(y.indexSignatures));
+          const to = AST.createTypeLiteral(x.to.propertySignatures.concat(AST.getToPropertySignatures(y.propertySignatures)), x.to.indexSignatures.concat(AST.getToIndexSignatures(y.indexSignatures)));
+          return AST.createTransform(from, to, AST.createTypeLiteralTransformation(x.transformation.propertySignatureTransformations));
+        } else if (AST.isTransform(y) && AST.isTypeLiteralTransformation(y.transformation) && AST.isTypeLiteral(y.from) && AST.isTypeLiteral(y.to)) {
+          // isTransform(x) && isTransform(y)
+          const from = AST.createTypeLiteral(x.from.propertySignatures.concat(y.from.propertySignatures), x.from.indexSignatures.concat(y.from.indexSignatures));
+          const to = AST.createTypeLiteral(x.to.propertySignatures.concat(y.to.propertySignatures), x.to.indexSignatures.concat(y.to.indexSignatures));
+          return AST.createTransform(from, to, AST.createTypeLiteralTransformation(x.transformation.propertySignatureTransformations.concat(y.transformation.propertySignatureTransformations)));
+        }
+      }
+      throw new Error("`extend` can only handle type literals or unions of type literals");
+    });
   }));
-  return Schema_make(ast);
-};
-// ---------------------------------------------
-// data/Chunk
-// ---------------------------------------------
-const chunkArbitrary = item => fc => fc.array(item(fc)).map(C.fromIterable);
-const chunkPretty = item => c => `Chunk(${C.toReadonlyArray(c).map(item).join(", ")})`;
-/**
- * @category constructors
- * @since 1.0.0
- */
-const chunkFromSelf = item => {
-  const schema = declare([item], Schema_struct({
-    _id: uniqueSymbol(Symbol.for("@effect/data/Chunk")),
-    length: Schema_number
-  }), item => {
-    const parse = P.parseResult(Schema_array(item));
-    return (u, options) => !C.isChunk(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(C.toReadonlyArray(u), options), C.fromIterable);
-  }, {
-    [AST.IdentifierAnnotationId]: "Chunk",
-    [I.PrettyHookId]: chunkPretty,
-    [I.ArbitraryHookId]: chunkArbitrary
-  });
-  return schema;
 };
 /**
  * @category combinators
  * @since 1.0.0
  */
-const Schema_chunk = item => Schema_transform(Schema_array(item), to(chunkFromSelf(item)), C.fromIterable, C.toReadonlyArray);
-// ---------------------------------------------
-// data/Data
-// ---------------------------------------------
-const toData = a => Array.isArray(a) ? D.array(a) : D.struct(a);
-const dataArbitrary = item => fc => item(fc).map(toData);
-const dataPretty = item => d => `Data(${item(d)})`;
+const Schema_extend = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, that) => Schema_make(intersectUnionMembers(AST.isUnion(self.ast) ? self.ast.types : [self.ast], AST.isUnion(that.ast) ? that.ast.types : [that.ast])))));
 /**
  * @category combinators
  * @since 1.0.0
  */
-const dataFromSelf = item => {
-  const schema = declare([item], item, item => {
-    const parse = P.parseResult(item);
-    return (u, options) => !Equal.isEqual(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(u, options), toData);
-  }, {
-    [AST.IdentifierAnnotationId]: "Data",
-    [I.PrettyHookId]: dataPretty,
-    [I.ArbitraryHookId]: dataArbitrary
-  });
-  return schema;
-};
+const Schema_compose = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (ab, cd) => Schema_make(AST.createTransform(ab.ast, cd.ast, AST.composeTransformation)))));
 /**
  * @category combinators
  * @since 1.0.0
  */
-const data = item => Schema_transform(item, to(dataFromSelf(item)), toData, a => Array.isArray(a) ? Array.from(a) : Object.assign({}, a));
-// ---------------------------------------------
-// data/Date
-// ---------------------------------------------
-const dateArbitrary = () => fc => fc.date();
-const datePretty = () => date => `new Date(${JSON.stringify(date)})`;
+const lazy = (f, annotations) => Schema_make(AST.createLazy(() => f().ast, annotations));
+function Schema_filter(predicate, options) {
+  return self => Schema_make(createRefinement(self.ast, (a, _, ast) => predicate(a) ? Option_none() : mjs_Option_some(parseError([ParseResult_type(ast, a)])), toAnnotations(options)));
+}
 /**
- * @category Date
- * @since 1.0.0
- */
-const DateFromSelf = /*#__PURE__*/declare([], /*#__PURE__*/Schema_struct({}), () => u => !isDate(u) ? failure(ParseResult_type(DateFromSelf.ast, u)) : success(u), {
-  [IdentifierAnnotationId]: "Date",
-  [PrettyHookId]: datePretty,
-  [ArbitraryHookId]: dateArbitrary
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const ValidDateTypeId = "@effect/schema/ValidDateTypeId";
-/**
- * A filter excluding invalid dates (e.g. `new Date("fail")`).
+ * Create a new `Schema` by transforming the input and output of an existing `Schema`
+ * using the provided decoding functions.
  *
- * @category Date
+ * @category combinators
  * @since 1.0.0
  */
-const validDate = options => self => self.pipe(Schema_filter(a => !isNaN(a.getTime()), {
-  typeId: ValidDateTypeId,
-  description: "a valid Date",
-  ...options
-}));
+const transformOrFail = /*#__PURE__*/Function_dual(4, (from, to, decode, encode, annotations) => Schema_make(createTransform(from.ast, to.ast, createFinalTransformation(decode, encode), annotations)));
 /**
- * A schema representing valid dates, e.g. `new Date("fail")` is excluded, even though it is an instance of `Date`.
+ * Create a new `Schema` by transforming the input and output of an existing `Schema`
+ * using the provided mapping functions.
  *
- * @category Date
- * @since 1.0.0
- */
-const ValidDateFromSelf = /*#__PURE__*/(/* unused pure expression or super */ null && (DateFromSelf.pipe( /*#__PURE__*/validDate())));
-/**
-  A combinator that transforms a `string` into a valid `Date`.
-
-  @category Date
-  @since 1.0.0
-*/
-const dateFromString = self => transformResult(self, ValidDateFromSelf, s => PR.success(new Date(s)), n => PR.success(n.toISOString()) // this is safe because `self` will check its input anyway
-);
-
-const _Date = /*#__PURE__*/(/* unused pure expression or super */ null && (dateFromString(Schema_string)));
-
-// ---------------------------------------------
-// data/Either
-// ---------------------------------------------
-const eitherArbitrary = (left, right) => fc => fc.oneof(left(fc).map(E.left), right(fc).map(E.right));
-const eitherPretty = (left, right) => E.match({
-  onLeft: e => `left(${left(e)})`,
-  onRight: a => `right(${right(a)})`
-});
-const eitherInline = (left, right) => Schema_union(Schema_struct({
-  _tag: literal("Left"),
-  left
-}), Schema_struct({
-  _tag: literal("Right"),
-  right
-}));
-/**
  * @category combinators
  * @since 1.0.0
  */
-const eitherFromSelf = (left, right) => {
-  const schema = declare([left, right], eitherInline(left, right), (left, right) => {
-    const parseLeft = P.parseResult(left);
-    const parseRight = P.parseResult(right);
-    return (u, options) => !E.isEither(u) ? PR.failure(PR.type(schema.ast, u)) : E.isLeft(u) ? PR.map(parseLeft(u.left, options), E.left) : PR.map(parseRight(u.right, options), E.right);
-  }, {
-    [AST.IdentifierAnnotationId]: "Either",
-    [I.PrettyHookId]: eitherPretty,
-    [I.ArbitraryHookId]: eitherArbitrary
-  });
-  return schema;
-};
+const Schema_transform = /*#__PURE__*/Function_dual(4, (from, to, decode, encode) => transformOrFail(from, to, a => Either_right(decode(a)), b => Either_right(encode(b))));
 /**
- * @category combinators
- * @since 1.0.0
- */
-const Schema_either = (left, right) => Schema_transform(eitherInline(left, right), to(eitherFromSelf(left, right)), a => a._tag === "Left" ? E.left(a.left) : E.right(a.right), E.match({
-  onLeft: left => ({
-    _tag: "Left",
-    left
-  }),
-  onRight: right => ({
-    _tag: "Right",
-    right
-  })
-}));
-// ---------------------------------------------
-// data/Json
-// ---------------------------------------------
-/**
- * @category type id
- * @since 1.0.0
- */
-const JsonNumberTypeId = "@effect/schema/JsonNumberTypeId";
-/**
- * The `JsonNumber` is a schema for representing JSON numbers. It ensures that the provided value is a valid
- * number by filtering out `NaN` and `(+/-) Infinity`. This is useful when you want to validate and represent numbers in JSON
- * format.
+ * Attaches a property signature with the specified key and value to the schema.
+ * This API is useful when you want to add a property to your schema which doesn't describe the shape of the input,
+ * but rather maps to another schema, for example when you want to add a discriminant to a simple union.
+ *
+ * @param self - The input schema.
+ * @param key - The name of the property to add to the schema.
+ * @param value - The value of the property to add to the schema.
  *
  * @example
  * import * as S from "@effect/schema/Schema"
+ * import { pipe } from "@effect/data/Function"
  *
- * const is = S.is(S.JsonNumber)
+ * const Circle = S.struct({ radius: S.number })
+ * const Square = S.struct({ sideLength: S.number })
+ * const Shape = S.union(
+ *   Circle.pipe(S.attachPropertySignature("kind", "circle")),
+ *   Square.pipe(S.attachPropertySignature("kind", "square"))
+ * )
  *
- * assert.deepStrictEqual(is(42), true)
- * assert.deepStrictEqual(is(Number.NaN), false)
- * assert.deepStrictEqual(is(Number.POSITIVE_INFINITY), false)
- * assert.deepStrictEqual(is(Number.NEGATIVE_INFINITY), false)
+ * assert.deepStrictEqual(S.decodeSync(Shape)({ radius: 10 }), {
+ *   kind: "circle",
+ *   radius: 10
+ * })
  *
- * @category constructors
- * @since 1.0.0
- */
-const JsonNumber = /*#__PURE__*/Schema_number.pipe( /*#__PURE__*/Schema_filter(n => !isNaN(n) && isFinite(n), {
-  typeId: JsonNumberTypeId,
-  description: "a JSON number"
-}));
-// ---------------------------------------------
-// data/Number
-// ---------------------------------------------
-/**
- * @category type id
- * @since 1.0.0
- */
-const FiniteTypeId = "@effect/schema/FiniteTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const finite = options => self => self.pipe(Schema_filter(a => Number.isFinite(a), {
-  typeId: FiniteTypeId,
-  description: "a finite number",
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const GreaterThanTypeId = "@effect/schema/GreaterThanTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const Schema_greaterThan = (min, options) => self => self.pipe(Schema_filter(a => a > min, {
-  typeId: GreaterThanTypeId,
-  description: `a number greater than ${min}`,
-  jsonSchema: {
-    exclusiveMinimum: min
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const GreaterThanOrEqualToTypeId = "@effect/schema/GreaterThanOrEqualToTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const Schema_greaterThanOrEqualTo = (min, options) => self => self.pipe(Schema_filter(a => a >= min, {
-  typeId: GreaterThanOrEqualToTypeId,
-  description: `a number greater than or equal to ${min}`,
-  jsonSchema: {
-    minimum: min
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const MultipleOfTypeId = "@effect/schema/MultipleOfTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const multipleOf = (divisor, options) => self => self.pipe(Schema_filter(a => N.remainder(a, divisor) === 0, {
-  typeId: MultipleOfTypeId,
-  description: `a number divisible by ${divisor}`,
-  jsonSchema: {
-    multipleOf: Math.abs(divisor)
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const IntTypeId = "@effect/schema/IntTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const Schema_int = options => self => self.pipe(Schema_filter(a => Number.isInteger(a), {
-  typeId: IntTypeId,
-  description: "integer",
-  jsonSchema: {
-    type: "integer"
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const LessThanTypeId = "@effect/schema/LessThanTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const Schema_lessThan = (max, options) => self => self.pipe(Schema_filter(a => a < max, {
-  typeId: LessThanTypeId,
-  description: `a number less than ${max}`,
-  jsonSchema: {
-    exclusiveMaximum: max
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const LessThanOrEqualToTypeId = "@effect/schema/LessThanOrEqualToTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const Schema_lessThanOrEqualTo = (max, options) => self => self.pipe(Schema_filter(a => a <= max, {
-  typeId: LessThanOrEqualToTypeId,
-  description: `a number less than or equal to ${max}`,
-  jsonSchema: {
-    maximum: max
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const BetweenTypeId = "@effect/schema/BetweenTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const Schema_between = (min, max, options) => self => self.pipe(Schema_filter(a => a >= min && a <= max, {
-  typeId: BetweenTypeId,
-  description: `a number between ${min} and ${max}`,
-  jsonSchema: {
-    maximum: max,
-    minimum: min
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const NonNaNTypeId = "@effect/schema/NonNaNTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const nonNaN = options => self => self.pipe(Schema_filter(a => !Number.isNaN(a), {
-  typeId: NonNaNTypeId,
-  description: "a number NaN excluded",
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const PositiveTypeId = "@effect/schema/PositiveTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const positive = options => Schema_greaterThan(0, {
-  typeId: PositiveTypeId,
-  description: "a positive number",
-  ...options
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const NegativeTypeId = "@effect/schema/NegativeTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const negative = options => Schema_lessThan(0, {
-  typeId: NegativeTypeId,
-  description: "a negative number",
-  ...options
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const NonNegativeTypeId = "@effect/schema/NonNegativeTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const nonNegative = options => Schema_greaterThanOrEqualTo(0, {
-  typeId: NonNegativeTypeId,
-  description: "a non-negative number",
-  ...options
-});
-/**
- * @category type id
- * @since 1.0.0
- */
-const NonPositiveTypeId = "@effect/schema/NonPositiveTypeId";
-/**
- * @category number
- * @since 1.0.0
- */
-const nonPositive = options => Schema_lessThanOrEqualTo(0, {
-  typeId: NonPositiveTypeId,
-  description: "a non-positive number",
-  ...options
-});
-/**
- * Clamps a number between a minimum and a maximum value.
- *
- * @category number
- * @since 1.0.0
- */
-const Schema_clamp = (min, max) => self => Schema_transform(self, self.pipe(to, Schema_between(min, max)), self => N.clamp(self, min, max),
-// this is safe because `self.pipe(to, between(min, max))` will check its input anyway
-identity);
-/**
- * This combinator transforms a `string` into a `number` by parsing the string using the `Number` function.
- *
- * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
- *
- * The following special string values are supported: "NaN", "Infinity", "-Infinity".
- *
- * @param self - The schema representing the input string
- *
- * @category number
- * @since 1.0.0
- */
-const numberFromString = self => {
-  const schema = transformResult(self, Schema_number, s => {
-    if (s === "NaN") {
-      return PR.success(NaN);
-    }
-    if (s === "Infinity") {
-      return PR.success(Infinity);
-    }
-    if (s === "-Infinity") {
-      return PR.success(-Infinity);
-    }
-    if (s.trim() === "") {
-      return PR.failure(PR.type(schema.ast, s));
-    }
-    const n = Number(s);
-    return isNaN(n) ? PR.failure(PR.type(schema.ast, s)) : PR.success(n);
-  }, n => PR.success(String(n)) // this is safe because `self` will check its input anyway
-  );
-
-  return schema;
-};
-/**
- * This schema transforms a `string` into a `number` by parsing the string using the `Number` function.
- *
- * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
- *
- * The following special string values are supported: "NaN", "Infinity", "-Infinity".
- *
- * @category number
- * @since 1.0.0
- */
-const NumberFromString = /*#__PURE__*/(/* unused pure expression or super */ null && (numberFromString(Schema_string)));
-// ---------------------------------------------
-// data/Object
-// ---------------------------------------------
-/**
- * @category type id
- * @since 1.0.0
- */
-const InstanceOfTypeId = "@effect/schema/InstanceOfTypeId";
-/**
- * @category constructors
- * @since 1.0.0
- */
-const Schema_instanceOf = (constructor, options) => {
-  const annotations = toAnnotations(options);
-  const schema = declare([], Schema_struct({}), () => input => input instanceof constructor ? PR.success(input) : PR.failure(PR.type(schema.ast, input)), {
-    [AST.TypeAnnotationId]: InstanceOfTypeId,
-    [InstanceOfTypeId]: {
-      constructor
-    },
-    [AST.DescriptionAnnotationId]: `an instance of ${constructor.name}`,
-    ...annotations
-  });
-  return schema;
-};
-// ---------------------------------------------
-// data/Option
-// ---------------------------------------------
-const optionArbitrary = value => fc => fc.oneof(fc.constant(Option_none()), value(fc).map(mjs_Option_some));
-const optionPretty = value => match({
-  onNone: () => "none()",
-  onSome: a => `some(${value(a)})`
-});
-const optionInline = value => Schema_union(Schema_struct({
-  _tag: literal("None")
-}), Schema_struct({
-  _tag: literal("Some"),
-  value
-}));
-/**
  * @category combinators
  * @since 1.0.0
  */
-const optionFromSelf = value => {
-  const schema = declare([value], optionInline(value), value => {
-    const parse = parseResult(value);
-    return (u, options) => !Option_isOption(u) ? failure(ParseResult_type(schema.ast, u)) : Option_isNone(u) ? success(Option_none()) : ParseResult_map(parse(u.value, options), mjs_Option_some);
-  }, {
-    [IdentifierAnnotationId]: "Option",
-    [PrettyHookId]: optionPretty,
-    [ArbitraryHookId]: optionArbitrary
-  });
-  return schema;
+const attachPropertySignature = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(3, (schema, key, value) => Schema_make(AST.createTransform(schema.ast, to(schema).pipe(Schema_extend(Schema_struct({
+  [key]: literal(value)
+}))).ast, AST.createTypeLiteralTransformation([AST.createPropertySignatureTransform(key, key, AST.createFinalPropertySignatureTransformation(() => Option.some(value), () => Option.none()))]))))));
+// ---------------------------------------------
+// annotations
+// ---------------------------------------------
+const toAnnotations = options => {
+  if (!options) {
+    return {};
+  }
+  const out = {};
+  // symbols are reserved for custom annotations
+  const custom = Object.getOwnPropertySymbols(options);
+  for (const sym of custom) {
+    out[sym] = options[sym];
+  }
+  // string keys are reserved as /schema namespace
+  if (options.typeId !== undefined) {
+    const typeId = options.typeId;
+    if (typeof typeId === "object") {
+      out[TypeAnnotationId] = typeId.id;
+      out[typeId.id] = typeId.params;
+    } else {
+      out[TypeAnnotationId] = typeId;
+    }
+  }
+  const move = (from, to) => {
+    if (options[from] !== undefined) {
+      out[to] = options[from];
+    }
+  };
+  move("message", MessageAnnotationId);
+  move("identifier", IdentifierAnnotationId);
+  move("title", TitleAnnotationId);
+  move("description", DescriptionAnnotationId);
+  move("examples", ExamplesAnnotationId);
+  move("documentation", DocumentationAnnotationId);
+  move("jsonSchema", JSONSchemaAnnotationId);
+  move("arbitrary", ArbitraryHookId);
+  return out;
 };
 /**
- * @category combinators
+ * @category annotations
  * @since 1.0.0
  */
-const Schema_option = value => Schema_transform(optionInline(value), to(optionFromSelf(value)), a => a._tag === "None" ? O.none() : O.some(a.value), O.match({
-  onNone: () => ({
-    _tag: "None"
-  }),
-  onSome: value => ({
-    _tag: "Some",
-    value
-  })
-}));
+const annotations = annotations => self => Schema_make(AST.mergeAnnotations(self.ast, annotations));
 /**
- * @category option
+ * @category annotations
  * @since 1.0.0
  */
-const optionFromNullable = value => Schema_transform(nullable(value), to(optionFromSelf(value)), O.fromNullable, O.getOrNull);
+const message = message => self => Schema_make(AST.setAnnotation(self.ast, AST.MessageAnnotationId, message));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+const identifier = identifier => self => Schema_make(AST.setAnnotation(self.ast, AST.IdentifierAnnotationId, identifier));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+const title = title => self => Schema_make(AST.setAnnotation(self.ast, AST.TitleAnnotationId, title));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+const description = description => self => Schema_make(AST.setAnnotation(self.ast, AST.DescriptionAnnotationId, description));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+const examples = examples => self => Schema_make(AST.setAnnotation(self.ast, AST.ExamplesAnnotationId, examples));
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+const documentation = documentation => self => Schema_make(AST.setAnnotation(self.ast, AST.DocumentationAnnotationId, documentation));
 // ---------------------------------------------
-// data/ReadonlyArray
-// ---------------------------------------------
-/**
- * @category type id
- * @since 1.0.0
- */
-const MinItemsTypeId = "@effect/schema/MinItemsTypeId";
-/**
- * @category array
- * @since 1.0.0
- */
-const minItems = (n, options) => self => self.pipe(Schema_filter(a => a.length >= n, {
-  typeId: MinItemsTypeId,
-  description: `an array of at least ${n} items`,
-  jsonSchema: {
-    minItems: n
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const MaxItemsTypeId = "@effect/schema/MaxItemsTypeId";
-/**
- * @category array
- * @since 1.0.0
- */
-const maxItems = (n, options) => self => self.pipe(Schema_filter(a => a.length <= n, {
-  typeId: MaxItemsTypeId,
-  description: `an array of at most ${n} items`,
-  jsonSchema: {
-    maxItems: n
-  },
-  ...options
-}));
-/**
- * @category type id
- * @since 1.0.0
- */
-const ItemsCountTypeId = "@effect/schema/ItemsCountTypeId";
-/**
- * @category array
- * @since 1.0.0
- */
-const itemsCount = (n, options) => self => self.pipe(Schema_filter(a => a.length === n, {
-  typeId: ItemsCountTypeId,
-  description: `an array of exactly ${n} items`,
-  jsonSchema: {
-    minItems: n,
-    maxItems: n
-  },
-  ...options
-}));
-// ---------------------------------------------
-// data/ReadonlyMap
-// ---------------------------------------------
-const isMap = u => u instanceof Map;
-const readonlyMapArbitrary = (key, value) => fc => fc.array(fc.tuple(key(fc), value(fc))).map(as => new Map(as));
-const readonlyMapPretty = (key, value) => map => `new Map([${Array.from(map.entries()).map(([k, v]) => `[${key(k)}, ${value(v)}]`).join(", ")}])`;
-/**
- * @category constructors
- * @since 1.0.0
- */
-const readonlyMapFromSelf = (key, value) => {
-  const schema = declare([key, value], Schema_struct({
-    size: Schema_number
-  }), (key, value) => {
-    const parse = P.parseResult(Schema_array(Schema_tuple(key, value)));
-    return (u, options) => !isMap(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(Array.from(u.entries()), options), as => new Map(as));
-  }, {
-    [AST.IdentifierAnnotationId]: "ReadonlyMap",
-    [I.PrettyHookId]: readonlyMapPretty,
-    [I.ArbitraryHookId]: readonlyMapArbitrary
-  });
-  return schema;
-};
-/**
- * @category combinators
- * @since 1.0.0
- */
-const readonlyMap = (key, value) => Schema_transform(Schema_array(Schema_tuple(key, value)), to(readonlyMapFromSelf(key, value)), as => new Map(as), map => Array.from(map.entries()));
-// ---------------------------------------------
-// data/ReadonlySet
-// ---------------------------------------------
-const isSet = u => u instanceof Set;
-const readonlySetArbitrary = item => fc => fc.array(item(fc)).map(as => new Set(as));
-const readonlySetPretty = item => set => `new Set([${Array.from(set.values()).map(a => item(a)).join(", ")}])`;
-/**
- * @category constructors
- * @since 1.0.0
- */
-const readonlySetFromSelf = item => {
-  const schema = declare([item], Schema_struct({
-    size: Schema_number
-  }), item => {
-    const parse = P.parseResult(Schema_array(item));
-    return (u, options) => !isSet(u) ? PR.failure(PR.type(schema.ast, u)) : PR.map(parse(Array.from(u.values()), options), as => new Set(as));
-  }, {
-    [AST.IdentifierAnnotationId]: "ReadonlySet",
-    [I.PrettyHookId]: readonlySetPretty,
-    [I.ArbitraryHookId]: readonlySetArbitrary
-  });
-  return schema;
-};
-/**
- * @category combinators
- * @since 1.0.0
- */
-const readonlySet = item => Schema_transform(Schema_array(item), to(readonlySetFromSelf(item)), as => new Set(as), set => Array.from(set));
-// ---------------------------------------------
-// data/String
+// string filters
 // ---------------------------------------------
 /**
  * @category type id
  * @since 1.0.0
  */
-const TrimmedTypeId = "@effect/schema/TrimmedTypeId";
+const TrimmedTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/Trimmed");
 /**
  * Verifies that a string contains no leading or trailing whitespaces.
  *
  * Note. This combinator does not make any transformations, it only validates.
  * If what you were looking for was a combinator to trim strings, then check out the `trim` combinator.
  *
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const trimmed = options => self => self.pipe(Schema_filter(a => a === a.trim(), {
@@ -48559,9 +48080,9 @@ const trimmed = options => self => self.pipe(Schema_filter(a => a === a.trim(), 
  * @category type id
  * @since 1.0.0
  */
-const MaxLengthTypeId = "@effect/schema/MaxLengthTypeId";
+const MaxLengthTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/MaxLength")));
 /**
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const maxLength = (maxLength, options) => self => self.pipe(Schema_filter(a => a.length <= maxLength, {
@@ -48576,9 +48097,9 @@ const maxLength = (maxLength, options) => self => self.pipe(Schema_filter(a => a
  * @category type id
  * @since 1.0.0
  */
-const MinLengthTypeId = "@effect/schema/MinLengthTypeId";
+const MinLengthTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/MinLength");
 /**
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const minLength = (minLength, options) => self => self.pipe(Schema_filter(a => a.length >= minLength, {
@@ -48593,9 +48114,9 @@ const minLength = (minLength, options) => self => self.pipe(Schema_filter(a => a
  * @category type id
  * @since 1.0.0
  */
-const PatternTypeId = "@effect/schema/PatternTypeId";
+const PatternTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/Pattern");
 /**
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const pattern = (regex, options) => self => {
@@ -48623,9 +48144,9 @@ const pattern = (regex, options) => self => {
  * @category type id
  * @since 1.0.0
  */
-const StartsWithTypeId = "@effect/schema/StartsWithTypeId";
+const StartsWithTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/StartsWith")));
 /**
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const startsWith = (startsWith, options) => self => self.pipe(Schema_filter(a => a.startsWith(startsWith), {
@@ -48645,9 +48166,9 @@ const startsWith = (startsWith, options) => self => self.pipe(Schema_filter(a =>
  * @category type id
  * @since 1.0.0
  */
-const EndsWithTypeId = "@effect/schema/EndsWithTypeId";
+const EndsWithTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/EndsWith")));
 /**
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const endsWith = (endsWith, options) => self => self.pipe(Schema_filter(a => a.endsWith(endsWith), {
@@ -48667,9 +48188,9 @@ const endsWith = (endsWith, options) => self => self.pipe(Schema_filter(a => a.e
  * @category type id
  * @since 1.0.0
  */
-const IncludesTypeId = "@effect/schema/IncludesTypeId";
+const IncludesTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/Includes")));
 /**
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const Schema_includes = (searchString, options) => self => self.pipe(Schema_filter(a => a.includes(searchString), {
@@ -48686,26 +48207,17 @@ const Schema_includes = (searchString, options) => self => self.pipe(Schema_filt
   ...options
 }));
 /**
- * This combinator allows removing whitespaces from the beginning and end of a string.
- *
- * @category string
- * @since 1.0.0
- */
-const trim = self => Schema_transform(self, to(self).pipe(trimmed()), s => s.trim(),
-// this is safe because `pipe(to(self), trimmed())` will check its input anyway
-Function_identity);
-/**
  * @category type id
  * @since 1.0.0
  */
-const LowercasedTypeId = "@effect/schema/LowercasedTypeId";
+const LowercasedTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/Lowercased")));
 /**
  * Verifies that a string is lowercased
  *
  * Note. This combinator does not make any transformations, it only validates.
  * If what you were looking for was a combinator to lowercase strings, then check out the `lowercase` combinator.
  *
- * @category string
+ * @category string filters
  * @since 1.0.0
  */
 const lowercased = options => self => self.pipe(Schema_filter(a => a === a.toLowerCase(), {
@@ -48714,104 +48226,1144 @@ const lowercased = options => self => self.pipe(Schema_filter(a => a === a.toLow
   ...options
 }));
 /**
+ * @category type id
+ * @since 1.0.0
+ */
+const LengthTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/Length")));
+/**
+ * @category string filters
+ * @since 1.0.0
+ */
+const Schema_length = (length, options) => self => self.pipe(Schema_filter(a => a.length === length, {
+  typeId: LengthTypeId,
+  description: length === 1 ? `a character` : `a string ${length} character(s) long`,
+  jsonSchema: {
+    minLength: length,
+    maxLength: length
+  },
+  ...options
+}));
+/**
+ * @category string filters
+ * @since 1.0.0
+ */
+const nonEmpty = options => minLength(1, {
+  description: "a non empty string",
+  ...options
+});
+// ---------------------------------------------
+// string transformations
+// ---------------------------------------------
+/**
  * This combinator converts a string to lowercase
  *
- * @category string
+ * @category string transformations
  * @since 1.0.0
  */
 const lowercase = self => Schema_transform(self, to(self).pipe(lowercased()), s => s.toLowerCase(), identity);
 /**
  * This combinator converts a string to lowercase
  *
- * @category string
+ * @category string transformations
  * @since 1.0.0
  */
 const Lowercase = /*#__PURE__*/(/* unused pure expression or super */ null && (lowercase(Schema_string)));
 /**
- * This schema allows removing whitespaces from the beginning and end of a string.
+ * This combinator allows removing whitespaces from the beginning and end of a string.
  *
- * @category string
+ * @category string transformations
  * @since 1.0.0
  */
-const Trim = /*#__PURE__*/(/* unused pure expression or super */ null && (trim(Schema_string)));
+const trim = self => Schema_transform(self, to(self).pipe(trimmed()), s => s.trim(), Function_identity);
 /**
  * This combinator allows splitting a string into an array of strings.
  *
- * @category string
+ * @category string transformations
  * @since 1.0.0
  */
-const Schema_split = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, separator) => Schema_transform(self, Schema_array(Schema_string), S.split(separator), RA.join(separator)))));
+const Schema_split = /*#__PURE__*/(/* unused pure expression or super */ null && (dual(2, (self, separator) => Schema_transform(self, Schema_array(Schema_string), S.split(separator), ReadonlyArray.join(separator)))));
+/**
+ * The `parseJson` combinator offers a method to convert JSON strings into the `unknown` type using the underlying
+ * functionality of `JSON.parse`. It also employs `JSON.stringify` for encoding.
+ *
+ * @category string transformations
+ * @since 1.0.0
+ */
+const parseJson = (self, options) => {
+  return transformOrFail(self, unknown, (s, _, ast) => {
+    try {
+      return ParseResult.success(JSON.parse(s, options?.reviver));
+    } catch (e) {
+      return ParseResult.failure(ParseResult.type(ast, s, e.message));
+    }
+  }, (u, _, ast) => {
+    try {
+      return ParseResult.success(JSON.stringify(u, options?.replacer, options?.space));
+    } catch (e) {
+      return ParseResult.failure(ParseResult.type(ast, u, e.message));
+    }
+  });
+};
+// ---------------------------------------------
+// string constructors
+// ---------------------------------------------
+/**
+ * @category string constructors
+ * @since 1.0.0
+ */
+const NonEmpty = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_string.pipe( /*#__PURE__*/nonEmpty())));
+/**
+ * @category string constructors
+ * @since 1.0.0
+ */
+const Trimmed = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_string.pipe( /*#__PURE__*/trimmed())));
 /**
  * @category type id
  * @since 1.0.0
  */
-const UUIDTypeId = "@effect/schema/UUIDTypeId";
+const UUIDTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/UUID");
 const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
 /**
- * @category constructors
+ * @category string constructors
  * @since 1.0.0
  */
 const UUID = /*#__PURE__*/Schema_string.pipe( /*#__PURE__*/pattern(uuidRegex, {
   typeId: UUIDTypeId,
   title: "UUID",
+  description: "a UUID",
   arbitrary: () => fc => fc.uuid()
 }));
 /**
  * @category type id
  * @since 1.0.0
  */
-const ULIDTypeId = "@effect/schema/ULIDTypeId";
+const ULIDTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/ULID");
 const ulidRegex = /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/i;
 /**
- * @category constructors
+ * @category string constructors
  * @since 1.0.0
  */
 const ULID = /*#__PURE__*/Schema_string.pipe( /*#__PURE__*/pattern(ulidRegex, {
   typeId: ULIDTypeId,
   title: "ULID",
+  description: "a ULID",
   arbitrary: () => fc => fc.ulid()
 }));
 /**
- * @category string
- * @since 1.0.0
- */
-const Schema_length = (length, options) => self => minLength(length, options)(maxLength(length)(self));
-/**
- * @category string
- * @since 1.0.0
- */
-const nonEmpty = options => minLength(1, options);
-/**
- * The `parseJson` combinator offers a method to convert JSON strings into the `unknown` type using the underlying
- * functionality of `JSON.parse`. It also employs `JSON.stringify` for encoding.
+ * This schema allows removing whitespaces from the beginning and end of a string.
  *
- * @category string
+ * @category string constructors
  * @since 1.0.0
  */
-const parseJson = (self, options) => {
-  const schema = transformResult(self, unknown, s => {
-    try {
-      return PR.success(JSON.parse(s, options?.reviver));
-    } catch (e) {
-      return PR.failure(PR.type(schema.ast, s, e.message));
-    }
-  }, u => {
-    try {
-      return PR.success(JSON.stringify(u, options?.replacer, options?.space)); // this is safe because `self` will check its input anyway
-    } catch (e) {
-      return PR.failure(PR.type(schema.ast, u, e.message));
-    }
-  });
-  return schema;
-};
+const Trim = /*#__PURE__*/(/* unused pure expression or super */ null && (trim(Schema_string)));
 /**
  * The `ParseJson` schema offers a method to convert JSON strings into the `unknown` type using the underlying
  * functionality of `JSON.parse`. It also employs `JSON.stringify` for encoding.
  *
- * @category string
+ * @category string constructors
  * @since 1.0.0
  */
 const ParseJson = /*#__PURE__*/(/* unused pure expression or super */ null && (parseJson(Schema_string)));
+// ---------------------------------------------
+// number filters
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const FiniteTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/Finite")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const finite = options => self => self.pipe(Schema_filter(a => Number.isFinite(a), {
+  typeId: FiniteTypeId,
+  description: "a finite number",
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const GreaterThanTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/GreaterThan")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const Schema_greaterThan = (min, options) => self => self.pipe(Schema_filter(a => a > min, {
+  typeId: GreaterThanTypeId,
+  description: min === 0 ? "a positive number" : `a number greater than ${min}`,
+  jsonSchema: {
+    exclusiveMinimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const GreaterThanOrEqualToTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/GreaterThanOrEqualTo")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const Schema_greaterThanOrEqualTo = (min, options) => self => self.pipe(Schema_filter(a => a >= min, {
+  typeId: GreaterThanOrEqualToTypeId,
+  description: min === 0 ? "a non-negative number" : `a number greater than or equal to ${min}`,
+  jsonSchema: {
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const MultipleOfTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/MultipleOf")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const multipleOf = (divisor, options) => self => self.pipe(Schema_filter(a => N.remainder(a, divisor) === 0, {
+  typeId: MultipleOfTypeId,
+  description: `a number divisible by ${divisor}`,
+  jsonSchema: {
+    multipleOf: Math.abs(divisor)
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const IntTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/Int")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const Schema_int = options => self => self.pipe(Schema_filter(a => Number.isInteger(a), {
+  typeId: IntTypeId,
+  description: "integer",
+  jsonSchema: {
+    type: "integer"
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const LessThanTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/LessThan")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const Schema_lessThan = (max, options) => self => self.pipe(Schema_filter(a => a < max, {
+  typeId: LessThanTypeId,
+  description: max === 0 ? "a negative number" : `a number less than ${max}`,
+  jsonSchema: {
+    exclusiveMaximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const LessThanOrEqualToTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/LessThanOrEqualTo")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const Schema_lessThanOrEqualTo = (max, options) => self => self.pipe(Schema_filter(a => a <= max, {
+  typeId: LessThanOrEqualToTypeId,
+  description: max === 0 ? "a non-positive number" : `a number less than or equal to ${max}`,
+  jsonSchema: {
+    maximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const BetweenTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/Between");
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const Schema_between = (min, max, options) => self => self.pipe(Schema_filter(a => a >= min && a <= max, {
+  typeId: BetweenTypeId,
+  description: `a number between ${min} and ${max}`,
+  jsonSchema: {
+    maximum: max,
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const NonNaNTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/NonNaN")));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const nonNaN = options => self => self.pipe(Schema_filter(a => !Number.isNaN(a), {
+  typeId: NonNaNTypeId,
+  description: "a number NaN excluded",
+  ...options
+}));
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const positive = options => Schema_greaterThan(0, options);
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const negative = options => Schema_lessThan(0, options);
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const nonPositive = options => Schema_lessThanOrEqualTo(0, options);
+/**
+ * @category number filters
+ * @since 1.0.0
+ */
+const nonNegative = options => Schema_greaterThanOrEqualTo(0, options);
+// ---------------------------------------------
+// number transformations
+// ---------------------------------------------
+/**
+ * Clamps a number between a minimum and a maximum value.
+ *
+ * @category number transformations
+ * @since 1.0.0
+ */
+const Schema_clamp = (min, max) => self => Schema_transform(self, self.pipe(to, Schema_between(min, max)), self => N.clamp(self, min, max), identity);
+/**
+ * This combinator transforms a `string` into a `number` by parsing the string using the `Number` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * The following special string values are supported: "NaN", "Infinity", "-Infinity".
+ *
+ * @param self - The schema representing the input string
+ *
+ * @category number transformations
+ * @since 1.0.0
+ */
+const numberFromString = self => {
+  return transformOrFail(self, Schema_number, (s, _, ast) => {
+    if (s === "NaN") {
+      return ParseResult.success(NaN);
+    }
+    if (s === "Infinity") {
+      return ParseResult.success(Infinity);
+    }
+    if (s === "-Infinity") {
+      return ParseResult.success(-Infinity);
+    }
+    if (s.trim() === "") {
+      return ParseResult.failure(ParseResult.type(ast, s));
+    }
+    const n = Number(s);
+    return isNaN(n) ? ParseResult.failure(ParseResult.type(ast, s)) : ParseResult.success(n);
+  }, n => ParseResult.success(String(n)));
+};
+// ---------------------------------------------
+// number constructors
+// ---------------------------------------------
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const Finite = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/finite())));
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const Int = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/Schema_int())));
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const NonNaN = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/nonNaN())));
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const Positive = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/positive())));
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const Negative = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/negative())));
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const NonPositive = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/nonPositive())));
+/**
+ * @category number constructors
+ * @since 1.0.0
+ */
+const NonNegative = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_number.pipe( /*#__PURE__*/nonNegative())));
+/**
+ * This schema transforms a `string` into a `number` by parsing the string using the `Number` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * The following special string values are supported: "NaN", "Infinity", "-Infinity".
+ *
+ * @category number constructors
+ * @since 1.0.0
+ */
+const NumberFromString = /*#__PURE__*/(/* unused pure expression or super */ null && (numberFromString(Schema_string)));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const JsonNumberTypeId = /*#__PURE__*/Symbol.for("@effect/schema/TypeId/JsonNumber");
+/**
+ * The `JsonNumber` is a schema for representing JSON numbers. It ensures that the provided value is a valid
+ * number by filtering out `NaN` and `(+/-) Infinity`. This is useful when you want to validate and represent numbers in JSON
+ * format.
+ *
+ * @example
+ * import * as S from "@effect/schema/Schema"
+ *
+ * const is = S.is(S.JsonNumber)
+ *
+ * assert.deepStrictEqual(is(42), true)
+ * assert.deepStrictEqual(is(Number.NaN), false)
+ * assert.deepStrictEqual(is(Number.POSITIVE_INFINITY), false)
+ * assert.deepStrictEqual(is(Number.NEGATIVE_INFINITY), false)
+ *
+ * @category number constructors
+ * @since 1.0.0
+ */
+const JsonNumber = /*#__PURE__*/Schema_number.pipe( /*#__PURE__*/Schema_filter(n => !isNaN(n) && isFinite(n), {
+  typeId: JsonNumberTypeId,
+  title: "JsonNumber",
+  description: "a JSON number"
+}));
+// ---------------------------------------------
+// boolean transformations
+// ---------------------------------------------
+/**
+ * Negates a boolean value
+ *
+ * @category boolean transformations
+ * @since 1.0.0
+ */
+const Schema_not = self => Schema_transform(self, to(self), self => !self, self => !self);
+// ---------------------------------------------
+// boolean constructors
+// ---------------------------------------------
+/**
+ * @category boolean constructors
+ * @since 1.0.0
+ */
+const Not = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_not(Schema_boolean)));
+// ---------------------------------------------
+// symbol transformations
+// ---------------------------------------------
+/**
+ * This combinator transforms a `string` into a `symbol`.
+ *
+ * @param self - The schema representing the input string
+ *
+ * @category symbol transformations
+ * @since 1.0.0
+ */
+const symbolFromString = self => {
+  return Schema_transform(self, symbolFromSelf, s => Symbol.for(s), sym => sym.description);
+};
+// ---------------------------------------------
+// symbol constructors
+// ---------------------------------------------
+/**
+ * This schema transforms a `string` into a `symbol`.
+ *
+ * @category symbol constructors
+ * @since 1.0.0
+ */
+const Schema_symbol = /*#__PURE__*/(/* unused pure expression or super */ null && (symbolFromString(Schema_string)));
+// ---------------------------------------------
+// bigint filters
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const GreaterThanBigintTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/GreaterThanBigint")));
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const greaterThanBigint = (min, options) => self => self.pipe(Schema_filter(a => a > min, {
+  typeId: GreaterThanBigintTypeId,
+  description: min === 0n ? "a positive bigint" : `a bigint greater than ${min}n`,
+  jsonSchema: {
+    exclusiveMinimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const GreaterThanOrEqualToBigintTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/GreaterThanOrEqualToBigint")));
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const greaterThanOrEqualToBigint = (min, options) => self => self.pipe(Schema_filter(a => a >= min, {
+  typeId: GreaterThanOrEqualToBigintTypeId,
+  description: min === 0n ? "a non-negative bigint" : `a bigint greater than or equal to ${min}n`,
+  jsonSchema: {
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const LessThanBigintTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/LessThanBigint")));
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const lessThanBigint = (max, options) => self => self.pipe(Schema_filter(a => a < max, {
+  typeId: LessThanBigintTypeId,
+  description: max === 0n ? "a negative bigint" : `a bigint less than ${max}n`,
+  jsonSchema: {
+    exclusiveMaximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const LessThanOrEqualToBigintTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/LessThanOrEqualToBigint")));
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const lessThanOrEqualToBigint = (max, options) => self => self.pipe(Schema_filter(a => a <= max, {
+  typeId: LessThanOrEqualToBigintTypeId,
+  description: max === 0n ? "a non-positive bigint" : `a bigint less than or equal to ${max}n`,
+  jsonSchema: {
+    maximum: max
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const BetweenBigintTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/BetweenBigint")));
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const betweenBigint = (min, max, options) => self => self.pipe(Schema_filter(a => a >= min && a <= max, {
+  typeId: BetweenBigintTypeId,
+  description: `a bigint between ${min}n and ${max}n`,
+  jsonSchema: {
+    maximum: max,
+    minimum: min
+  },
+  ...options
+}));
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const positiveBigint = options => greaterThanBigint(0n, options);
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const negativeBigint = options => lessThanBigint(0n, options);
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const nonNegativeBigint = options => greaterThanOrEqualToBigint(0n, options);
+/**
+ * @category bigint filters
+ * @since 1.0.0
+ */
+const nonPositiveBigint = options => lessThanOrEqualToBigint(0n, options);
+// ---------------------------------------------
+// bigint transformations
+// ---------------------------------------------
+/**
+ * Clamps a bigint between a minimum and a maximum value.
+ *
+ * @category bigint transformations
+ * @since 1.0.0
+ */
+const clampBigint = (min, max) => self => Schema_transform(self, self.pipe(to, betweenBigint(min, max)), self => Bigint.clamp(self, min, max), identity);
+/**
+ * This combinator transforms a `string` into a `bigint` by parsing the string using the `BigInt` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * @param self - The schema representing the input string
+ *
+ * @category bigint transformations
+ * @since 1.0.0
+ */
+const bigintFromString = self => {
+  return transformOrFail(self, bigintFromSelf, (s, _, ast) => {
+    if (s.trim() === "") {
+      return ParseResult.failure(ParseResult.type(ast, s));
+    }
+    try {
+      return ParseResult.success(BigInt(s));
+    } catch (_) {
+      return ParseResult.failure(ParseResult.type(ast, s));
+    }
+  }, n => ParseResult.success(String(n)));
+};
+/**
+ * This combinator transforms a `number` into a `bigint` by parsing the number using the `BigInt` function.
+ *
+ * It returns an error if the value can't be safely encoded as a `number` due to being out of range.
+ *
+ * @param self - The schema representing the input number
+ *
+ * @category bigint transformations
+ * @since 1.0.0
+ */
+const bigintFromNumber = self => {
+  return transformOrFail(self, bigintFromSelf, (n, _, ast) => {
+    try {
+      return ParseResult.success(BigInt(n));
+    } catch (_) {
+      return ParseResult.failure(ParseResult.type(ast, n));
+    }
+  }, (b, _, ast) => {
+    if (b > Internal.maxSafeInteger || b < Internal.minSafeInteger) {
+      return ParseResult.failure(ParseResult.type(ast, b));
+    }
+    return ParseResult.success(Number(b));
+  });
+};
+// ---------------------------------------------
+// bigint constructors
+// ---------------------------------------------
+/**
+ * This schema transforms a `string` into a `bigint` by parsing the string using the `BigInt` function.
+ *
+ * It returns an error if the value can't be converted (for example when non-numeric characters are provided).
+ *
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const Schema_bigint = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromString(Schema_string)));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const PositiveBigintFromSelf = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromSelf.pipe( /*#__PURE__*/positiveBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const PositiveBigint = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_bigint.pipe( /*#__PURE__*/positiveBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const NegativeBigintFromSelf = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromSelf.pipe( /*#__PURE__*/negativeBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const NegativeBigint = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_bigint.pipe( /*#__PURE__*/negativeBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const NonPositiveBigintFromSelf = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromSelf.pipe( /*#__PURE__*/nonPositiveBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const NonPositiveBigint = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_bigint.pipe( /*#__PURE__*/nonPositiveBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const NonNegativeBigintFromSelf = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromSelf.pipe( /*#__PURE__*/nonNegativeBigint())));
+/**
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const NonNegativeBigint = /*#__PURE__*/(/* unused pure expression or super */ null && (Schema_bigint.pipe( /*#__PURE__*/nonNegativeBigint())));
+/**
+ * This schema transforms a `number` into a `bigint` by parsing the number using the `BigInt` function.
+ *
+ * It returns an error if the value can't be safely encoded as a `number` due to being out of range.
+ *
+ * @category bigint constructors
+ * @since 1.0.0
+ */
+const BigintFromNumber = /*#__PURE__*/(/* unused pure expression or super */ null && (bigintFromNumber(Schema_number)));
+// ---------------------------------------------
+// Uint8Array constructors
+// ---------------------------------------------
+/**
+ * @category Uint8Array constructors
+ * @since 1.0.0
+ */
+const Uint8ArrayFromSelf = /*#__PURE__*/declare([], /*#__PURE__*/Schema_struct({}), () => (u, _, ast) => !isUint8Array(u) ? failure(ParseResult_type(ast, u)) : success(u), {
+  [IdentifierAnnotationId]: "Uint8Array",
+  [PrettyHookId]: () => u8arr => `new Uint8Array(${JSON.stringify(Array.from(u8arr))})`,
+  [ArbitraryHookId]: () => fc => fc.uint8Array()
+});
+// ---------------------------------------------
+// Uint8Array transformations
+// ---------------------------------------------
+/**
+ * A combinator that transforms a `number` array into a `Uint8Array`.
+ *
+ * @category Uint8Array transformations
+ * @since 1.0.0
+ */
+const uint8ArrayFromNumbers = self => Schema_transform(self, Uint8ArrayFromSelf, a => Uint8Array.from(a), n => Array.from(n));
+const _Uint8Array = /*#__PURE__*/uint8ArrayFromNumbers( /*#__PURE__*/Schema_array( /*#__PURE__*/Schema_number.pipe( /*#__PURE__*/Schema_between(0, 255, {
+  title: "8-bit unsigned integer",
+  description: "a 8-bit unsigned integer"
+}))));
+
+// ---------------------------------------------
+// Encoding transformations
+// ---------------------------------------------
+const makeEncodingTransform = (id, decode, encode, arbitrary) => self => transformOrFail(self, Uint8ArrayFromSelf, (s, _, ast) => mapLeft(decode(s), decodeException => parseError([ParseResult_type(ast, s, decodeException.message)])), u => success(encode(u)), {
+  [IdentifierAnnotationId]: id,
+  [PrettyHookId]: () => u => `${id}(${encode(u)})`,
+  [ArbitraryHookId]: () => arbitrary
+});
+/**
+ * Transforms a base64 `string` into a `Uint8Array`.
+ *
+ * @category encoding transformations
+ * @since 1.0.0
+ */
+const base64 = /*#__PURE__*/makeEncodingTransform("Base64", decodeBase64, encodeBase64, fc => fc.base64String().map(s => Either_getOrThrow(decodeBase64(s))));
+/**
+ * Transforms a base64url `string` into a `Uint8Array`.
+ *
+ * @category encoding transformations
+ * @since 1.0.0
+ */
+const base64url = /*#__PURE__*/makeEncodingTransform("Base64Url", decodeBase64Url, encodeBase64Url, fc => fc.base64String().map(s => Either_getOrThrow(decodeBase64Url(s))));
+/**
+ * Transforms a hex `string` into a `Uint8Array`.
+ *
+ * @category encoding transformations
+ * @since 1.0.0
+ */
+const hex = /*#__PURE__*/makeEncodingTransform("Hex", decodeHex, encodeHex, fc => fc.hexaString().map(s => Either_getOrThrow(decodeHex(s))));
+// ---------------------------------------------
+// Encoding constructors
+// ---------------------------------------------
+/**
+ * @category encoding constructors
+ * @since 1.0.0
+ */
+const Base64 = /*#__PURE__*/(/* unused pure expression or super */ null && (base64(Schema_string)));
+/**
+ * @category encoding constructors
+ * @since 1.0.0
+ */
+const Base64Url = /*#__PURE__*/(/* unused pure expression or super */ null && (base64url(Schema_string)));
+/**
+ * @category encoding constructors
+ * @since 1.0.0
+ */
+const Hex = /*#__PURE__*/(/* unused pure expression or super */ null && (hex(Schema_string)));
+// ---------------------------------------------
+// ReadonlyArray filters
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const MinItemsTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/MinItems")));
+/**
+ * @category ReadonlyArray filters
+ * @since 1.0.0
+ */
+const minItems = (n, options) => self => self.pipe(Schema_filter(a => a.length >= n, {
+  typeId: MinItemsTypeId,
+  description: `an array of at least ${n} items`,
+  jsonSchema: {
+    minItems: n
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const MaxItemsTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/MaxItems")));
+/**
+ * @category ReadonlyArray filters
+ * @since 1.0.0
+ */
+const maxItems = (n, options) => self => self.pipe(Schema_filter(a => a.length <= n, {
+  typeId: MaxItemsTypeId,
+  description: `an array of at most ${n} items`,
+  jsonSchema: {
+    maxItems: n
+  },
+  ...options
+}));
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const ItemsCountTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/ItemsCount")));
+/**
+ * @category ReadonlyArray filters
+ * @since 1.0.0
+ */
+const itemsCount = (n, options) => self => self.pipe(Schema_filter(a => a.length === n, {
+  typeId: ItemsCountTypeId,
+  description: `an array of exactly ${n} items`,
+  jsonSchema: {
+    minItems: n,
+    maxItems: n
+  },
+  ...options
+}));
+// ---------------------------------------------
+// Date filters
+// ---------------------------------------------
+/**
+ * @category type id
+ * @since 1.0.0
+ */
+const ValidDateTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/schema/TypeId/ValidDate")));
+/**
+ * A filter excluding invalid dates (e.g. `new Date("fail")`).
+ *
+ * @category Date filters
+ * @since 1.0.0
+ */
+const validDate = options => self => self.pipe(Schema_filter(a => !isNaN(a.getTime()), {
+  typeId: ValidDateTypeId,
+  description: "a valid Date",
+  ...options
+}));
+// ---------------------------------------------
+// Date constructors
+// ---------------------------------------------
+const dateArbitrary = () => fc => fc.date();
+const datePretty = () => date => `new Date(${JSON.stringify(date)})`;
+/**
+ * @category Date constructors
+ * @since 1.0.0
+ */
+const DateFromSelf = /*#__PURE__*/declare([], /*#__PURE__*/Schema_struct({}), () => (u, _, ast) => !isDate(u) ? failure(ParseResult_type(ast, u)) : success(u), {
+  [IdentifierAnnotationId]: "Date",
+  [PrettyHookId]: datePretty,
+  [ArbitraryHookId]: dateArbitrary
+});
+/**
+ * A schema representing valid dates, e.g. `new Date("fail")` is excluded, even though it is an instance of `Date`.
+ *
+ * @category Date constructors
+ * @since 1.0.0
+ */
+const ValidDateFromSelf = /*#__PURE__*/(/* unused pure expression or super */ null && (DateFromSelf.pipe( /*#__PURE__*/validDate())));
+// ---------------------------------------------
+// Date transformations
+// ---------------------------------------------
+/**
+ * A combinator that transforms a `string` into a valid `Date`.
+ *
+ * @category Date transformations
+ * @since 1.0.0
+ */
+const dateFromString = self => Schema_transform(self, ValidDateFromSelf, s => new Date(s), n => n.toISOString());
+const _Date = /*#__PURE__*/(/* unused pure expression or super */ null && (dateFromString(Schema_string)));
+/**
+ * A schema representing valid dates, e.g. `new Date("fail")` is excluded, even though it is an instance of `Date`.
+ *
+ * @category Date constructors
+ * @since 1.0.0
+ */
+const ValidDate = /*#__PURE__*/(/* unused pure expression or super */ null && (_Date.pipe( /*#__PURE__*/validDate())));
+
+// ---------------------------------------------
+// Option transformations
+// ---------------------------------------------
+const optionArbitrary = value => fc => fc.oneof(fc.constant(Option_none()), value(fc).map(mjs_Option_some));
+const optionPretty = value => match({
+  onNone: () => "none()",
+  onSome: a => `some(${value(a)})`
+});
+const optionInline = value => Schema_union(Schema_struct({
+  _tag: literal("None")
+}), Schema_struct({
+  _tag: literal("Some"),
+  value
+}));
+/**
+ * @category Option transformations
+ * @since 1.0.0
+ */
+const optionFromSelf = value => {
+  return declare([value], optionInline(value), (isDecoding, value) => {
+    const parse = isDecoding ? parseResult(value) : encodeResult(value);
+    return (u, options, ast) => !Option_isOption(u) ? failure(ParseResult_type(ast, u)) : Option_isNone(u) ? success(Option_none()) : ParseResult_map(parse(u.value, options), mjs_Option_some);
+  }, {
+    [IdentifierAnnotationId]: "Option",
+    [PrettyHookId]: optionPretty,
+    [ArbitraryHookId]: optionArbitrary
+  });
+};
+/**
+ * @category Option transformations
+ * @since 1.0.0
+ */
+const Schema_option = value => Schema_transform(optionInline(value), to(optionFromSelf(value)), a => a._tag === "None" ? Option.none() : Option.some(a.value), Option.match({
+  onNone: () => ({
+    _tag: "None"
+  }),
+  onSome: value => ({
+    _tag: "Some",
+    value
+  })
+}));
+/**
+ * @category Option transformations
+ * @since 1.0.0
+ */
+const optionFromNullable = value => Schema_transform(nullable(value), to(optionFromSelf(value)), Option.fromNullable, Option.getOrNull);
+// ---------------------------------------------
+// Either transformations
+// ---------------------------------------------
+const eitherArbitrary = (left, right) => fc => fc.oneof(left(fc).map(Either.left), right(fc).map(Either.right));
+const eitherPretty = (left, right) => Either.match({
+  onLeft: e => `left(${left(e)})`,
+  onRight: a => `right(${right(a)})`
+});
+const eitherInline = (left, right) => Schema_union(Schema_struct({
+  _tag: literal("Left"),
+  left
+}), Schema_struct({
+  _tag: literal("Right"),
+  right
+}));
+/**
+ * @category Either transformations
+ * @since 1.0.0
+ */
+const eitherFromSelf = (left, right) => {
+  return declare([left, right], eitherInline(left, right), (isDecoding, left, right) => {
+    const parseLeft = isDecoding ? Parser.parseResult(left) : Parser.encodeResult(left);
+    const parseRight = isDecoding ? Parser.parseResult(right) : Parser.encodeResult(right);
+    return (u, options, ast) => !Either.isEither(u) ? ParseResult.failure(ParseResult.type(ast, u)) : Either.isLeft(u) ? ParseResult.map(parseLeft(u.left, options), Either.left) : ParseResult.map(parseRight(u.right, options), Either.right);
+  }, {
+    [AST.IdentifierAnnotationId]: "Either",
+    [Internal.PrettyHookId]: eitherPretty,
+    [Internal.ArbitraryHookId]: eitherArbitrary
+  });
+};
+/**
+ * @category Either transformations
+ * @since 1.0.0
+ */
+const Schema_either = (left, right) => Schema_transform(eitherInline(left, right), to(eitherFromSelf(left, right)), a => a._tag === "Left" ? Either.left(a.left) : Either.right(a.right), Either.match({
+  onLeft: left => ({
+    _tag: "Left",
+    left
+  }),
+  onRight: right => ({
+    _tag: "Right",
+    right
+  })
+}));
+// ---------------------------------------------
+// ReadonlyMap transformations
+// ---------------------------------------------
+const isMap = u => u instanceof Map;
+const readonlyMapArbitrary = (key, value) => fc => fc.array(fc.tuple(key(fc), value(fc))).map(as => new Map(as));
+const readonlyMapPretty = (key, value) => map => `new Map([${Array.from(map.entries()).map(([k, v]) => `[${key(k)}, ${value(v)}]`).join(", ")}])`;
+/**
+ * @category ReadonlyMap transformations
+ * @since 1.0.0
+ */
+const readonlyMapFromSelf = (key, value) => {
+  return declare([key, value], Schema_struct({
+    size: Schema_number
+  }), (isDecoding, key, value) => {
+    const parse = isDecoding ? Parser.parseResult(Schema_array(Schema_tuple(key, value))) : Parser.encodeResult(Schema_array(Schema_tuple(key, value)));
+    return (u, options, ast) => !isMap(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(Array.from(u.entries()), options), as => new Map(as));
+  }, {
+    [AST.IdentifierAnnotationId]: "ReadonlyMap",
+    [Internal.PrettyHookId]: readonlyMapPretty,
+    [Internal.ArbitraryHookId]: readonlyMapArbitrary
+  });
+};
+/**
+ * @category ReadonlyMap transformations
+ * @since 1.0.0
+ */
+const readonlyMap = (key, value) => Schema_transform(Schema_array(Schema_tuple(key, value)), to(readonlyMapFromSelf(key, value)), as => new Map(as), map => Array.from(map.entries()));
+// ---------------------------------------------
+// ReadonlySet transformations
+// ---------------------------------------------
+const isSet = u => u instanceof Set;
+const readonlySetArbitrary = item => fc => fc.array(item(fc)).map(as => new Set(as));
+const readonlySetPretty = item => set => `new Set([${Array.from(set.values()).map(a => item(a)).join(", ")}])`;
+/**
+ * @category ReadonlySet transformations
+ * @since 1.0.0
+ */
+const readonlySetFromSelf = item => {
+  return declare([item], Schema_struct({
+    size: Schema_number
+  }), (isDecoding, item) => {
+    const parse = isDecoding ? Parser.parseResult(Schema_array(item)) : Parser.encodeResult(Schema_array(item));
+    return (u, options, ast) => !isSet(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(Array.from(u.values()), options), as => new Set(as));
+  }, {
+    [AST.IdentifierAnnotationId]: "ReadonlySet",
+    [Internal.PrettyHookId]: readonlySetPretty,
+    [Internal.ArbitraryHookId]: readonlySetArbitrary
+  });
+};
+/**
+ * @category ReadonlySet transformations
+ * @since 1.0.0
+ */
+const readonlySet = item => Schema_transform(Schema_array(item), to(readonlySetFromSelf(item)), as => new Set(as), set => Array.from(set));
+// ---------------------------------------------
+// Chunk transformations
+// ---------------------------------------------
+const chunkArbitrary = item => fc => fc.array(item(fc)).map(Chunk.fromIterable);
+const chunkPretty = item => c => `Chunk(${Chunk.toReadonlyArray(c).map(item).join(", ")})`;
+/**
+ * @category Chunk transformations
+ * @since 1.0.0
+ */
+const chunkFromSelf = item => {
+  return declare([item], Schema_struct({
+    _id: uniqueSymbol(Symbol.for("@effect/data/Chunk")),
+    length: Schema_number
+  }), (isDecoding, item) => {
+    const parse = isDecoding ? Parser.parseResult(Schema_array(item)) : Parser.encodeResult(Schema_array(item));
+    return (u, options, ast) => !Chunk.isChunk(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(Chunk.toReadonlyArray(u), options), Chunk.fromIterable);
+  }, {
+    [AST.IdentifierAnnotationId]: "Chunk",
+    [Internal.PrettyHookId]: chunkPretty,
+    [Internal.ArbitraryHookId]: chunkArbitrary
+  });
+};
+/**
+ * @category Chunk transformations
+ * @since 1.0.0
+ */
+const Schema_chunk = item => Schema_transform(Schema_array(item), to(chunkFromSelf(item)), Chunk.fromIterable, Chunk.toReadonlyArray);
+// ---------------------------------------------
+// Data transformations
+// ---------------------------------------------
+const toData = a => Array.isArray(a) ? Data.array(a) : Data.struct(a);
+const dataArbitrary = item => fc => item(fc).map(toData);
+const dataPretty = item => d => `Data(${item(d)})`;
+/**
+ * @category Data transformations
+ * @since 1.0.0
+ */
+const dataFromSelf = item => {
+  return declare([item], item, (isDecoding, item) => {
+    const parse = isDecoding ? Parser.parseResult(item) : Parser.encodeResult(item);
+    return (u, options, ast) => !Equal.isEqual(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(u, options), toData);
+  }, {
+    [AST.IdentifierAnnotationId]: "Data",
+    [Internal.PrettyHookId]: dataPretty,
+    [Internal.ArbitraryHookId]: dataArbitrary
+  });
+};
+/**
+ * @category Data transformations
+ * @since 1.0.0
+ */
+const data = item => Schema_transform(item, to(dataFromSelf(item)), toData, a => Array.isArray(a) ? Array.from(a) : Object.assign({}, a));
+/**
+ * @category classes
+ * @since 1.0.0
+ */
+const Schema_Class = () => fields => makeClass(Schema_struct(fields), fields, Data.Class.prototype);
+const makeClass = (selfSchema, selfFields, base) => {
+  const validator = Parser.validateSync(selfSchema);
+  const fn = function (props) {
+    Object.assign(this, validator(props));
+  };
+  fn.prototype = Object.create(base);
+  fn[Schema_TypeId] = Schema_variance;
+  fn.pipe = function pipe() {
+    return pipeArguments(this, arguments);
+  };
+  Object.defineProperty(fn, "ast", {
+    get() {
+      if (this._ast) {
+        return this._ast;
+      }
+      const toSchema = to(selfSchema);
+      this._ast = Schema_transform(selfSchema, declare([toSchema], toSchema, () => (input, _, ast) => input instanceof this ? ParseResult.success(input) : ParseResult.failure(ParseResult.type(ast, input)), {
+        [AST.DescriptionAnnotationId]: `an instance of ${this.name}`,
+        [Internal.ArbitraryHookId]: struct => fc => struct(fc).map(props => new this(props))
+      }), input => Object.assign(Object.create(this.prototype), input), input => ({
+        ...input
+      })).ast;
+      return this._ast;
+    }
+  });
+  fn.struct = selfSchema;
+  fn.extend = function () {
+    return fields => {
+      const newFields = {
+        ...selfFields,
+        ...fields
+      };
+      return makeClass(Schema_struct(newFields), newFields, this.prototype);
+    };
+  };
+  fn.transform = function () {
+    return (fields, decode, encode) => {
+      const newFields = {
+        ...selfFields,
+        ...fields
+      };
+      return makeClass(transformOrFail(selfSchema, to(Schema_struct(newFields)), decode, encode), newFields, this.prototype);
+    };
+  };
+  fn.transformFrom = function () {
+    return (fields, decode, encode) => {
+      const newFields = {
+        ...selfFields,
+        ...fields
+      };
+      return makeClass(transformOrFail(Schema_from(selfSchema), Schema_struct(newFields), decode, encode), newFields, this.prototype);
+    };
+  };
+  return fn;
+};
 //# sourceMappingURL=Schema.mjs.map
 ;// CONCATENATED MODULE: ./src/envvars.ts
 
@@ -48935,7 +49487,7 @@ const debugVariables = () => {
     lib_core.debug(`GITHUB_ACTOR_ID: ${GITHUB_ACTOR_ID}`);
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.1_@effect+data@0.18.5/node_modules/@effect/io/mjs/Schedule.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+io@0.40.3_@effect+data@0.18.5/node_modules/@effect/io/mjs/Schedule.mjs
 
 /**
  * @since 1.0.0
