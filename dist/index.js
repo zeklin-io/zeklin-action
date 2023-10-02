@@ -15051,6 +15051,14 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 2382:
+/***/ ((module) => {
+
+module.exports = eval("require")("effect/Encoding");
+
+
+/***/ }),
+
 /***/ 5543:
 /***/ ((module) => {
 
@@ -44778,432 +44786,7 @@ const Effect_optionFromOptional = optionFromOptional;
 const utils_logInfo = (message) => Effect_sync(() => lib_core.info(message));
 const utils_logDebug = (message) => Effect_sync(() => lib_core.debug(`-- ${message}`));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Brand.mjs
-/**
- * This module provides types and utility functions to create and work with branded types,
- * which are TypeScript types with an added type tag to prevent accidental usage of a value in the wrong context.
- *
- * The `refined` and `nominal` functions are both used to create branded types in TypeScript.
- * The main difference between them is that `refined` allows for validation of the data, while `nominal` does not.
- *
- * The `nominal` function is used to create a new branded type that has the same underlying type as the input, but with a different name.
- * This is useful when you want to distinguish between two values of the same type that have different meanings.
- * The `nominal` function does not perform any validation of the input data.
- *
- * On the other hand, the `refined` function is used to create a new branded type that has the same underlying type as the input,
- * but with a different name, and it also allows for validation of the input data.
- * The `refined` function takes a predicate that is used to validate the input data.
- * If the input data fails the validation, a `BrandErrors` is returned, which provides information about the specific validation failure.
- *
- * @since 1.0.0
- */
-
-
-
-
-/**
- * @since 1.0.0
- * @category symbols
- */
-const BrandTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/data/Brand")));
-/**
- * @since 1.0.0
- * @category symbols
- */
-const RefinedConstructorsTypeId = /*#__PURE__*/Symbol.for("@effect/data/Brand/Refined");
-/**
- * Returns a `BrandErrors` that contains a single `RefinementError`.
- *
- * @since 1.0.0
- * @category constructors
- */
-const error = (message, meta) => [{
-  message,
-  meta
-}];
-/**
- * Takes a variable number of `BrandErrors` and returns a single `BrandErrors` that contains all refinement errors.
- *
- * @since 1.0.0
- * @category constructors
- */
-const errors = (...errors) => ReadonlyArray.flatten(errors);
-/**
- * Returns a `Brand.Constructor` that can construct a branded type from an unbranded value using the provided `refinement`
- * predicate as validation of the input data.
- *
- * If you don't want to perform any validation but only distinguish between two values of the same type but with different meanings,
- * see {@link nominal}.
- *
- * @param refinement - The refinement predicate to apply to the unbranded value.
- * @param onFailure - Takes the unbranded value that did not pass the `refinement` predicate and returns a `BrandErrors`.
- *
- * @example
- * import * as Brand from "@effect/data/Brand"
- *
- * type Int = number & Brand.Brand<"Int">
- *
- * const Int = Brand.refined<Int>(
- *   (n) => Number.isInteger(n),
- *   (n) => Brand.error(`Expected ${n} to be an integer`)
- * )
- *
- * assert.strictEqual(Int(1), 1)
- * assert.throws(() => Int(1.1))
- *
- * @since 1.0.0
- * @category constructors
- */
-const refined = (refinement, onFailure) => {
-  const either = args => refinement(args) ? Either.right(args) : Either.left(onFailure(args));
-  // @ts-expect-error
-  return Object.assign(args => Either.match(either(args), {
-    onLeft: e => {
-      throw e;
-    },
-    onRight: identity
-  }), {
-    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: args => Option.getRight(either(args)),
-    either,
-    is: args => Either.isRight(either(args))
-  });
-};
-/**
- * This function returns a `Brand.Constructor` that **does not apply any runtime checks**, it just returns the provided value.
- * It can be used to create nominal types that allow distinguishing between two values of the same type but with different meanings.
- *
- * If you also want to perform some validation, see {@link refined}.
- *
- * @example
- * import * as Brand from "@effect/data/Brand"
- *
- * type UserId = number & Brand.Brand<"UserId">
- *
- * const UserId = Brand.nominal<UserId>()
- *
- * assert.strictEqual(UserId(1), 1)
- *
- * @since 1.0.0
- * @category constructors
- */
-const nominal = () => {
-  // @ts-expect-error
-  return Object.assign(args => args, {
-    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: args => Option.some(args),
-    either: args => Either.right(args),
-    is: _args => true
-  });
-};
-/**
- * Combines two or more brands together to form a single branded type.
- * This API is useful when you want to validate that the input data passes multiple brand validators.
- *
- * @example
- * import * as Brand from "@effect/data/Brand"
- *
- * type Int = number & Brand.Brand<"Int">
- * const Int = Brand.refined<Int>(
- *   (n) => Number.isInteger(n),
- *   (n) => Brand.error(`Expected ${n} to be an integer`)
- * )
- * type Positive = number & Brand.Brand<"Positive">
- * const Positive = Brand.refined<Positive>(
- *   (n) => n > 0,
- *   (n) => Brand.error(`Expected ${n} to be positive`)
- * )
- *
- * const PositiveInt = Brand.all(Int, Positive)
- *
- * assert.strictEqual(PositiveInt(1), 1)
- * assert.throws(() => PositiveInt(1.1))
- *
- * @since 1.0.0
- * @category combining
- */
-const Brand_all = (...brands) => {
-  const either = args => {
-    let result = Either.right(args);
-    for (const brand of brands) {
-      const nextResult = brand.either(args);
-      if (Either.isLeft(result) && Either.isLeft(nextResult)) {
-        result = Either.left([...result.left, ...nextResult.left]);
-      } else {
-        result = Either.isLeft(result) ? result : nextResult;
-      }
-    }
-    return result;
-  };
-  // @ts-expect-error
-  return Object.assign(args => Either.match(either(args), {
-    onLeft: e => {
-      throw e;
-    },
-    onRight: identity
-  }), {
-    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: args => Option.getRight(either(args)),
-    either,
-    is: args => Either.isRight(either(args))
-  });
-};
-//# sourceMappingURL=Brand.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Common.mjs
-/** @internal */
-const DecodeExceptionTypeId = /*#__PURE__*/Symbol.for("@effect/data/Encoding/errors/Decode");
-/** @internal */
-const DecodeException = (input, message) => ({
-  _tag: "DecodeException",
-  [DecodeExceptionTypeId]: DecodeExceptionTypeId,
-  input,
-  message
-});
-/** @internal */
-const isDecodeException = u => typeof u === "object" && u != null && DecodeExceptionTypeId in u;
-/** @interal */
-const encoder = /*#__PURE__*/new TextEncoder();
-/** @interal */
-const decoder = /*#__PURE__*/new TextDecoder();
-//# sourceMappingURL=Common.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Base64.mjs
-
-
-/** @internal */
-const encode = bytes => {
-  const length = bytes.length;
-  let result = "";
-  let i;
-  for (i = 2; i < length; i += 3) {
-    result += base64abc[bytes[i - 2] >> 2];
-    result += base64abc[(bytes[i - 2] & 0x03) << 4 | bytes[i - 1] >> 4];
-    result += base64abc[(bytes[i - 1] & 0x0f) << 2 | bytes[i] >> 6];
-    result += base64abc[bytes[i] & 0x3f];
-  }
-  if (i === length + 1) {
-    // 1 octet yet to write
-    result += base64abc[bytes[i - 2] >> 2];
-    result += base64abc[(bytes[i - 2] & 0x03) << 4];
-    result += "==";
-  }
-  if (i === length) {
-    // 2 octets yet to write
-    result += base64abc[bytes[i - 2] >> 2];
-    result += base64abc[(bytes[i - 2] & 0x03) << 4 | bytes[i - 1] >> 4];
-    result += base64abc[(bytes[i - 1] & 0x0f) << 2];
-    result += "=";
-  }
-  return result;
-};
-/** @internal */
-const Base64_decode = str => {
-  const length = str.length;
-  if (length % 4 !== 0) {
-    return Either_left(DecodeException(str, `Length must be a multiple of 4, but is ${length}`));
-  }
-  const index = str.indexOf("=");
-  if (index !== -1 && (index < length - 2 || index === length - 2 && str[length - 1] !== "=")) {
-    return Either_left(DecodeException(str, "Found a '=' character, but it is not at the end"));
-  }
-  try {
-    const missingOctets = str.endsWith("==") ? 2 : str.endsWith("=") ? 1 : 0;
-    const result = new Uint8Array(3 * (length / 4));
-    for (let i = 0, j = 0; i < length; i += 4, j += 3) {
-      const buffer = getBase64Code(str.charCodeAt(i)) << 18 | getBase64Code(str.charCodeAt(i + 1)) << 12 | getBase64Code(str.charCodeAt(i + 2)) << 6 | getBase64Code(str.charCodeAt(i + 3));
-      result[j] = buffer >> 16;
-      result[j + 1] = buffer >> 8 & 0xff;
-      result[j + 2] = buffer & 0xff;
-    }
-    return Either_right(result.subarray(0, result.length - missingOctets));
-  } catch (e) {
-    return Either_left(DecodeException(str, e instanceof Error ? e.message : "Invalid input"));
-  }
-};
-/** @internal */
-function getBase64Code(charCode) {
-  if (charCode >= base64codes.length) {
-    throw new TypeError(`Invalid character ${String.fromCharCode(charCode)}`);
-  }
-  const code = base64codes[charCode];
-  if (code === 255) {
-    throw new TypeError(`Invalid character ${String.fromCharCode(charCode)}`);
-  }
-  return code;
-}
-/** @internal */
-const base64abc = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "/"];
-/** @internal */
-const base64codes = [255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 0, 255, 255, 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255, 255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
-//# sourceMappingURL=Base64.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Base64Url.mjs
-
-
-
-/** @internal */
-const Base64Url_encode = data => encode(data).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-/** @internal */
-const Base64Url_decode = str => {
-  const length = str.length;
-  if (length % 4 === 1) {
-    return Either_left(DecodeException(str, `Length should be a multiple of 4, but is ${length}`));
-  }
-  if (!/^[-_A-Z0-9]*?={0,2}$/i.test(str)) {
-    return Either_left(DecodeException(str, "Invalid input"));
-  }
-  // Some variants allow or require omitting the padding '=' signs
-  let sanitized = length % 4 === 2 ? `${str}==` : length % 4 === 3 ? `${str}=` : str;
-  sanitized = sanitized.replace(/-/g, "+").replace(/_/g, "/");
-  return Base64_decode(sanitized);
-};
-//# sourceMappingURL=Base64Url.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/internal/Encoding/Hex.mjs
-
-
-/** @internal */
-const Hex_encode = bytes => {
-  let result = "";
-  for (let i = 0; i < bytes.length; ++i) {
-    result += bytesToHex[bytes[i]];
-  }
-  return result;
-};
-/** @internal */
-const Hex_decode = str => {
-  const bytes = new TextEncoder().encode(str);
-  if (bytes.length % 2 !== 0) {
-    return Either_left(DecodeException(str, `Length must be a multiple of 2, but is ${bytes.length}`));
-  }
-  try {
-    const length = bytes.length / 2;
-    const result = new Uint8Array(length);
-    for (let i = 0; i < length; i++) {
-      const a = fromHexChar(bytes[i * 2]);
-      const b = fromHexChar(bytes[i * 2 + 1]);
-      result[i] = a << 4 | b;
-    }
-    return Either_right(result);
-  } catch (e) {
-    return Either_left(DecodeException(str, e instanceof Error ? e.message : "Invalid input"));
-  }
-};
-/** @internal */
-const bytesToHex = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3a", "3b", "3c", "3d", "3e", "3f", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4a", "4b", "4c", "4d", "4e", "4f", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5a", "5b", "5c", "5d", "5e", "5f", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6a", "6b", "6c", "6d", "6e", "6f", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7a", "7b", "7c", "7d", "7e", "7f", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9a", "9b", "9c", "9d", "9e", "9f", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "aa", "ab", "ac", "ad", "ae", "af", "b0", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "ba", "bb", "bc", "bd", "be", "bf", "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "ca", "cb", "cc", "cd", "ce", "cf", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "da", "db", "dc", "dd", "de", "df", "e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "ea", "eb", "ec", "ed", "ee", "ef", "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe", "ff"];
-/** @internal */
-const fromHexChar = byte => {
-  // '0' <= byte && byte <= '9'
-  if (48 <= byte && byte <= 57) {
-    return byte - 48;
-  }
-  // 'a' <= byte && byte <= 'f'
-  if (97 <= byte && byte <= 102) {
-    return byte - 97 + 10;
-  }
-  // 'A' <= byte && byte <= 'F'
-  if (65 <= byte && byte <= 70) {
-    return byte - 65 + 10;
-  }
-  throw new TypeError("Invalid input");
-};
-//# sourceMappingURL=Hex.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Encoding.mjs
-/**
- * This module provides encoding & decoding functionality for:
- *
- * - base64 (RFC4648)
- * - base64 (URL)
- * - hex
- *
- * @since 1.0.0
- */
-
-
-
-
-
-/**
- * Encodes the given value into a base64 (RFC4648) `string`.
- *
- * @category encoding
- * @since 1.0.0
- */
-const encodeBase64 = input => typeof input === "string" ? encode(encoder.encode(input)) : encode(input);
-/**
- * Decodes a base64 (RFC4648) encoded `string` into a `Uint8Array`.
- *
- * @category decoding
- * @since 1.0.0
- */
-const decodeBase64 = str => Base64_decode(str);
-/**
- * Decodes a base64 (RFC4648) encoded `string` into a UTF-8 `string`.
- *
- * @category decoding
- * @since 1.0.0
- */
-const decodeBase64String = str => Either.map(decodeBase64(str), _ => Common.decoder.decode(_));
-/**
- * Encodes the given value into a base64 (URL) `string`.
- *
- * @category encoding
- * @since 1.0.0
- */
-const encodeBase64Url = input => typeof input === "string" ? Base64Url_encode(encoder.encode(input)) : Base64Url_encode(input);
-/**
- * Decodes a base64 (URL) encoded `string` into a `Uint8Array`.
- *
- * @category decoding
- * @since 1.0.0
- */
-const decodeBase64Url = str => Base64Url_decode(str);
-/**
- * Decodes a base64 (URL) encoded `string` into a UTF-8 `string`.
- *
- * @category decoding
- * @since 1.0.0
- */
-const decodeBase64UrlString = str => Either.map(decodeBase64Url(str), _ => Common.decoder.decode(_));
-/**
- * Encodes the given value into a hex `string`.
- *
- * @category encoding
- * @since 1.0.0
- */
-const encodeHex = input => typeof input === "string" ? Hex_encode(encoder.encode(input)) : Hex_encode(input);
-/**
- * Decodes a hex encoded `string` into a `Uint8Array`.
- *
- * @category decoding
- * @since 1.0.0
- */
-const decodeHex = str => Hex_decode(str);
-/**
- * Decodes a hex encoded `string` into a UTF-8 `string`.
- *
- * @category decoding
- * @since 1.0.0
- */
-const decodeHexString = str => Either.map(decodeHex(str), _ => Common.decoder.decode(_));
-/**
- * @since 1.0.0
- * @category symbols
- */
-const Encoding_DecodeExceptionTypeId = DecodeExceptionTypeId;
-/**
- * Creates a checked exception which occurs when decoding fails.
- *
- * @since 1.0.0
- * @category errors
- */
-const Encoding_DecodeException = DecodeException;
-/**
- * Returns `true` if the specified value is an `DecodeException`, `false` otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-const Encoding_isDecodeException = isDecodeException;
-//# sourceMappingURL=Encoding.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/internal/common.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.39.2_effect@2.0.0-next.34/node_modules/@effect/schema/mjs/internal/common.mjs
 /**
  * @since 1.0.0
  */
@@ -45252,7 +44835,7 @@ const memoizeThunk = f => {
   };
 };
 //# sourceMappingURL=common.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/AST.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.39.2_effect@2.0.0-next.34/node_modules/@effect/schema/mjs/AST.mjs
 /**
  * @since 1.0.0
  */
@@ -46179,7 +45762,7 @@ const _keyof = ast => {
   }
 };
 //# sourceMappingURL=AST.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/ParseResult.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.39.2_effect@2.0.0-next.34/node_modules/@effect/schema/mjs/ParseResult.mjs
 /**
  * @since 1.0.0
  */
@@ -46341,7 +45924,7 @@ const bimap = (self, f, g) => {
   });
 };
 //# sourceMappingURL=ParseResult.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/TreeFormatter.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.39.2_effect@2.0.0-next.34/node_modules/@effect/schema/mjs/TreeFormatter.mjs
 /**
  * @since 1.0.0
  */
@@ -46468,7 +46051,7 @@ const go = e => {
   }
 };
 //# sourceMappingURL=TreeFormatter.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/Parser.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.39.2_effect@2.0.0-next.34/node_modules/@effect/schema/mjs/Parser.mjs
 /**
  * @since 1.0.0
  */
@@ -46482,15 +46065,14 @@ const go = e => {
 
 
 
+const getEither = (ast, isDecoding) => Parser_go(ast, isDecoding);
 const getSync = (ast, isDecoding) => {
-  const parser = Parser_go(ast, isDecoding);
+  const parser = getEither(ast, isDecoding);
   return (input, options) => {
     const result = parser(input, options);
-    // @ts-expect-error
     if (Either_isLeft(result)) {
       throw new Error(formatErrors(result.left.errors));
     }
-    // @ts-expect-error
     return result.right;
   };
 };
@@ -46498,23 +46080,16 @@ const Parser_getOption = (ast, isDecoding) => {
   const parser = getEither(ast, isDecoding);
   return (input, options) => Option_getRight(parser(input, options));
 };
-const getEither = (ast, isDecoding) => {
-  const parser = Parser_go(ast, isDecoding);
-  return (input, options) => parser(input, options);
-};
-const getPromise = (ast, isDecoding) => {
-  const parser = Parser_go(ast, isDecoding);
-  return (input, options) => Effect.runPromise(parser(input, {
-    ...options,
-    isEffectAllowed: true
-  }));
-};
 const getEffect = (ast, isDecoding) => {
   const parser = Parser_go(ast, isDecoding);
   return (input, options) => parser(input, {
     ...options,
     isEffectAllowed: true
   });
+};
+const getPromise = (ast, isDecoding) => {
+  const parser = getEffect(ast, isDecoding);
+  return (input, options) => Effect.runPromise(parser(input, options));
 };
 /**
  * @category parsing
@@ -46535,17 +46110,12 @@ const parseEither = schema => getEither(schema.ast, true);
  * @category parsing
  * @since 1.0.0
  */
-const parseResult = schema => Parser_go(schema.ast, true);
-/**
- * @category parsing
- * @since 1.0.0
- */
 const parsePromise = schema => getPromise(schema.ast, true);
 /**
  * @category parsing
  * @since 1.0.0
  */
-const parse = schema => getEffect(schema.ast, true);
+const Parser_parse = schema => getEffect(schema.ast, true);
 /**
  * @category decoding
  * @since 1.0.0
@@ -46565,17 +46135,12 @@ const decodeEither = (/* unused pure expression or super */ null && (parseEither
  * @category decoding
  * @since 1.0.0
  */
-const decodeResult = (/* unused pure expression or super */ null && (parseResult));
-/**
- * @category decoding
- * @since 1.0.0
- */
 const decodePromise = (/* unused pure expression or super */ null && (parsePromise));
 /**
  * @category decoding
  * @since 1.0.0
  */
-const Parser_decode = (/* unused pure expression or super */ null && (parse));
+const Parser_decode = (/* unused pure expression or super */ null && (Parser_parse));
 /**
  * @category validation
  * @since 1.0.0
@@ -46591,11 +46156,6 @@ const Parser_validateOption = schema => Parser_getOption(AST_to(schema.ast), tru
  * @since 1.0.0
  */
 const Parser_validateEither = schema => getEither(AST_to(schema.ast), true);
-/**
- * @category validation
- * @since 1.0.0
- */
-const validateResult = schema => Parser_go(AST.to(schema.ast), true);
 /**
  * @category validation
  * @since 1.0.0
@@ -46643,17 +46203,12 @@ const encodeEither = schema => getEither(schema.ast, false);
  * @category encoding
  * @since 1.0.0
  */
-const encodeResult = schema => Parser_go(schema.ast, false);
-/**
- * @category encoding
- * @since 1.0.0
- */
 const encodePromise = schema => getPromise(schema.ast, false);
 /**
  * @category encoding
  * @since 1.0.0
  */
-const Parser_encode = schema => getEffect(schema.ast, false);
+const encode = schema => getEffect(schema.ast, false);
 /**
  * @since 1.0.0"
  */
@@ -47054,66 +46609,68 @@ const Parser_go = (ast, isDecoding) => {
             const type = indexSignatures[i][1];
             const keys = getKeysForIndexSignature(input, ast.indexSignatures[i].parameter);
             for (const key of keys) {
-              // ---------------------------------------------
-              // handle keys
-              // ---------------------------------------------
-              const keu = eitherOrUndefined(parameter(key, options));
-              if (keu) {
-                if (Either_isLeft(keu)) {
-                  const e = ParseResult_key(key, keu.left.errors);
-                  if (allErrors) {
-                    es.push([stepKey++, e]);
-                    continue;
-                  } else {
-                    return failures(mutableAppend(sortByIndex(es), e));
-                  }
-                }
-              }
-              // there's no else here because index signature parameters are restricted to primitives
-              // ---------------------------------------------
-              // handle values
-              // ---------------------------------------------
-              const vpr = type(input[key], options);
-              const veu = eitherOrUndefined(vpr);
-              if (veu) {
-                if (Either_isLeft(veu)) {
-                  const e = ParseResult_key(key, veu.left.errors);
-                  if (allErrors) {
-                    es.push([stepKey++, e]);
-                    continue;
-                  } else {
-                    return failures(mutableAppend(sortByIndex(es), e));
-                  }
-                } else {
-                  if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
-                    output[key] = veu.right;
-                  }
-                }
-              } else {
-                const nk = stepKey++;
-                const index = key;
-                if (!queue) {
-                  queue = [];
-                }
-                queue.push(({
-                  es,
-                  output
-                }) => Effect_flatMap(Effect_either(vpr), tv => {
-                  if (Either_isLeft(tv)) {
-                    const e = ParseResult_key(index, tv.left.errors);
+              if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
+                // ---------------------------------------------
+                // handle keys
+                // ---------------------------------------------
+                const keu = eitherOrUndefined(parameter(key, options));
+                if (keu) {
+                  if (Either_isLeft(keu)) {
+                    const e = ParseResult_key(key, keu.left.errors);
                     if (allErrors) {
-                      es.push([nk, e]);
-                      return Effect_unit;
+                      es.push([stepKey++, e]);
+                      continue;
+                    } else {
+                      return failures(mutableAppend(sortByIndex(es), e));
+                    }
+                  }
+                }
+                // there's no else here because index signature parameters are restricted to primitives
+                // ---------------------------------------------
+                // handle values
+                // ---------------------------------------------
+                const vpr = type(input[key], options);
+                const veu = eitherOrUndefined(vpr);
+                if (veu) {
+                  if (Either_isLeft(veu)) {
+                    const e = ParseResult_key(key, veu.left.errors);
+                    if (allErrors) {
+                      es.push([stepKey++, e]);
+                      continue;
                     } else {
                       return failures(mutableAppend(sortByIndex(es), e));
                     }
                   } else {
                     if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
-                      output[key] = tv.right;
+                      output[key] = veu.right;
                     }
-                    return Effect_unit;
                   }
-                }));
+                } else {
+                  const nk = stepKey++;
+                  const index = key;
+                  if (!queue) {
+                    queue = [];
+                  }
+                  queue.push(({
+                    es,
+                    output
+                  }) => Effect_flatMap(Effect_either(vpr), tv => {
+                    if (Either_isLeft(tv)) {
+                      const e = ParseResult_key(index, tv.left.errors);
+                      if (allErrors) {
+                        es.push([nk, e]);
+                        return Effect_unit;
+                      } else {
+                        return failures(mutableAppend(sortByIndex(es), e));
+                      }
+                    } else {
+                      if (!Object.prototype.hasOwnProperty.call(expectedKeys, key)) {
+                        output[key] = tv.right;
+                      }
+                      return Effect_unit;
+                    }
+                  }));
+                }
               }
             }
           }
@@ -47396,7 +46953,180 @@ const getFinalTransformation = (transformation, isDecoding) => {
   }
 };
 //# sourceMappingURL=Parser.mjs.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.36.2_@effect+data@0.18.5_@effect+io@0.40.3/node_modules/@effect/schema/mjs/Schema.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+data@0.18.5/node_modules/@effect/data/mjs/Brand.mjs
+/**
+ * This module provides types and utility functions to create and work with branded types,
+ * which are TypeScript types with an added type tag to prevent accidental usage of a value in the wrong context.
+ *
+ * The `refined` and `nominal` functions are both used to create branded types in TypeScript.
+ * The main difference between them is that `refined` allows for validation of the data, while `nominal` does not.
+ *
+ * The `nominal` function is used to create a new branded type that has the same underlying type as the input, but with a different name.
+ * This is useful when you want to distinguish between two values of the same type that have different meanings.
+ * The `nominal` function does not perform any validation of the input data.
+ *
+ * On the other hand, the `refined` function is used to create a new branded type that has the same underlying type as the input,
+ * but with a different name, and it also allows for validation of the input data.
+ * The `refined` function takes a predicate that is used to validate the input data.
+ * If the input data fails the validation, a `BrandErrors` is returned, which provides information about the specific validation failure.
+ *
+ * @since 1.0.0
+ */
+
+
+
+
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+const BrandTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (Symbol.for("@effect/data/Brand")));
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+const RefinedConstructorsTypeId = /*#__PURE__*/Symbol.for("@effect/data/Brand/Refined");
+/**
+ * Returns a `BrandErrors` that contains a single `RefinementError`.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+const error = (message, meta) => [{
+  message,
+  meta
+}];
+/**
+ * Takes a variable number of `BrandErrors` and returns a single `BrandErrors` that contains all refinement errors.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+const errors = (...errors) => ReadonlyArray.flatten(errors);
+/**
+ * Returns a `Brand.Constructor` that can construct a branded type from an unbranded value using the provided `refinement`
+ * predicate as validation of the input data.
+ *
+ * If you don't want to perform any validation but only distinguish between two values of the same type but with different meanings,
+ * see {@link nominal}.
+ *
+ * @param refinement - The refinement predicate to apply to the unbranded value.
+ * @param onFailure - Takes the unbranded value that did not pass the `refinement` predicate and returns a `BrandErrors`.
+ *
+ * @example
+ * import * as Brand from "@effect/data/Brand"
+ *
+ * type Int = number & Brand.Brand<"Int">
+ *
+ * const Int = Brand.refined<Int>(
+ *   (n) => Number.isInteger(n),
+ *   (n) => Brand.error(`Expected ${n} to be an integer`)
+ * )
+ *
+ * assert.strictEqual(Int(1), 1)
+ * assert.throws(() => Int(1.1))
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+const refined = (refinement, onFailure) => {
+  const either = args => refinement(args) ? Either.right(args) : Either.left(onFailure(args));
+  // @ts-expect-error
+  return Object.assign(args => Either.match(either(args), {
+    onLeft: e => {
+      throw e;
+    },
+    onRight: identity
+  }), {
+    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
+    option: args => Option.getRight(either(args)),
+    either,
+    is: args => Either.isRight(either(args))
+  });
+};
+/**
+ * This function returns a `Brand.Constructor` that **does not apply any runtime checks**, it just returns the provided value.
+ * It can be used to create nominal types that allow distinguishing between two values of the same type but with different meanings.
+ *
+ * If you also want to perform some validation, see {@link refined}.
+ *
+ * @example
+ * import * as Brand from "@effect/data/Brand"
+ *
+ * type UserId = number & Brand.Brand<"UserId">
+ *
+ * const UserId = Brand.nominal<UserId>()
+ *
+ * assert.strictEqual(UserId(1), 1)
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+const nominal = () => {
+  // @ts-expect-error
+  return Object.assign(args => args, {
+    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
+    option: args => Option.some(args),
+    either: args => Either.right(args),
+    is: _args => true
+  });
+};
+/**
+ * Combines two or more brands together to form a single branded type.
+ * This API is useful when you want to validate that the input data passes multiple brand validators.
+ *
+ * @example
+ * import * as Brand from "@effect/data/Brand"
+ *
+ * type Int = number & Brand.Brand<"Int">
+ * const Int = Brand.refined<Int>(
+ *   (n) => Number.isInteger(n),
+ *   (n) => Brand.error(`Expected ${n} to be an integer`)
+ * )
+ * type Positive = number & Brand.Brand<"Positive">
+ * const Positive = Brand.refined<Positive>(
+ *   (n) => n > 0,
+ *   (n) => Brand.error(`Expected ${n} to be positive`)
+ * )
+ *
+ * const PositiveInt = Brand.all(Int, Positive)
+ *
+ * assert.strictEqual(PositiveInt(1), 1)
+ * assert.throws(() => PositiveInt(1.1))
+ *
+ * @since 1.0.0
+ * @category combining
+ */
+const Brand_all = (...brands) => {
+  const either = args => {
+    let result = Either.right(args);
+    for (const brand of brands) {
+      const nextResult = brand.either(args);
+      if (Either.isLeft(result) && Either.isLeft(nextResult)) {
+        result = Either.left([...result.left, ...nextResult.left]);
+      } else {
+        result = Either.isLeft(result) ? result : nextResult;
+      }
+    }
+    return result;
+  };
+  // @ts-expect-error
+  return Object.assign(args => Either.match(either(args), {
+    onLeft: e => {
+      throw e;
+    },
+    onRight: identity
+  }), {
+    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
+    option: args => Option.getRight(either(args)),
+    either,
+    is: args => Either.isRight(either(args))
+  });
+};
+//# sourceMappingURL=Brand.mjs.map
+// EXTERNAL MODULE: ./node_modules/.pnpm/@vercel+ncc@0.38.0/node_modules/@vercel/ncc/dist/ncc/@@notfound.js?effect/Encoding
+var Encoding = __nccwpck_require__(2382);
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@effect+schema@0.39.2_effect@2.0.0-next.34/node_modules/@effect/schema/mjs/Schema.mjs
 /**
  * @since 1.0.0
  */
@@ -47961,7 +47691,7 @@ const Schema_transform = /*#__PURE__*/Function_dual(4, (from, to, decode, encode
  *
  * @example
  * import * as S from "@effect/schema/Schema"
- * import { pipe } from "@effect/data/Function"
+ * import { pipe } from "effect/Function"
  *
  * const Circle = S.struct({ radius: S.number })
  * const Square = S.struct({ sideLength: S.number })
@@ -48017,6 +47747,7 @@ const toAnnotations = options => {
   move("documentation", DocumentationAnnotationId);
   move("jsonSchema", JSONSchemaAnnotationId);
   move("arbitrary", ArbitraryHookId);
+  move("pretty", PrettyHookId);
   return out;
 };
 /**
@@ -48441,7 +48172,7 @@ const IntTypeId = /*#__PURE__*/(/* unused pure expression or super */ null && (S
  * @category number filters
  * @since 1.0.0
  */
-const Schema_int = options => self => self.pipe(Schema_filter(a => Number.isInteger(a), {
+const Schema_int = options => self => self.pipe(Schema_filter(a => Number.isSafeInteger(a), {
   typeId: IntTypeId,
   description: "integer",
   jsonSchema: {
@@ -48961,21 +48692,21 @@ const makeEncodingTransform = (id, decode, encode, arbitrary) => self => transfo
  * @category encoding transformations
  * @since 1.0.0
  */
-const base64 = /*#__PURE__*/makeEncodingTransform("Base64", decodeBase64, encodeBase64, fc => fc.base64String().map(s => Either_getOrThrow(decodeBase64(s))));
+const base64 = /*#__PURE__*/makeEncodingTransform("Base64", Encoding.decodeBase64, Encoding.encodeBase64, fc => fc.base64String().map(s => Either_getOrThrow(Encoding.decodeBase64(s))));
 /**
  * Transforms a base64url `string` into a `Uint8Array`.
  *
  * @category encoding transformations
  * @since 1.0.0
  */
-const base64url = /*#__PURE__*/makeEncodingTransform("Base64Url", decodeBase64Url, encodeBase64Url, fc => fc.base64String().map(s => Either_getOrThrow(decodeBase64Url(s))));
+const base64url = /*#__PURE__*/makeEncodingTransform("Base64Url", Encoding.decodeBase64Url, Encoding.encodeBase64Url, fc => fc.base64String().map(s => Either_getOrThrow(Encoding.decodeBase64Url(s))));
 /**
  * Transforms a hex `string` into a `Uint8Array`.
  *
  * @category encoding transformations
  * @since 1.0.0
  */
-const hex = /*#__PURE__*/makeEncodingTransform("Hex", decodeHex, encodeHex, fc => fc.hexaString().map(s => Either_getOrThrow(decodeHex(s))));
+const hex = /*#__PURE__*/makeEncodingTransform("Hex", Encoding.decodeHex, Encoding.encodeHex, fc => fc.hexaString().map(s => Either_getOrThrow(Encoding.decodeHex(s))));
 // ---------------------------------------------
 // Encoding constructors
 // ---------------------------------------------
@@ -49128,7 +48859,7 @@ const optionInline = value => Schema_union(Schema_struct({
  */
 const optionFromSelf = value => {
   return declare([value], optionInline(value), (isDecoding, value) => {
-    const parse = isDecoding ? parseResult(value) : encodeResult(value);
+    const parse = isDecoding ? Parser_parse(value) : encode(value);
     return (u, options, ast) => !Option_isOption(u) ? failure(ParseResult_type(ast, u)) : Option_isNone(u) ? success(Option_none()) : ParseResult_map(parse(u.value, options), mjs_Option_some);
   }, {
     [IdentifierAnnotationId]: "Option",
@@ -49175,8 +48906,8 @@ const eitherInline = (left, right) => Schema_union(Schema_struct({
  */
 const eitherFromSelf = (left, right) => {
   return declare([left, right], eitherInline(left, right), (isDecoding, left, right) => {
-    const parseLeft = isDecoding ? Parser.parseResult(left) : Parser.encodeResult(left);
-    const parseRight = isDecoding ? Parser.parseResult(right) : Parser.encodeResult(right);
+    const parseLeft = isDecoding ? Parser.parse(left) : Parser.encode(left);
+    const parseRight = isDecoding ? Parser.parse(right) : Parser.encode(right);
     return (u, options, ast) => !Either.isEither(u) ? ParseResult.failure(ParseResult.type(ast, u)) : Either.isLeft(u) ? ParseResult.map(parseLeft(u.left, options), Either.left) : ParseResult.map(parseRight(u.right, options), Either.right);
   }, {
     [AST.IdentifierAnnotationId]: "Either",
@@ -49212,7 +48943,7 @@ const readonlyMapFromSelf = (key, value) => {
   return declare([key, value], Schema_struct({
     size: Schema_number
   }), (isDecoding, key, value) => {
-    const parse = isDecoding ? Parser.parseResult(Schema_array(Schema_tuple(key, value))) : Parser.encodeResult(Schema_array(Schema_tuple(key, value)));
+    const parse = isDecoding ? Parser.parse(Schema_array(Schema_tuple(key, value))) : Parser.encode(Schema_array(Schema_tuple(key, value)));
     return (u, options, ast) => !isMap(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(Array.from(u.entries()), options), as => new Map(as));
   }, {
     [AST.IdentifierAnnotationId]: "ReadonlyMap",
@@ -49239,7 +48970,7 @@ const readonlySetFromSelf = item => {
   return declare([item], Schema_struct({
     size: Schema_number
   }), (isDecoding, item) => {
-    const parse = isDecoding ? Parser.parseResult(Schema_array(item)) : Parser.encodeResult(Schema_array(item));
+    const parse = isDecoding ? Parser.parse(Schema_array(item)) : Parser.encode(Schema_array(item));
     return (u, options, ast) => !isSet(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(Array.from(u.values()), options), as => new Set(as));
   }, {
     [AST.IdentifierAnnotationId]: "ReadonlySet",
@@ -49263,11 +48994,16 @@ const chunkPretty = item => c => `Chunk(${Chunk.toReadonlyArray(c).map(item).joi
  */
 const chunkFromSelf = item => {
   return declare([item], Schema_struct({
-    _id: uniqueSymbol(Symbol.for("@effect/data/Chunk")),
+    _id: uniqueSymbol(Symbol.for("effect/Chunk")),
     length: Schema_number
   }), (isDecoding, item) => {
-    const parse = isDecoding ? Parser.parseResult(Schema_array(item)) : Parser.encodeResult(Schema_array(item));
-    return (u, options, ast) => !Chunk.isChunk(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(Chunk.toReadonlyArray(u), options), Chunk.fromIterable);
+    const parse = isDecoding ? Parser.parse(Schema_array(item)) : Parser.encode(Schema_array(item));
+    return (u, options, ast) => {
+      if (Chunk.isChunk(u)) {
+        return Chunk.isEmpty(u) ? ParseResult.success(u) : ParseResult.map(parse(Chunk.toReadonlyArray(u), options), Chunk.fromIterable);
+      }
+      return ParseResult.failure(ParseResult.type(ast, u));
+    };
   }, {
     [AST.IdentifierAnnotationId]: "Chunk",
     [Internal.PrettyHookId]: chunkPretty,
@@ -49278,7 +49014,7 @@ const chunkFromSelf = item => {
  * @category Chunk transformations
  * @since 1.0.0
  */
-const Schema_chunk = item => Schema_transform(Schema_array(item), to(chunkFromSelf(item)), Chunk.fromIterable, Chunk.toReadonlyArray);
+const Schema_chunk = item => Schema_transform(Schema_array(item), to(chunkFromSelf(item)), as => as.length === 0 ? Chunk.empty() : Chunk.fromIterable(as), Chunk.toReadonlyArray);
 // ---------------------------------------------
 // Data transformations
 // ---------------------------------------------
@@ -49291,7 +49027,7 @@ const dataPretty = item => d => `Data(${item(d)})`;
  */
 const dataFromSelf = item => {
   return declare([item], item, (isDecoding, item) => {
-    const parse = isDecoding ? Parser.parseResult(item) : Parser.encodeResult(item);
+    const parse = isDecoding ? Parser.parse(item) : Parser.encode(item);
     return (u, options, ast) => !Equal.isEqual(u) ? ParseResult.failure(ParseResult.type(ast, u)) : ParseResult.map(parse(u, options), toData);
   }, {
     [AST.IdentifierAnnotationId]: "Data",
