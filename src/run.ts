@@ -234,10 +234,11 @@ export const run: (inputs: Inputs, before: NES, after: NES, commitMessage: strin
     execCommands(inputs),
     Effect.flatMap((exitCode) =>
       exitCode === ExitCode.Success
-        ? logInfo(`🎉 zeklin-action ran successfully!`).pipe(Effect.as(new Date()))
+        ? Effect.sync(() => new Date())
         : Effect.fail(new Error(`❌ Your command exited with non-zero exit code: ${exitCode}`)),
     ),
     Effect.flatMap((computedAt) => findResults(inputs).pipe(Effect.map((_) => [_, computedAt] as const))),
     Effect.flatMap((data) => pingServer(inputs).pipe(Effect.as(data))),
     Effect.flatMap(([results, computedAt]) => uploadResults(inputs, results, computedAt, before, after, commitMessage)),
+    Effect.tap(() => logInfo(`🎉 zeklin-action ran successfully!`)),
   )
